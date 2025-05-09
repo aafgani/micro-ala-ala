@@ -26,7 +26,7 @@ Here’s a high-level system architecture:
 /your-solution
 │
 ├── /infrastructure
-│ ├── bicep/terraform # IaC for Azure Container Apps, network, etc.
+│ ├── bicep # IaC for Azure Container Apps, network, etc.
 │ └── scripts # Utility scripts for deployment, init, cleanup
 │
 ├── /apps
@@ -52,19 +52,19 @@ Here’s a high-level system architecture:
 └── README.md
 ```
 
-🚀 Getting Started
+## 🚀 **Getting Started**
+
 🔧 Prerequisites
 - .NET 8 SDK
 - Docker
 - Azure CLI
-- GitHub Actions or Azure DevOps for CI/CD
+- GitHub Actions for CI/CD
 
 ▶️ Running Locally (with Docker Compose)
 
 ``` 
 docker compose up --build
 ```
-
 ## 🧪 Testing Strategy
 
 #### 🔧 **Unit Testing**
