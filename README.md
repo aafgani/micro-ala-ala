@@ -65,9 +65,10 @@ Here’s a high-level system architecture:
 │ └── money-manager-api # Money manager domain API
 │
 ├── /shared
-│ ├── Auth # Shared auth middleware, helpers
-│ ├── Contracts # DTOs and shared models
-│ └── Utils # Logging, caching, helpers
+│ ├── common-domain # Shared domain models, enums, validations
+│ ├── common-dto # Shared DTOs across APIs
+│ └── common-infra # Caching, logging, db context, etc.
+│ └── common-security # Token handling, auth utils, etc.
 │
 ├── /docker
 │ ├── web-app.Dockerfile
