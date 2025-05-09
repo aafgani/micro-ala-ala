@@ -1,6 +1,6 @@
 # Microservices Architecture with Azure Container Apps
 ## 📌 Overview 
-This project is a cloud-native application built with ASP.NET technologies, split into several independently deployable services hosted using Azure Container Apps. It started as a modular monolith and evolved into a mini-microservices architecture for better scalability, CI/CD isolation, and cloud-native readiness.
+This project is a cloud-native application built with ASP.NET technologies, split into several independently deployable services hosted using **Azure Container Apps**. It started as a modular monolith and evolved into a **mini-microservices architecture** for better scalability, CI/CD isolation, and cloud-native readiness.
 
 The solution consists of:
 
