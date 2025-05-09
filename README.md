@@ -15,7 +15,7 @@ The solution consists of:
 - Authentication & Authorization via Azure Entra ID
 - Secure cookie-based session
 - Path-based routing or API Gateway integration
-- TBA
+- etc ... (TBD)
 
 ## 🧱 Architecture Diagram
 Here’s a high-level system architecture:
