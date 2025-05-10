@@ -3,7 +3,9 @@ using Microsoft.Identity.Web.UI;
 using App.Web.Client.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
+var config = builder.Configuration
+    .AddEnvironmentVariables()
+    .Build();
 
 // Add services to the container.
 builder.Services
@@ -11,7 +13,7 @@ builder.Services
     .AddMicrosoftIdentityUI();
 
 builder.Services
-    .AddAuthentication(config)
+    .AddCustomAuthentication(config)
     .AddInternalServices(config);
 
 var app = builder.Build();

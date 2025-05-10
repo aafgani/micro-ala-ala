@@ -14,7 +14,7 @@ namespace App.Web.Client.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddAuthentication(this IServiceCollection services, ConfigurationManager config)
+        public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration config)
         {
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -44,7 +44,7 @@ namespace App.Web.Client.Extensions
             return services;
         }
 
-        public static IServiceCollection AddInternalServices(this IServiceCollection services, ConfigurationManager config)
+        public static IServiceCollection AddInternalServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddSingleton<ICacheService, CacheService>();
             services.AddScoped<IUserSessionService, UserSessionService>();
