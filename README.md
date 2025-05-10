@@ -65,9 +65,10 @@ Here’s a high-level system architecture:
 │ └── money-manager-api # Money manager domain API
 │
 ├── /shared
-│ ├── Auth # Shared auth middleware, helpers
-│ ├── Contracts # DTOs and shared models
-│ └── Utils # Logging, caching, helpers
+│ ├── common-domain # Shared domain models, enums, validations
+│ ├── common-dto # Shared DTOs across APIs
+│ └── common-infra # Caching, logging, db context, etc.
+│ └── common-security # Token handling, auth utils, etc.
 │
 ├── /docker
 │ ├── web-app.Dockerfile
@@ -112,3 +113,40 @@ docker compose up --build
 - **Scope**: Integration tests are used to verify the interaction between services (e.g., API and database).
 - **Location**: Integration tests are located in the `/tests/integration` folder.
 
+## Future Improvements
+Here are some potential enhancements to improve the architecture and operational efficiency:
+
+1. **Centralized Logging**
+Use a centralized logging solution like Azure Monitor, Application Insights, or ELK Stack to aggregate logs from all services for better debugging and monitoring.
+3. **API Gateway**
+Introduce an API Gateway (e.g., Azure API Management or Ocelot) to handle:
+Routing requests to the appropriate backend API.
+Rate limiting, caching, and request transformation.
+Centralized authentication and authorization.
+4. **Service-to-Service Communication**
+Use Azure Service Bus or Dapr for reliable messaging and service discovery between APIs.
+5. **Health Checks**
+Implement health check endpoints (e.g., /health) for all services and configure Azure Container Apps to use these for container health monitoring.
+6. **Configuration Management**
+Use Azure App Configuration or Key Vault to manage environment-specific configurations and secrets securely.
+7. **Scalability**
+Configure Azure Container Apps for autoscaling based on CPU, memory, or custom metrics to handle varying loads efficiently.
+8. **Documentation Enhancements**
+Add a sequence diagram or request flow diagram to illustrate how the web app interacts with the APIs.
+Include a section on error handling and retry policies for API calls.
+9. **Security**
+Ensure all APIs are secured with OAuth 2.0 or JWT tokens via Azure Entra ID.
+Use HTTPS for all communication, both internally (between services) and externally.
+10. **UI Automation Testing**: 
+    - Use tools like **Selenium**, **Playwright**, or **Cypress** to automate end-to-end testing of the web app's user interface.
+    - Test scenarios should cover:
+      - Navigation flows.
+      - Form submissions and validations.
+      - API integration points (e.g., data displayed from backend APIs).
+      - Authentication flows (e.g., login/logout).
+    - Store UI test scripts in a dedicated folder, e.g., `/tests/ui`.
+11. **CI/CD Enhancements**
+Configure GitHub Actions to:
+Run tests in parallel with builds.
+Push Docker images to Azure Container Registry (ACR).
+Deploy to Azure Container Apps automatically after successful builds.
