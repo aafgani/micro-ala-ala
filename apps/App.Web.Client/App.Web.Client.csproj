@@ -8,6 +8,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Shared\Components\MonthlyExpense\**" />
+    <Compile Remove="Views\Shared\Components\MonthlyIncome\**" />
+    <Content Remove="Views\Shared\Components\MonthlyExpense\**" />
+    <Content Remove="Views\Shared\Components\MonthlyIncome\**" />
+    <EmbeddedResource Remove="Views\Shared\Components\MonthlyExpense\**" />
+    <EmbeddedResource Remove="Views\Shared\Components\MonthlyIncome\**" />
+    <None Remove="Views\Shared\Components\MonthlyExpense\**" />
+    <None Remove="Views\Shared\Components\MonthlyIncome\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Utilities\CustomViewComponent\MonthlyExpenseViewComponent.cs" />
+    <Compile Remove="Utilities\CustomViewComponent\MonthlyIncomeViewComponent.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Shared\Components\InfoBox\MonthlyExpense.cshtml" />
+    <Content Remove="Views\Shared\Components\InfoBox\MonthlyIncome.cshtml" />
+    <Content Remove="Views\Shared\Components\InfoBox\TotalBalance.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Identity.Web" Version="3.8.4" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="3.8.4" />
   </ItemGroup>
@@ -15,6 +37,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\infrastructure\App.Common.Infrastructure\App.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\..\shared\App.Common.Abstractions\App.Common.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Utilities\Enums\" />
   </ItemGroup>
 
 </Project>

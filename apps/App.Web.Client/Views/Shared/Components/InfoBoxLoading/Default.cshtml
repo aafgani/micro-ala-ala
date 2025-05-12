@@ -1,0 +1,15 @@
+﻿@{
+    var argument = ViewData["Arguments"] as string;
+}
+
+
+<div class="col-12 col-sm-6 col-md-3" id="@argument">
+    <div class="info-box">
+        <div class="info-box-icon  bg-dark elevation-1">
+            <i class="fas fa-spinner fa-spin"></i> <!-- Font Awesome spinner -->
+        </div>
+        <div class="info-box-content">
+            <span class="info-box-text">Loading...</span>
+        </div>
+    </div>
+</div>
