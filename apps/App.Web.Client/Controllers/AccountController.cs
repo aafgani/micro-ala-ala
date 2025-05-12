@@ -33,5 +33,10 @@ namespace App.Web.Client.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 OpenIdConnectDefaults.AuthenticationScheme);
         }
+
+        public IActionResult Profile()
+        {
+            return View();
+        }
     }
 }

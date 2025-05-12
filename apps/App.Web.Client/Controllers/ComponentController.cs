@@ -7,7 +7,12 @@ namespace App.Web.Client.Controllers
     {
         public async Task<IActionResult> GetMoneyComponent(string argument)
         {
-            return ViewComponent("InfoBox", argument);
+            var result = await Task.Run(() => 
+            { 
+                Thread.Sleep(1000); // Simulate a delay
+                return ViewComponent("InfoBox", argument); 
+            });
+            return result;
         }
     }
 }

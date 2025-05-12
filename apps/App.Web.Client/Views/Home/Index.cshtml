@@ -2,6 +2,8 @@
     ViewData["Title"] = "Home Page";
 }
 
+
+
 <div class="app-main">
     <div class="app-content-header">
         <div class="container-fluid">
@@ -19,8 +21,13 @@
                 @await Component.InvokeAsync("InfoBoxLoading", InfoBoxEnum.MonthlyExpense.ToString())
                 @await Component.InvokeAsync("InfoBoxLoading", InfoBoxEnum.SavingsRate.ToString())
             </div>
-        </div>
     </div>
 </div>
 
 <script src="~/js/home.js"></script>
+    <script>
+        function toggleEdit() {
+          document.getElementById('profile-view').classList.toggle('d-none');
+          document.getElementById('profile-form').classList.toggle('d-none');
+        }
+    </script>
