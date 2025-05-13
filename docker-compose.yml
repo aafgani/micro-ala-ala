@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app-web-client:
+    build:
+      context: .
+      dockerfile: docker/App.Web.Client.Dockerfile
+    ports:
+      - "8080:8080" # Map port 8080 in the container to port 8080 on the host
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AzureEntra:ClientSecret=jMG8Q~RHAZ5tHOFcL0W4zxESKHTshB1k28BejcRK
+      - AzureEntra:ClientSecret=${AZURE_ENTRA_CLIENT_SECRET}
+  todo-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: todo-db
+    environment:
+      SA_PASSWORD: "YourStrong!Pass123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433" # Map port 1433 for SQL Server
+    volumes:
+        - sql-data:/var/opt/mssql         # persist database
+        - ./infrastructure/sql-scripts:/init             # bind mount init scripts
+    entrypoint: /bin/bash -c "/init/init.sh & /opt/mssql/bin/sqlservr"
+    restart: unless-stopped
+
+
+volumes:
+ sql-data:
