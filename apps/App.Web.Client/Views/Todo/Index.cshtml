@@ -11,15 +11,15 @@
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
-                            <input type="checkbox" class="mr-2"> Finish profile page
+                            <input type="checkbox" class="mr-2">
+                            <a href="#" class="task-title text-dark" data-task-id="1">Finish profile page</a>
                             <small class="d-block text-muted">Due: May 15, 2025</small>
                         </div>
                         <div>
-                            <button class="btn btn-info btn-sm mr-2">Edit</button>
+                            <button class="btn btn-info btn-sm mr-2 edit-task" data-task-id="1">Edit</button>
                             <button class="btn btn-danger btn-sm">Delete</button>
                         </div>
                     </li>
-                    <!-- Repeat for more tasks -->
                 </ul>
             </div>
         </div>
@@ -27,27 +27,10 @@
 </section>
 
 <!-- Modal for adding new task -->
-<div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <form class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add Task</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="taskTitle">Task</label>
-                    <input type="text" class="form-control" id="taskTitle">
-                </div>
-                <div class="form-group">
-                    <label for="dueDate">Due Date</label>
-                    <input type="date" class="form-control" id="dueDate">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Add Task</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            </div>
-        </form>
-    </div>
-</div>
+@await Html.PartialAsync("ModalAddTask")
+
+<!-- Modal for edit new task -->
+@await Html.PartialAsync("ModalEditTask")
+
+<script src="~/js/todo.js"></script>
+

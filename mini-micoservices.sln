@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Todo", "Todo", "{ABE1D4F6-5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sonar", "Sonar", "{8D1A1A40-1C6C-4A3E-8B2F-4BC407F6C339}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Common.Domain", "shared\App.Common.Model\App.Common.Domain.csproj", "{D613C5E6-039C-47BB-894B-0AFC3D22B2DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{3FC4F95D-A518-4EE7-A8B9-7404EB916B64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FC4F95D-A518-4EE7-A8B9-7404EB916B64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FC4F95D-A518-4EE7-A8B9-7404EB916B64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D613C5E6-039C-47BB-894B-0AFC3D22B2DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D613C5E6-039C-47BB-894B-0AFC3D22B2DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D613C5E6-039C-47BB-894B-0AFC3D22B2DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D613C5E6-039C-47BB-894B-0AFC3D22B2DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 		{3FC4F95D-A518-4EE7-A8B9-7404EB916B64} = {FB8C5DF8-AA03-4B71-80BC-BD1A7024FB8A}
 		{ABE1D4F6-5BAB-4126-BDCB-D0978A2C6603} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{8D1A1A40-1C6C-4A3E-8B2F-4BC407F6C339} = {FE1BCAC4-60F9-4551-8E26-A3C6E5D47CA0}
+		{D613C5E6-039C-47BB-894B-0AFC3D22B2DC} = {FB8C5DF8-AA03-4B71-80BC-BD1A7024FB8A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A3087C86-B9A4-4C21-8A9B-EE4F39285A19}

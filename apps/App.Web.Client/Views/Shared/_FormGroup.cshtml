@@ -1,0 +1,56 @@
+﻿@model FormGroupModel
+
+<div class="form-group">
+    <label for="@Model.Id">
+        <i class="@Model.Icon"></i> @Model.Label
+    </label>
+
+    @if (Model.IsInputGroup)
+    {
+        <div class="input-group">
+            @RenderInput()
+            @Html.Raw(Model.InputGroupAppendHtml)
+        </div>
+    }
+    else
+    {
+        @RenderInput()
+    }
+</div>
+
+@functions {
+    private IHtmlContent RenderInput()
+    {
+        var id = Model.Id;
+        var name = Model.Name;
+        var type = Model.Type;
+        var placeholder = Model.Placeholder;
+        var value = Model.Value;
+        var multiple = Model.Multiple;
+
+        switch (type)
+        {
+            case "text":
+            case "datetime-local":
+            case "file":
+                return new HtmlString($"<input type='{type}' class='form-control' id='{id}' name='{name}' placeholder='{placeholder}' value='{value}' />");
+
+            case "select":
+                var sb = new System.Text.StringBuilder();
+                sb.Append($"<select class='form-control' id='{id}' name='{name}' {(multiple ? "multiple='multiple'" : "")}>");
+                foreach (var opt in Model.Options ?? Enumerable.Empty<SelectListItem>())
+                {
+                    var selected = opt.Selected ? "selected" : "";
+                    sb.Append($"<option value='{opt.Value}' {selected}>{opt.Text}</option>");
+                }
+                sb.Append("</select>");
+                return new HtmlString(sb.ToString());
+
+            case "textarea":
+                return new HtmlString($"<textarea class='form-control' id='{id}' name='{name}'>{value}</textarea>");
+
+            default:
+                return new HtmlString($"<input type='text' class='form-control' id='{id}' name='{name}' placeholder='{placeholder}' value='{value}' />");
+        }
+    }
+}

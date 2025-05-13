@@ -27,6 +27,7 @@
     <Content Remove="Views\Shared\Components\InfoBox\MonthlyExpense.cshtml" />
     <Content Remove="Views\Shared\Components\InfoBox\MonthlyIncome.cshtml" />
     <Content Remove="Views\Shared\Components\InfoBox\TotalBalance.cshtml" />
+    <Content Remove="Views\Todo\Detail.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +38,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\infrastructure\App.Common.Infrastructure\App.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\..\shared\App.Common.Abstractions\App.Common.Abstractions.csproj" />
+    <ProjectReference Include="..\..\shared\App.Common.Model\App.Common.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

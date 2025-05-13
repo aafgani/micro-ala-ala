@@ -28,3 +28,16 @@ body {
 .navbar .navbar-nav {
     font-size: 0.9rem; /* Smaller font size */
 }
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #007bff; /* Bootstrap primary */
+    color: #fff;
+    border: none;
+    padding: 2px 8px;
+    font-size: 0.9rem;
+}
+
+.task-title:hover {
+    text-decoration: underline;
+    cursor: pointer;
+} 
