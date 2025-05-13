@@ -7,11 +7,13 @@ WORKDIR /src
 COPY "../apps/App.Web.Client/App.Web.Client.csproj" "apps/App.Web.Client/"
 COPY "../shared/App.Common.Abstractions/App.Common.Abstractions.csproj" "shared/App.Common.Abstractions/"
 COPY "../infrastructure/App.Common.Infrastructure/App.Common.Infrastructure.csproj" "infrastructure/App.Common.Infrastructure/"
+COPY "../shared/App.Common.Model/App.Common.Domain.csproj" "shared/App.Common.Model/"
 
 # Copy the rest of the source code
 COPY "../apps/App.Web.Client/" "apps/App.Web.Client/"
 COPY "../shared/App.Common.Abstractions/" "shared/App.Common.Abstractions/"
 COPY "../infrastructure/App.Common.Infrastructure/" "infrastructure/App.Common.Infrastructure/"
+COPY "../shared/App.Common.Model/" "shared/App.Common.Model/"
 
 # Publish the application
 RUN dotnet publish "apps/App.Web.Client/App.Web.Client.csproj" -c Release -o /app/published /p:UseAppHost=false
