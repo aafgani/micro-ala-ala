@@ -1,0 +1,8 @@
+✅ Before running docker-compose, make sure init.sh is executable to avoid the "Permission denied" error:
+chmod +x infrastructure/sql-scripts/init.sh
+
+✅ After docker-compose runs successfully, you can connect to the containerized SQL Server using your preferred tool (e.g., Azure Data Studio or SSMS):
+
+Server: 127.0.0.1,1433 (sample todo-db)
+Username: sa
+Password: (Check the .env file for the value of SA_PASSWORD)
