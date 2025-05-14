@@ -13,7 +13,7 @@ CREATE TABLE ToDoLists (
     Title NVARCHAR(255) NOT NULL,
     Description NVARCHAR(MAX) NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
-    UserId NVARCHAR(255) NOT NULL
+    UserId NVARCHAR(255) NOT NULL  -- foreign identifier, no FK constraint
 );
 GO
 
@@ -26,11 +26,26 @@ CREATE TABLE Tasks (
     DueDate DATETIME2 NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     ToDoListId INT NOT NULL,
-    FOREIGN KEY (ToDoListId) REFERENCES ToDoLists(Id) ON DELETE CASCADE
+    ParentTaskId INT NULL, -- for subtasks (self-referencing)
+    FOREIGN KEY (ToDoListId) REFERENCES ToDoLists(Id) ON DELETE CASCADE,
+    FOREIGN KEY (ParentTaskId) REFERENCES Tasks(Id) ON DELETE NO ACTION
 );
 GO
 
--- Optional: Indexes
-CREATE INDEX IX_Tasks_ToDoListId ON Tasks(ToDoListId);
-CREATE INDEX IX_ToDoLists_UserId ON ToDoLists(UserId);
+-- Create Tags table
+CREATE TABLE Tags (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL UNIQUE
+);
 GO
+
+-- Many-to-many relationship between Tasks and Tags
+CREATE TABLE TaskTags (
+    TaskId INT NOT NULL,
+    TagId INT NOT NULL,
+    PRIMARY KEY (TaskId, TagId),
+    FOREIGN KEY (TaskId) REFERENCES Tasks(Id) ON DELETE CASCADE,
+    FOREIGN KEY (TagId) REFERENCES Tags(Id) ON DELETE CASCADE
+);
+GO
+
