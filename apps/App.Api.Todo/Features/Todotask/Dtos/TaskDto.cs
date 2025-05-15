@@ -1,7 +1,6 @@
 ﻿using App.Api.Todo.Features.Tags.Dtos;
-using System.ComponentModel.DataAnnotations;
 
-namespace App.Api.Todo.Features.Task.Dtos
+namespace App.Api.Todo.Features.Todotask.Dtos
 {
     public class TaskDto
     {

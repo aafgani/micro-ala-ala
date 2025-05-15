@@ -1,4 +1,5 @@
 ﻿using App.Api.Todo.Features.Tags.Data;
+using App.Api.Todo.Features.Tags.Mapper;
 using App.Api.Todo.Features.Tags.Services;
 using App.Api.Todo.Models;
 using App.Common.Infrastructure.HealthCheck;
@@ -25,14 +26,14 @@ namespace App.Api.Todo.Extensions
 
         public static IServiceCollection AddBusinesServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<ITagService, TagService>();
+            services.AddScoped<ITagService, TagService>();
 
             return services;
         }
 
         private static IServiceCollection AddMapper(this IServiceCollection services)
         {
-            //services.AddScoped<ArtistMapper>();
+            services.AddSingleton<ITagMapper, TagMapper>();
 
             return services;
         }
@@ -43,7 +44,7 @@ namespace App.Api.Todo.Extensions
             {
                 options.UseSqlServer(configuration.GetConnectionString("TodoDb"));
             });
-            services.AddSingleton<ITagRepository, TagRepository>();
+            services.AddScoped<ITagRepository, TagRepository>();
 
             return services;
         }
