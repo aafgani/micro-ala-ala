@@ -8,8 +8,6 @@
                .MapGroup(EndpointGroupNames.TodolistsGroupName)
                .WithTags(EndpointGroupNames.TodolistsTagName);
 
-
-
             return group;
         }
     }

@@ -1,4 +1,5 @@
-﻿using App.Api.Todo.Features.Todolist.Endpoints;
+﻿using App.Api.Todo.Features.Tags.Endpoints;
+using App.Api.Todo.Features.Todolist.Endpoints;
 
 namespace App.Api.Todo.Extensions
 {
@@ -6,7 +7,7 @@ namespace App.Api.Todo.Extensions
     {
         public static WebApplication MapEndpoints(this WebApplication app)
         {
-            app.MapTodolist();
+            app.MapTags();
 
             return app;
         }
