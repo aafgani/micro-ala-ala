@@ -22,9 +22,10 @@ namespace App.Common.Infrastructure.HealthCheck
 
                 try
                 {
-                    await dbContext.Database.CanConnectAsync(cancellationToken);
-                    return HealthCheckResult.Healthy("Database connection is healthy");
-
+                    var isHealthy = await dbContext.Database.CanConnectAsync(cancellationToken);
+                    return isHealthy ?
+                        HealthCheckResult.Healthy("Database connection is healthy") :
+                        HealthCheckResult.Unhealthy("Database connection failed");
                 }
                 catch (Exception ex)
                 {
