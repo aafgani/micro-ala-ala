@@ -10,7 +10,7 @@ namespace App.Api.Todo.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, ConfigurationManager configuration)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services
                 .AddDbRepo(configuration)
@@ -19,7 +19,7 @@ namespace App.Api.Todo.Extensions
             return services;
         }
 
-        public static IServiceCollection AddConfigurationOptions(this IServiceCollection services, ConfigurationManager configuration)
+        public static IServiceCollection AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
             return services;
         }
@@ -38,7 +38,7 @@ namespace App.Api.Todo.Extensions
             return services;
         }
 
-        private static IServiceCollection AddDbRepo(this IServiceCollection services, ConfigurationManager configuration)
+        private static IServiceCollection AddDbRepo(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<TodoContext>(options =>
             {
@@ -49,7 +49,7 @@ namespace App.Api.Todo.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureHealthChecks(this IServiceCollection services, ConfigurationManager configuration)
+        public static IServiceCollection ConfigureHealthChecks(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHealthChecks()
                 .AddCheck<DatabaseHealthCheck<TodoContext>>("Todo-database-health-check", failureStatus: HealthStatus.Unhealthy, tags: new[] { "database" });
