@@ -9,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var config = builder.Configuration;
+var config = builder.Configuration
+.AddEnvironmentVariables()
+.Build();
 
 // Setup all the services.
 builder.Services
