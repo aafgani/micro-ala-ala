@@ -1,0 +1,26 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build 
+WORKDIR /src
+
+# Copy the rest of the source code
+COPY "../apps/App.Api.Todo/" "apps/App.Api.Todo/"
+COPY "../shared/App.Common.Abstractions/" "shared/App.Common.Abstractions/"
+COPY "../shared/App.Common.Infrastructure/" "shared/App.Common.Infrastructure/"
+COPY "../shared/App.Common.Model/" "shared/App.Common.Model/"
+
+# Publish the application
+RUN dotnet publish "apps/App.Api.Todo/App.Api.Todo.csproj" -c Release -o /app/published /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine  
+WORKDIR /app
+COPY --from=build ./app/published .
+
+# ✅ Install ICU for globalization support
+# The official .NET Alpine images (like mcr.microsoft.com/dotnet/aspnet:8.0-alpine) use the globalization-invariant mode by default to keep the image small.
+# But this app needs full globalization support (for en-us culture, etc) — especially for SQL Server connections which rely on it. 
+# Otherwise, you may get errors like:  CultureNotFoundException
+RUN apk add --no-cache icu-libs
+
+# ✅ Enable full globalization support
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
+ENTRYPOINT [ "dotnet", "App.Api.Todo.dll" ]
