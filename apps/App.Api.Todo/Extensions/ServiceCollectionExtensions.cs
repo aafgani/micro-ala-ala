@@ -1,6 +1,9 @@
 ﻿using App.Api.Todo.Features.Tags.Data;
 using App.Api.Todo.Features.Tags.Mapper;
 using App.Api.Todo.Features.Tags.Services;
+using App.Api.Todo.Features.Todotask.Data;
+using App.Api.Todo.Features.Todotask.Mapper;
+using App.Api.Todo.Features.Todotask.Services;
 using App.Api.Todo.Models;
 using App.Common.Domain;
 using App.Common.Infrastructure.HealthCheck;
@@ -71,6 +74,7 @@ namespace App.Api.Todo.Extensions
         public static IServiceCollection AddBusinesServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<ITagService, TagService>();
+            services.AddScoped<ITodoTaskService, TodoTaskService>();
 
             return services;
         }
@@ -78,6 +82,7 @@ namespace App.Api.Todo.Extensions
         private static IServiceCollection AddMapper(this IServiceCollection services)
         {
             services.AddSingleton<ITagMapper, TagMapper>();
+            services.AddSingleton<ITaskMapper, TaskMapper>();
 
             return services;
         }
@@ -89,6 +94,7 @@ namespace App.Api.Todo.Extensions
                 options.UseSqlServer(configuration.GetConnectionString("TodoDb"));
             });
             services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<ITodoTaskRepository, TodoTaskRepository>();
 
             return services;
         }
