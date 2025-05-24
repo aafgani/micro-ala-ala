@@ -13,6 +13,8 @@ var config = builder.Configuration
 .AddEnvironmentVariables()
 .Build();
 
+await builder.Services.AddConfigurationOptionsAsync(config);
+
 // Setup all the services.
 builder.Services
     .AddConfigurationOptions(config)
