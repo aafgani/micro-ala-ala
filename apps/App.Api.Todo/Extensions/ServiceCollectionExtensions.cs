@@ -78,10 +78,12 @@ namespace App.Api.Todo.Extensions
 
         private static IServiceCollection AddDbRepo(this IServiceCollection services, IConfiguration configuration)
         {
-            var mySecret = configuration.GetValue<MySecrets>("MySecrets");
+            var mySecrets = new MySecrets();
+            configuration.Bind("MySecrets", mySecrets);
+
             services.AddDbContext<TodoContext>(options =>
             {
-                options.UseSqlServer(mySecret?.TodoConnectionString);
+                options.UseSqlServer(mySecrets.TodoConnectionString);
             });
             services.AddScoped<ITagRepository, TagRepository>();
 
