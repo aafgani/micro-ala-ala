@@ -9,18 +9,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var config = builder.Configuration
-.AddEnvironmentVariables()
-.Build();
-
-await builder.Services.AddConfigurationOptionsAsync(config);
+var keyVaultUrl = builder.Configuration["KeyVaultUrl"];
+if (!string.IsNullOrEmpty(keyVaultUrl))
+{
+   await  builder.AddKeyVaultSecretsAsync();
+}
 
 // Setup all the services.
 builder.Services
-    .AddConfigurationOptions(config)
-    .AddBusinesServices(config)
-    .AddInfrastructureServices(config)
-    .ConfigureHealthChecks(config);
+    .AddConfigurationOptions(builder.Configuration)
+    .AddBusinesServices(builder.Configuration)
+    .AddInfrastructureServices(builder.Configuration)
+    .ConfigureHealthChecks(builder.Configuration);
 
 var app = builder.Build();
 

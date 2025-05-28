@@ -13,23 +13,29 @@ namespace App.Api.Todo.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddKeyVaultServices(this IServiceCollection services, IConfiguration configuration)
+        public static async Task<IConfigurationBuilder> AddKeyVaultSecretsAsync(this WebApplicationBuilder builder)
         {
+            var configuration = builder.Configuration;
+            var services = builder.Services;
             services
                 .AddOptions<EntraConfiguration>()
                 .Bind(configuration.GetSection("Entra"))
                 .ValidateDataAnnotations();
+            using var tempProvider = services.BuildServiceProvider();
 
-            services.AddSingleton<IKeyVaultSecretService>(sp =>
+            var secretService = new KeyVaultSecretService(
+                tempProvider.GetRequiredService<IOptions<EntraConfiguration>>(),
+                 configuration["KeyVaultUrl"],
+                 tempProvider.GetRequiredService<ILogger<KeyVaultSecretService>>());
+
+            var kvSecrets = new Dictionary<string, string>
             {
-                return new KeyVaultSecretService(
-                    sp.GetRequiredService<IOptions<EntraConfiguration>>(),
-                    configuration["KeyVaultUrl"],
-                    sp.GetRequiredService<ILogger<KeyVaultSecretService>>()
-                );
-            });
-            return services;
+                ["ConnectionStrings:TodoDb"] = await secretService.GetSecretAsync("todo-connection-string")
+            };
+
+            return builder.Configuration.AddInMemoryCollection(kvSecrets);
         }
+
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services
@@ -41,26 +47,17 @@ namespace App.Api.Todo.Extensions
 
         public static IServiceCollection AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
+
+
             return services;
         }
 
-        public static async Task<IServiceCollection> AddConfigurationOptionsAsync(this IServiceCollection services, IConfiguration configuration)
+        public static Dictionary<string,string> GetKeyVaultSecrets(IServiceCollection services)
         {
-            services.AddKeyVaultServices(configuration);
+            var memoryConfig = new Dictionary<string, string>();
 
-            // Build a temp provider to resolve services early
-            using var tempProvider = services.BuildServiceProvider();
-            var secretService = tempProvider.GetRequiredService<IKeyVaultSecretService>();
-            var connectionString = await secretService.GetSecretAsync("todo-connection-string");
-
-            services.Configure<MySecrets>(opts =>
-            {
-                opts.TodoConnectionString = connectionString;
-            });
-
-            return services;
+            return memoryConfig;
         }
-
 
         public static IServiceCollection AddBusinesServices(this IServiceCollection services, IConfiguration configuration)
         {
@@ -78,12 +75,9 @@ namespace App.Api.Todo.Extensions
 
         private static IServiceCollection AddDbRepo(this IServiceCollection services, IConfiguration configuration)
         {
-            var mySecrets = new MySecrets();
-            configuration.Bind("MySecrets", mySecrets);
-
             services.AddDbContext<TodoContext>(options =>
             {
-                options.UseSqlServer(mySecrets.TodoConnectionString);
+                options.UseSqlServer(configuration.GetConnectionString("TodoDb"));
             });
             services.AddScoped<ITagRepository, TagRepository>();
 
