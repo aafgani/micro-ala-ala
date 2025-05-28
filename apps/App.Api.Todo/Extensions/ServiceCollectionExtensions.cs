@@ -2,14 +2,49 @@
 using App.Api.Todo.Features.Tags.Mapper;
 using App.Api.Todo.Features.Tags.Services;
 using App.Api.Todo.Models;
+using App.Common.Domain;
 using App.Common.Infrastructure.HealthCheck;
+using App.Common.Infrastructure.KeyVault;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 
 namespace App.Api.Todo.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static async Task<IConfigurationBuilder> AddKeyVaultSecretsAsync(this WebApplicationBuilder builder)
+        {
+            var configuration = builder.Configuration;
+            var services = builder.Services;
+            services
+                .AddOptions<EntraConfiguration>()
+                .Bind(configuration.GetSection("Entra"))
+                .ValidateDataAnnotations();
+            services
+                .AddOptions<CustomRetryPolicy>()
+                .Bind(configuration.GetSection("RetryPolicy"))
+                .ValidateDataAnnotations();
+
+            using var tempProvider = services.BuildServiceProvider();
+
+            IKeyVaultClient keyVaultClient = new KeyVaultClient(
+                tempProvider.GetRequiredService<IOptions<EntraConfiguration>>(),
+                new Uri(configuration["KeyVaultUrl"]));
+
+            var secretService = new KeyVaultSecretService(
+                keyVaultClient,
+                tempProvider.GetRequiredService<IOptions<CustomRetryPolicy>>(),
+                 tempProvider.GetRequiredService<ILogger<KeyVaultSecretService>>());
+
+            var kvSecrets = new Dictionary<string, string>
+            {
+                ["ConnectionStrings:TodoDb"] = await secretService.GetSecretAsync("todo-connection-strings")
+            };
+
+            return builder.Configuration.AddInMemoryCollection(kvSecrets);
+        }
+
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services
@@ -21,7 +56,16 @@ namespace App.Api.Todo.Extensions
 
         public static IServiceCollection AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
+
+
             return services;
+        }
+
+        public static Dictionary<string,string> GetKeyVaultSecrets(IServiceCollection services)
+        {
+            var memoryConfig = new Dictionary<string, string>();
+
+            return memoryConfig;
         }
 
         public static IServiceCollection AddBusinesServices(this IServiceCollection services, IConfiguration configuration)
