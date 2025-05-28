@@ -1,4 +1,4 @@
-﻿using App.Common.Abstractions.Cache;
+﻿using App.Common.Infrastructure.Cache;
 using App.Web.Client.Models;
 using App.Web.Client.Services.Abstractions;
 

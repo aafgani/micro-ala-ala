@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using App.Common.Abstractions.Cache;
 using App.Web.Client.Extensions;
+using App.Common.Infrastructure.Cache;
 
 namespace App.Web.Client.Controllers
 {

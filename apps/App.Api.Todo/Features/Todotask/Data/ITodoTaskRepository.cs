@@ -1,5 +1,5 @@
 ﻿using App.Api.Todo.Features.Todotask.Dtos;
-using App.Common.Abstractions.Models;
+using App.Common.Infrastructure.Model;
 using Task = App.Api.Todo.Models.Task;
 
 namespace App.Api.Todo.Features.Todotask.Data

@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\shared\App.Common.Abstractions\App.Common.Abstractions.csproj" />
     <ProjectReference Include="..\App.Common.Model\App.Common.Domain.csproj" />
   </ItemGroup>
 

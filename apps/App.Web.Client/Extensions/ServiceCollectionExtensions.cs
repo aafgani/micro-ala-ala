@@ -1,5 +1,4 @@
-﻿using App.Common.Abstractions.Cache;
-using App.Common.Infrastructure.Cache;
+﻿using App.Common.Infrastructure.Cache;
 using App.Web.Client.Services.Abstractions;
 using App.Web.Client.Services.Implementation;
 using Microsoft.AspNetCore.Authentication;

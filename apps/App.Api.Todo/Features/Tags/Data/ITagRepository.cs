@@ -1,5 +1,5 @@
 ﻿using App.Api.Todo.Models;
-using App.Common.Abstractions.Models;
+using App.Common.Infrastructure.Model;
 
 namespace App.Api.Todo.Features.Tags.Data
 {
