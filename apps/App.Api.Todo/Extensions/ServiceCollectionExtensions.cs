@@ -21,16 +21,22 @@ namespace App.Api.Todo.Extensions
                 .AddOptions<EntraConfiguration>()
                 .Bind(configuration.GetSection("Entra"))
                 .ValidateDataAnnotations();
+            services
+                .AddOptions<CustomRetryPolicy>()
+                .Bind(configuration.GetSection("RetryPolicy"))
+                .ValidateDataAnnotations();
+
             using var tempProvider = services.BuildServiceProvider();
 
             var secretService = new KeyVaultSecretService(
                 tempProvider.GetRequiredService<IOptions<EntraConfiguration>>(),
+                tempProvider.GetRequiredService<IOptions<CustomRetryPolicy>>(),
                  configuration["KeyVaultUrl"],
                  tempProvider.GetRequiredService<ILogger<KeyVaultSecretService>>());
 
             var kvSecrets = new Dictionary<string, string>
             {
-                ["ConnectionStrings:TodoDb"] = await secretService.GetSecretAsync("todo-connection-string")
+                ["ConnectionStrings:TodoDb"] = await secretService.GetSecretAsync("todo-connection-strings")
             };
 
             return builder.Configuration.AddInMemoryCollection(kvSecrets);
