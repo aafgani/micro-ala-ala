@@ -1,27 +1,27 @@
 ﻿using App.Api.Todo.Features.Todotask.Dtos;
 using Riok.Mapperly.Abstractions;
-using Task = App.Api.Todo.Models.Task;
+using TodoTask = App.Api.Todo.Models.TodoTask;
 
 namespace App.Api.Todo.Features.Todotask.Mapper
 {
     [Mapper]
     public partial class TaskMapper : ITaskMapper
     {
-        public TaskDto ToDto(Task task)
+        public TaskDto ToDto(TodoTask task)
         {
             var dto = ToDtoGenerated(task);
             dto.SubTasks = MapSubTasks(task.InverseParentTask).ToList();
             return dto;
         }
 
-        public Task ToEntity(TaskDto taskDto)
+        public TodoTask ToEntity(TaskDto taskDto)
         {
             var entity = ToEntityGenerated(taskDto);
             entity.InverseParentTask = MapSubTaskEntities(taskDto.SubTasks).ToList();
             return entity;
         }
 
-        public Task ToEntity(CreateTaskDto taskDto)
+        public TodoTask ToEntity(CreateTaskDto taskDto)
         {
             var entity = ToEntityGenerated(taskDto);
             entity.InverseParentTask = MapSubTaskEntities(taskDto.SubTasks).ToList();
@@ -32,16 +32,16 @@ namespace App.Api.Todo.Features.Todotask.Mapper
             return entity;
         }
 
-        [MapperIgnoreTarget(nameof(Task.InverseParentTask))]
-        public partial Task ToEntityGenerated(CreateTaskDto taskDto);
+        [MapperIgnoreTarget(nameof(TodoTask.InverseParentTask))]
+        public partial TodoTask ToEntityGenerated(CreateTaskDto taskDto);
 
-        [MapperIgnoreTarget(nameof(Task.InverseParentTask))]
-        public partial Task ToEntityGenerated(TaskDto taskDto);
+        [MapperIgnoreTarget(nameof(TodoTask.InverseParentTask))]
+        public partial TodoTask ToEntityGenerated(TaskDto taskDto);
 
         [MapperIgnoreTarget(nameof(TaskDto.SubTasks))]
-        public partial TaskDto ToDtoGenerated(Task task);
+        public partial TaskDto ToDtoGenerated(TodoTask task);
 
-        private IEnumerable<SubtaskDto> MapSubTasks(IEnumerable<Task> subTasks) =>
+        private IEnumerable<SubtaskDto> MapSubTasks(IEnumerable<TodoTask> subTasks) =>
             subTasks?.Select(st => new SubtaskDto
             {
                 Id = st.Id,
@@ -50,22 +50,22 @@ namespace App.Api.Todo.Features.Todotask.Mapper
                 IsCompleted = st.IsCompleted
             }) ?? Enumerable.Empty<SubtaskDto>();
 
-        private IEnumerable<Task> MapSubTaskEntities(IEnumerable<SubtaskDto> subTasks) =>
-            subTasks?.Select(st => new Task
+        private IEnumerable<TodoTask> MapSubTaskEntities(IEnumerable<SubtaskDto> subTasks) =>
+            subTasks?.Select(st => new TodoTask
             {
                 Id = st.Id,
                 Title = st.Title,
                 Notes = st.Notes,
                 IsCompleted = st.IsCompleted,
                 ToDoListId = st.ToDoListId
-            }) ?? Enumerable.Empty<Task>();
+            }) ?? Enumerable.Empty<TodoTask>();
 
-        private IEnumerable<Task> MapSubTaskEntities(IEnumerable<CreateSubtaskDto> subTasks) =>
-          subTasks?.Select(st => new Task
+        private IEnumerable<TodoTask> MapSubTaskEntities(IEnumerable<CreateSubtaskDto> subTasks) =>
+          subTasks?.Select(st => new TodoTask
           {
               Title = st.Title,
               Notes = st.Notes,
               IsCompleted = st.IsCompleted
-          }) ?? Enumerable.Empty<Task>();
+          }) ?? Enumerable.Empty<TodoTask>();
     }
 }

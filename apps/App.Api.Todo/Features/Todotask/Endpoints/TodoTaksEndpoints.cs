@@ -24,7 +24,7 @@ namespace App.Api.Todo.Features.Todotask.Endpoints
                 if (result is null)
                     return Results.NotFound();
                 else
-                    return Results.Ok(id); ;
+                    return Results.Ok(result); ;
             });
 
             group.MapDelete("/{id:int}", async (int id, ITodoTaskService todoTaskService) =>
@@ -40,6 +40,15 @@ namespace App.Api.Todo.Features.Todotask.Endpoints
             group.MapPost("/", async (ITodoTaskService todoTaskService, CreateTaskDto dto) => {
                 var result = await todoTaskService.CreateAsync(dto);
                 return Results.Ok(result);
+            });
+
+            group.MapPut("/{id:int}", async (int id, ITodoTaskService todoTaskService, UpdateTaskDto dto) =>
+            {
+                var result = await todoTaskService.UpdateAsync(dto.Id, dto);
+                if (result)
+                    return Results.NoContent();
+                else
+                    return Results.NotFound(dto.Id);
             });
 
             return group;

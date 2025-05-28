@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App.Api.Todo.Models;
 
-public partial class Task
+public partial class TodoTask
 {
     [Key]
     public int Id { get; set; }
@@ -30,11 +30,11 @@ public partial class Task
     public int? ParentTaskId { get; set; }
 
     [InverseProperty("ParentTask")]
-    public virtual ICollection<Task> InverseParentTask { get; set; } = new List<Task>();
+    public virtual ICollection<TodoTask> InverseParentTask { get; set; } = new List<TodoTask>();
 
     [ForeignKey("ParentTaskId")]
     [InverseProperty("InverseParentTask")]
-    public virtual Task ParentTask { get; set; }
+    public virtual TodoTask ParentTask { get; set; }
 
     [ForeignKey("ToDoListId")]
     [InverseProperty("Tasks")]

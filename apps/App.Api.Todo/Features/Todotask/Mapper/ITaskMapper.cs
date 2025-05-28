@@ -1,12 +1,12 @@
 ﻿using App.Api.Todo.Features.Todotask.Dtos;
-using Task = App.Api.Todo.Models.Task;
+using TodoTask = App.Api.Todo.Models.TodoTask;
 
 namespace App.Api.Todo.Features.Todotask.Mapper
 {
     public interface ITaskMapper
     {
-        TaskDto ToDto(Task task);
-        Task ToEntity(TaskDto taskDto);
-        Task ToEntity(CreateTaskDto taskDto);
+        TaskDto ToDto(TodoTask task);
+        TodoTask ToEntity(TaskDto taskDto);
+        TodoTask ToEntity(CreateTaskDto taskDto);
     }
 }

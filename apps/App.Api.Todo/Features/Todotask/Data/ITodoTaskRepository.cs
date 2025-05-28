@@ -1,11 +1,11 @@
 ﻿using App.Api.Todo.Features.Todotask.Dtos;
 using App.Common.Infrastructure.Model;
-using Task = App.Api.Todo.Models.Task;
+using TodoTask = App.Api.Todo.Models.TodoTask;
 
 namespace App.Api.Todo.Features.Todotask.Data
 {
-    public interface ITodoTaskRepository : IRepository<Task>
+    public interface ITodoTaskRepository : IRepository<TodoTask>
     {
-        Task<(IEnumerable<Models.Task>, int, int)> GetWithParamAsync(TodoTaskQueryParam param);
+        Task<(IEnumerable<Models.TodoTask>, int, int)> GetWithParamAsync(TodoTaskQueryParam param);
     }
 }

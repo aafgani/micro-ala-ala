@@ -6,6 +6,11 @@ namespace App.Api.Todo.Features.Todotask.Dtos
     {
         public ICollection<CreateSubtaskDto> SubTasks { get; set; }
     }
+
+    public class UpdateTaskDto : TaskDto
+    {
+    }
+
     public class CreateSubtaskDto : BaseTaskDto
     {
     }

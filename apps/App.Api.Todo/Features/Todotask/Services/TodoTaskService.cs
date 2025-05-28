@@ -68,9 +68,11 @@ namespace App.Api.Todo.Features.Todotask.Services
             });
         }
         
-        public Task<bool> UpdateAsync(int id, TaskDto dto)
+        public async Task<bool> UpdateAsync(int id, TaskDto dto)
         {
-            throw new NotImplementedException();
+            var task = _taskMapper.ToEntity(dto);
+            var result = await _todoTaskRepository.UpdateAsync(task);
+            return result > 0; // Return true if the update was successful, false otherwise
         }
     }
 }

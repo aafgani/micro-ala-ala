@@ -20,5 +20,5 @@ public partial class Tag
 
     [ForeignKey("TagId")]
     [InverseProperty("Tags")]
-    public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+    public virtual ICollection<TodoTask> Tasks { get; set; } = new List<TodoTask>();
 }

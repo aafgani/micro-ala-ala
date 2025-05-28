@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App.Api.Todo.Features.Todotask.Data
 {
-    public class TodoTaskRepository : Repository<Models.Task>, ITodoTaskRepository
+    public class TodoTaskRepository : Repository<Models.TodoTask>, ITodoTaskRepository
     {
         public TodoTaskRepository(TodoContext db) : base(db)
         {
         }
 
-        public async Task<(IEnumerable<Models.Task>, int, int)> GetWithParamAsync(TodoTaskQueryParam param)
+        public async Task<(IEnumerable<Models.TodoTask>, int, int)> GetWithParamAsync(TodoTaskQueryParam param)
         {
             var query = Set.AsQueryable();
 
