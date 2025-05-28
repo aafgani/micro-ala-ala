@@ -1,6 +1,5 @@
 ﻿using App.Common.Domain;
 using Azure;
-using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,21 +10,15 @@ namespace App.Common.Infrastructure.KeyVault
 {
     public class KeyVaultSecretService : IKeyVaultSecretService
     {
-        private readonly SecretClient _client;
         private readonly ILogger<KeyVaultSecretService> _logger;
         private readonly AsyncRetryPolicy<Response<KeyVaultSecret>> retryPolicy;
+        private readonly IKeyVaultClient _keyVaultClient;
 
-        public KeyVaultSecretService(IOptions<EntraConfiguration> entraOptions, IOptions<CustomRetryPolicy> retryPolicyOptions, string KeyVaultUrl, ILogger<KeyVaultSecretService> logger)
+
+        public KeyVaultSecretService(IKeyVaultClient keyVaultClient, IOptions<CustomRetryPolicy> retryPolicyOptions, ILogger<KeyVaultSecretService> logger)
         {
-            var entra = entraOptions.Value;
             var configRetry = retryPolicyOptions.Value;
-
-            var tenantId = entra.TenantId;
-            var clientId = entra.ClientId;
-            var clientSecret = entra.ClientSecret;
-
-            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-            _client = new SecretClient(new Uri(KeyVaultUrl), credential);
+            _keyVaultClient = keyVaultClient;
             _logger = logger;
 
             // Define a Polly retry policy with logging
@@ -38,14 +31,13 @@ namespace App.Common.Infrastructure.KeyVault
                {
                    _logger.LogError($"Retry {retryCount} after {delay.TotalSeconds}s due to: {exception.Exception.Message}");
                });
-
         }
 
         public async Task<string> GetSecretAsync(string name)
         {
             try
             {
-                var response = await retryPolicy.ExecuteAsync(() => _client.GetSecretAsync(name));
+                var response = await retryPolicy.ExecuteAsync(() => _keyVaultClient.GetSecretAsync(name));
                 return response.Value.Value;
             }
             catch (RequestFailedException ex)

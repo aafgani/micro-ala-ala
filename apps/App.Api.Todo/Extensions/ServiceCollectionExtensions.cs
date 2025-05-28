@@ -28,10 +28,13 @@ namespace App.Api.Todo.Extensions
 
             using var tempProvider = services.BuildServiceProvider();
 
-            var secretService = new KeyVaultSecretService(
+            IKeyVaultClient keyVaultClient = new KeyVaultClient(
                 tempProvider.GetRequiredService<IOptions<EntraConfiguration>>(),
+                new Uri(configuration["KeyVaultUrl"]));
+
+            var secretService = new KeyVaultSecretService(
+                keyVaultClient,
                 tempProvider.GetRequiredService<IOptions<CustomRetryPolicy>>(),
-                 configuration["KeyVaultUrl"],
                  tempProvider.GetRequiredService<ILogger<KeyVaultSecretService>>());
 
             var kvSecrets = new Dictionary<string, string>
