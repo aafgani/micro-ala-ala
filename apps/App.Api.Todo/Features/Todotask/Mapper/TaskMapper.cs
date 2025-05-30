@@ -27,7 +27,7 @@ namespace App.Api.Todo.Features.Todotask.Mapper
             entity.InverseParentTask = MapSubTaskEntities(taskDto.SubTasks).ToList();
             foreach (var item in entity.InverseParentTask)
             {
-                item.ToDoListId = entity.ToDoListId; 
+                item.ToDoListId = entity.ToDoListId;
             }
             return entity;
         }

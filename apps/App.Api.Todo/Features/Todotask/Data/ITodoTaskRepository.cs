@@ -7,5 +7,6 @@ namespace App.Api.Todo.Features.Todotask.Data
     public interface ITodoTaskRepository : IRepository<TodoTask>
     {
         Task<(IEnumerable<Models.TodoTask>, int, int)> GetWithParamAsync(TodoTaskQueryParam param);
+        Task<TodoTask?> GetByIdWithRelationsAsync(int id);
     }
 }

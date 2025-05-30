@@ -1,4 +1,5 @@
 ﻿using App.Api.Todo.Models;
+using Shouldly;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
 
 namespace Test.App.Api.Todo.IntegrationTest.FeatureTests.TodotaskTests.RepositoryTests
@@ -33,13 +34,17 @@ namespace Test.App.Api.Todo.IntegrationTest.FeatureTests.TodotaskTests.Repositor
             todoTask.Title = "Updated Title";
             todoTask.IsCompleted = true;
             todoTask.InverseParentTask.First().Title = "Updated Sub Task 1"; // Update a sub-task as well
+            todoTask.InverseParentTask.Remove(todoTask.InverseParentTask.LastOrDefault()); // Remove the second sub-task
             await TodoTaskRepository.UpdateAsync(todoTask);
 
             // Assert: fetch from context and verify update
             var updatedTask = await TodoContext.Tasks.FindAsync(todoTask.Id);
-            Assert.NotNull(updatedTask);
-            Assert.Equal("Updated Title", updatedTask.Title);
-            Assert.True(updatedTask.IsCompleted);
+            todoTask.InverseParentTask.ShouldNotBeNull();
+            updatedTask.Title.ShouldBe("Updated Title"); // Title should be updated
+            updatedTask.Notes.ShouldBe("Initial Description"); // Notes should remain unchanged
+            updatedTask.IsCompleted.ShouldBeTrue(); // IsCompleted should be true
+            updatedTask.InverseParentTask.Count.ShouldBe(1); // One sub-task should remain
+            updatedTask.InverseParentTask.First().Title.ShouldBe("Updated Sub Task 1"); // The remaining sub-task should be updated
         }
     }
 }

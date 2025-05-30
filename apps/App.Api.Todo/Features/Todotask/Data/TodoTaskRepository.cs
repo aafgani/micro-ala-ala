@@ -11,6 +11,14 @@ namespace App.Api.Todo.Features.Todotask.Data
         {
         }
 
+        public Task<TodoTask?> GetByIdWithRelationsAsync(int id)
+        {
+            return Set
+                .Include(t => t.InverseParentTask)
+                .Include(t => t.Tags)
+                .FirstOrDefaultAsync(t => t.Id == id);
+        }
+
         public async Task<(IEnumerable<Models.TodoTask>, int, int)> GetWithParamAsync(TodoTaskQueryParam param)
         {
             var query = Set.AsQueryable();
@@ -38,9 +46,9 @@ namespace App.Api.Todo.Features.Todotask.Data
                     }
                 };
             }
-            
+
             var totalItems = await query.CountAsync();
-            var totalPages = (int)Math.Ceiling(totalItems / (double) param.PageSize);
+            var totalPages = (int)Math.Ceiling(totalItems / (double)param.PageSize);
 
             var todoTasks = await query
                 .Skip((param.Page - 1) * param.PageSize)

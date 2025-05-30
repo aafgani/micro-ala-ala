@@ -8,7 +8,8 @@ namespace App.Api.Todo.Features.Todotask.Dtos
         public string Notes { get; set; }
         public bool IsCompleted { get; set; }
         public int ToDoListId { get; set; }
-       
+        public DateTime DueDate { get; set; }
+
     }
     public class TaskDto : BaseTaskDto
     {
