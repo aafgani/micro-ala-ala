@@ -24,6 +24,17 @@
         "${workspaceFolder}/apps/App.Web.Client/App.Web.Client.csproj"
       ],
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build sln",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["build", "${workspaceFolder}/mini-micoservices.sln"],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }
