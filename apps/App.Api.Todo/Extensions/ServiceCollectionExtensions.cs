@@ -1,4 +1,5 @@
-﻿using App.Api.Todo.Features.Tags.Data;
+﻿using App.Api.Todo.Configuration;
+using App.Api.Todo.Features.Tags.Data;
 using App.Api.Todo.Features.Tags.Mapper;
 using App.Api.Todo.Features.Tags.Services;
 using App.Api.Todo.Features.Todotask.Data;
@@ -16,6 +17,20 @@ namespace App.Api.Todo.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static IServiceCollection AddApplicationInformation(this IServiceCollection services)
+        {
+            services.AddSingleton(implementationFactory =>
+           {
+               var hostEnvironment = implementationFactory.GetRequiredService<IHostEnvironment>();
+
+               var applicationInformation = new ApplicationInformation(hostEnvironment);
+
+               return applicationInformation;
+           });
+
+            return services;
+        }
+
         public static async Task<IConfigurationBuilder> AddKeyVaultSecretsAsync(this WebApplicationBuilder builder)
         {
             var configuration = builder.Configuration;
@@ -64,7 +79,7 @@ namespace App.Api.Todo.Extensions
             return services;
         }
 
-        public static Dictionary<string,string> GetKeyVaultSecrets(IServiceCollection services)
+        public static Dictionary<string, string> GetKeyVaultSecrets(IServiceCollection services)
         {
             var memoryConfig = new Dictionary<string, string>();
 
