@@ -12,11 +12,12 @@ builder.Services.AddSwaggerGen();
 var keyVaultUrl = builder.Configuration["KeyVaultUrl"];
 if (!string.IsNullOrEmpty(keyVaultUrl))
 {
-   await  builder.AddKeyVaultSecretsAsync();
+    await builder.AddKeyVaultSecretsAsync();
 }
 
 // Setup all the services.
 builder.Services
+    .AddApplicationInformation()
     .AddConfigurationOptions(builder.Configuration)
     .AddBusinesServices(builder.Configuration)
     .AddInfrastructureServices(builder.Configuration)

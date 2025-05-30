@@ -1,4 +1,5 @@
 ﻿using App.Api.Todo.Features.Tags.Data;
+using App.Api.Todo.Features.Todotask.Data;
 using App.Api.Todo.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +13,7 @@ namespace Test.App.Api.Todo.IntegrationTest.FeatureTests
         protected readonly HttpClient Client;
         protected readonly TodoContext TodoContext;
 
-        protected BaseIntegrationTest(IntegrationTestWebAppFactory factory)
+        public BaseIntegrationTest(IntegrationTestWebAppFactory factory)
         {
             _scope = factory.Services.CreateScope();
             TodoContext = _scope.ServiceProvider.GetRequiredService<TodoContext>();
@@ -27,6 +28,14 @@ namespace Test.App.Api.Todo.IntegrationTest.FeatureTests
             {
                 return _scope.ServiceProvider.GetRequiredService<ITagRepository>();
             } 
+        }
+
+        protected ITodoTaskRepository TodoTaskRepository
+        {
+            get
+            {
+                return _scope.ServiceProvider.GetRequiredService<ITodoTaskRepository>();
+            }
         }
     }
 }

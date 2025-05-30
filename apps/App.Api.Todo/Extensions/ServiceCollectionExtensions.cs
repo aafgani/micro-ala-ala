@@ -1,6 +1,10 @@
-﻿using App.Api.Todo.Features.Tags.Data;
+﻿using App.Api.Todo.Configuration;
+using App.Api.Todo.Features.Tags.Data;
 using App.Api.Todo.Features.Tags.Mapper;
 using App.Api.Todo.Features.Tags.Services;
+using App.Api.Todo.Features.Todotask.Data;
+using App.Api.Todo.Features.Todotask.Mapper;
+using App.Api.Todo.Features.Todotask.Services;
 using App.Api.Todo.Models;
 using App.Common.Domain;
 using App.Common.Infrastructure.HealthCheck;
@@ -13,6 +17,20 @@ namespace App.Api.Todo.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static IServiceCollection AddApplicationInformation(this IServiceCollection services)
+        {
+            services.AddSingleton(implementationFactory =>
+           {
+               var hostEnvironment = implementationFactory.GetRequiredService<IHostEnvironment>();
+
+               var applicationInformation = new ApplicationInformation(hostEnvironment);
+
+               return applicationInformation;
+           });
+
+            return services;
+        }
+
         public static async Task<IConfigurationBuilder> AddKeyVaultSecretsAsync(this WebApplicationBuilder builder)
         {
             var configuration = builder.Configuration;
@@ -61,7 +79,7 @@ namespace App.Api.Todo.Extensions
             return services;
         }
 
-        public static Dictionary<string,string> GetKeyVaultSecrets(IServiceCollection services)
+        public static Dictionary<string, string> GetKeyVaultSecrets(IServiceCollection services)
         {
             var memoryConfig = new Dictionary<string, string>();
 
@@ -71,6 +89,7 @@ namespace App.Api.Todo.Extensions
         public static IServiceCollection AddBusinesServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<ITagService, TagService>();
+            services.AddScoped<ITodoTaskService, TodoTaskService>();
 
             return services;
         }
@@ -78,6 +97,7 @@ namespace App.Api.Todo.Extensions
         private static IServiceCollection AddMapper(this IServiceCollection services)
         {
             services.AddSingleton<ITagMapper, TagMapper>();
+            services.AddSingleton<ITaskMapper, TaskMapper>();
 
             return services;
         }
@@ -89,6 +109,7 @@ namespace App.Api.Todo.Extensions
                 options.UseSqlServer(configuration.GetConnectionString("TodoDb"));
             });
             services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<ITodoTaskRepository, TodoTaskRepository>();
 
             return services;
         }

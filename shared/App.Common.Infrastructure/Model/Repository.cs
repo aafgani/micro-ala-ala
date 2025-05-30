@@ -1,5 +1,4 @@
-﻿using App.Common.Abstractions.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace App.Common.Infrastructure.Model
 {

@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "web-app",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-web-client",
+      "program": "${workspaceFolder}/apps/App.Web.Client/bin/Debug/net8.0/App.Web.Client.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/apps/App.Web.Client",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    },
+    {
+      "name": "todo-api",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-todo-api",
+      "program": "${workspaceFolder}/apps/App.Api.Todo/bin/Debug/net8.0/App.Api.Todo.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/apps/App.Api.Todo",
+      "stopAtEntry": false,
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Start API and Web Client",
+      "configurations": ["todo-api", "web-app"]
+    }
+  ]
+}

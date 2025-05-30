@@ -1,4 +1,4 @@
-﻿namespace App.Common.Abstractions.Models
+﻿namespace App.Common.Infrastructure.Model
 {
     public interface IRepository<T>
     {

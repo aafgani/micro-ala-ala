@@ -1,5 +1,4 @@
-﻿using App.Api.Todo.Features.Tags.Dtos;
-using App.Api.Todo.Features.Tags.Services;
+﻿using App.Api.Todo.Features.Tags.Services;
 
 namespace App.Api.Todo.Features.Tags.Endpoints
 {

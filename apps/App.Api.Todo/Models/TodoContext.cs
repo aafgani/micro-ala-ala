@@ -15,7 +15,7 @@ public partial class TodoContext : DbContext
 
     public virtual DbSet<Tag> Tags { get; set; }
 
-    public virtual DbSet<Task> Tasks { get; set; }
+    public virtual DbSet<TodoTask> Tasks { get; set; }
 
     public virtual DbSet<ToDoList> ToDoLists { get; set; }
 
@@ -26,7 +26,7 @@ public partial class TodoContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Tags__3214EC07F23FE902");
         });
 
-        modelBuilder.Entity<Task>(entity =>
+        modelBuilder.Entity<TodoTask>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Tasks__3214EC07118C827B");
 
@@ -42,7 +42,7 @@ public partial class TodoContext : DbContext
                     r => r.HasOne<Tag>().WithMany()
                         .HasForeignKey("TagId")
                         .HasConstraintName("FK__TaskTags__TagId__30F848ED"),
-                    l => l.HasOne<Task>().WithMany()
+                    l => l.HasOne<TodoTask>().WithMany()
                         .HasForeignKey("TaskId")
                         .HasConstraintName("FK__TaskTags__TaskId__300424B4"),
                     j =>

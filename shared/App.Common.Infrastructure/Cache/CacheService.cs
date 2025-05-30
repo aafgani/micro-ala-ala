@@ -1,5 +1,4 @@
-﻿using App.Common.Abstractions.Cache;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 namespace App.Common.Infrastructure.Cache
