@@ -1,0 +1,11 @@
+@model string
+
+@{
+    var loaderId = string.IsNullOrEmpty(Model) ? "contentLoader" : Model;
+    var message = ViewData["LoaderMessage"] as string ?? "Loading content...";
+}
+
+<div class="text-center p-5" id="@loaderId">
+    <i class="fas fa-spinner fa-spin fa-3x"></i>
+    <p class="mt-2">@message</p>
+</div>

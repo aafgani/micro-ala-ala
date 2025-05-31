@@ -1,0 +1,332 @@
+@{
+    var metrics = ViewBag.Metrics;
+    
+    // Extract metrics for easier access
+    int totalTasks = metrics["TotalTasks"];
+    int completedTasks = metrics["CompletedTasks"];
+    int pendingTasks = metrics["PendingTasks"];
+    double completionRate = metrics["CompletionRate"];
+    
+    int overdueTasks = metrics["OverdueTasks"];
+    int dueTodayTasks = metrics["DueTodayTasks"];
+    int dueThisWeekTasks = metrics["DueThisWeekTasks"];
+    
+    var tasksByAssignee = metrics["TasksByAssignee"] as List<dynamic>;
+    var tasksByTag = metrics["TasksByTag"] as List<dynamic>;
+    var recentTasks = metrics["RecentTasks"] as List<TodoDto>;
+}
+
+<!-- Task Summary Cards -->
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>@totalTasks</h3>
+                <p>Total Tasks</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-tasks"></i>
+            </div>
+            <a href="#" class="small-box-footer" id="viewAllTasks">
+                View All <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>@completedTasks</h3>
+                <p>Completed Tasks</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <a href="#" class="small-box-footer" id="viewCompletedTasks">
+                View All <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>@pendingTasks</h3>
+                <p>Pending Tasks</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <a href="#" class="small-box-footer" id="viewPendingTasks">
+                View All <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>@overdueTasks</h3>
+                <p>Overdue Tasks</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <a href="#" class="small-box-footer" id="viewOverdueTasks">
+                View All <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Task Progress and Due Date Cards -->
+<div class="row">
+    <!-- Task Progress -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-chart-pie mr-1"></i>
+                    Task Completion Progress
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="progress-group">
+                    <span class="progress-text">Overall Completion Rate</span>
+                    <span class="float-right"><b>@completedTasks</b>/@totalTasks (@completionRate%)</span>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-success" style="width: @completionRate%"></div>
+                    </div>
+                </div>
+                
+                @if (tasksByAssignee != null && tasksByAssignee.Count > 0)
+                {
+                    <h5 class="mt-4">Completion by Assignee</h5>
+                    @foreach (var assignee in tasksByAssignee)
+                    {
+                        var assigneeCompletionRate = assignee.Count > 0 ? Math.Round((double)assignee.Completed / assignee.Count * 100, 1) : 0;
+                        <div class="progress-group">
+                            <span class="progress-text">@assignee.Assignee</span>
+                            <span class="float-right"><b>@assignee.Completed</b>/@assignee.Count (@assigneeCompletionRate%)</span>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-primary" style="width: @assigneeCompletionRate%"></div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    
+    <!-- Due Date Summary -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-calendar-day mr-1"></i>
+                    Due Date Summary
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <div class="info-box bg-danger">
+                            <span class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Overdue</span>
+                                <span class="info-box-number">@overdueTasks</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 text-center">
+                        <div class="info-box bg-warning">
+                            <span class="info-box-icon"><i class="fas fa-calendar-day"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Due Today</span>
+                                <span class="info-box-number">@dueTodayTasks</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 text-center">
+                        <div class="info-box bg-info">
+                            <span class="info-box-icon"><i class="fas fa-calendar-week"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">This Week</span>
+                                <span class="info-box-number">@dueThisWeekTasks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <canvas id="dueDateChart" style="height: 200px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tags and Recent Activity -->
+<div class="row">
+    <!-- Tags -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tags mr-1"></i>
+                    Tasks by Tag
+                </h3>
+            </div>
+            <div class="card-body">
+                @if (tasksByTag != null && tasksByTag.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Tag</th>
+                                    <th>Total</th>
+                                    <th>Completed</th>
+                                    <th>Progress</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var tag in tasksByTag)
+                                {
+                                    var tagCompletionRate = tag.Count > 0 ? Math.Round((double)tag.Completed / tag.Count * 100, 1) : 0;
+                                    <tr>
+                                        <td>
+                                            <span class="badge badge-info">@tag.Tag</span>
+                                        </td>
+                                        <td>@tag.Count</td>
+                                        <td>@tag.Completed</td>
+                                        <td>
+                                            <div class="progress progress-xs">
+                                                <div class="progress-bar bg-success" style="width: @tagCompletionRate%"></div>
+                                            </div>
+                                            <small>@tagCompletionRate%</small>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No tags found.</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-history mr-1"></i>
+                    Recent Activity
+                </h3>
+            </div>
+            <div class="card-body">
+                @if (recentTasks != null && recentTasks.Count > 0)
+                {
+                    <div class="timeline">
+                        @foreach (var task in recentTasks)
+                        {
+                            <div class="time-label">
+                                <span class="bg-secondary">
+                                    @task.UpdatedAt.ToString("MMM dd, yyyy")
+                                </span>
+                            </div>
+                            <div>
+                                <i class="fas fa-tasks bg-info"></i>
+                                <div class="timeline-item">
+                                    <span class="time"><i class="fas fa-clock"></i> @task.UpdatedAt.ToString("HH:mm")</span>
+                                    <h3 class="timeline-header">
+                                        <a href="#" class="task-title" data-task-id="@task.Id">@task.Title</a>
+                                    </h3>
+                                    <div class="timeline-body">
+                                        @(task.Description?.Length > 100 ? task.Description.Substring(0, 100) + "..." : task.Description)
+                                    </div>
+                                    <div class="timeline-footer">
+                                        <span class="badge @(task.IsCompleted ? "badge-success" : "badge-warning")">
+                                            @(task.IsCompleted ? "Completed" : "Pending")
+                                        </span>
+                                        <span class="badge badge-info">Due: @task.DueDate.ToShortDateString()</span>
+                                        <span class="badge badge-secondary">@task.AssignedTo</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div>
+                            <i class="fas fa-clock bg-gray"></i>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No recent activity.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Due Date Chart
+        var ctx = document.getElementById('dueDateChart').getContext('2d');
+        var dueDateChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Overdue', 'Due Today', 'Due This Week', 'Future'],
+                datasets: [{
+                    data: [
+                        @overdueTasks, 
+                        @dueTodayTasks, 
+                        @dueThisWeekTasks, 
+                        @(pendingTasks - overdueTasks - dueTodayTasks - dueThisWeekTasks)
+                    ],
+                    backgroundColor: [
+                        '#dc3545', // Danger - Overdue
+                        '#ffc107', // Warning - Today
+                        '#17a2b8', // Info - This Week
+                        '#6c757d'  // Secondary - Future
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        });
+        
+        // View task list links
+        $("#viewAllTasks").click(function(e) {
+            e.preventDefault();
+            loadTodoList();
+        });
+        
+        $("#viewCompletedTasks").click(function(e) {
+            e.preventDefault();
+            loadTodoList("completed");
+        });
+        
+        $("#viewPendingTasks").click(function(e) {
+            e.preventDefault();
+            loadTodoList("pending");
+        });
+        
+        $("#viewOverdueTasks").click(function(e) {
+            e.preventDefault();
+            loadTodoList("overdue");
+        });
+    });
+</script>
