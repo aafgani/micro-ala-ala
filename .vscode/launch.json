@@ -23,6 +23,36 @@
       "cwd": "${workspaceFolder}/apps/App.Api.Todo",
       "stopAtEntry": false,
       "console": "integratedTerminal"
+    },
+    {
+      "name": "web-app (Docker)",
+      "type": "docker",
+      "request": "launch",
+      "preLaunchTask": "build-web-client",
+      "platform": "netCore",
+      "dockerRun": {
+        "containerName": "web-app-debug",
+        "image": "web-app-debug-image",
+        "dockerfile": "${workspaceFolder}/apps/App.Web.Client/Dockerfile",
+        "context": "${workspaceFolder}/apps/App.Web.Client",
+        "env": {
+          "ASPNETCORE_ENVIRONMENT": "Development"
+        },
+        "ports": [
+          {
+            "containerPort": 5000,
+            "hostPort": 5000
+          }
+        ],
+        "volumeMappings": [
+          {
+            "containerPath": "/app",
+            "hostPath": "${workspaceFolder}/apps/App.Web.Client"
+          }
+        ]
+      },
+      "cwd": "/app",
+      "stopAtEntry": false
     }
   ],
   "compounds": [
