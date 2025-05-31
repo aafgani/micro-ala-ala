@@ -1,3 +1,4 @@
+// Runs the built .dll when debugging
 {
   "version": "0.2.0",
   "configurations": [
@@ -6,7 +7,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build-web-client",
-      "program": "${workspaceFolder}/apps/App.Web.Client/bin/Debug/net8.0/App.Web.Client.dll",
+      "program": "${workspaceFolder}/apps/App.Web.Client/bin/Debug/net8.0/App.Web.Client.dll", // the entry point for the debugger
       "args": [],
       "cwd": "${workspaceFolder}/apps/App.Web.Client",
       "stopAtEntry": false,
