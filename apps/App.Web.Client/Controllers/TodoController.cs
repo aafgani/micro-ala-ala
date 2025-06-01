@@ -1,12 +1,13 @@
 ﻿using App.Common.Domain.Dtos;
+using App.Common.Infrastructure.HttpHandler;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
 
 namespace App.Web.Client.Controllers
 {
     public class TodoController : Controller
     {
+        private readonly IApiClient _apiClient;
+
         // Dummy data for tasks
         private static List<TodoDto> _tasks = new List<TodoDto>
         {
@@ -77,6 +78,11 @@ namespace App.Web.Client.Controllers
                 UpdatedAt: DateTime.Now.AddDays(-5)
             )
         };
+
+        public TodoController([FromKeyedServices("TodoApi")] IApiClient apiClient)
+        {
+            _apiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));
+        }
 
         // GET: Todo/Dashboard
         public IActionResult Dashboard()

@@ -1,4 +1,5 @@
 ﻿using App.Common.Infrastructure.Cache;
+using App.Common.Infrastructure.HttpHandler;
 using App.Web.Client.Services.Abstractions;
 using App.Web.Client.Services.Implementation;
 using Microsoft.AspNetCore.Authentication;
@@ -47,6 +48,19 @@ namespace App.Web.Client.Extensions
         {
             services.AddSingleton<ICacheService, CacheService>();
             services.AddScoped<IUserSessionService, UserSessionService>();
+
+            services.AddHttpClient("TodoApi", c =>
+            {
+                c.BaseAddress = new Uri(config["TodoApi:BaseUrl"]);
+            });
+
+            services.AddKeyedScoped<IApiClient, TodoApiClient>("TodoApi", (sp, key) =>
+            {
+                var client = sp.GetRequiredService<IHttpClientFactory>().CreateClient("TodoApi");
+                var logger = sp.GetRequiredService<ILogger<TodoApiClient>>();
+                return new TodoApiClient(client, logger);
+            });
+
             return services;
         }
 
