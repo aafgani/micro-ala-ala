@@ -20,13 +20,16 @@ public class ApiClient : IApiClient
 
         // Define a Polly retry policy with logging
         retryPolicy = Policy<HttpResponseMessage>
-           .Handle<RequestFailedException>(ex => IsTransientError(ex))
+           .Handle<HttpRequestException>()
+           .Or<TaskCanceledException>()
+           .OrResult(r => (int)r.StatusCode >= 500 && (int)r.StatusCode < 600)
            .WaitAndRetryAsync(
            retryCount: 3,
            sleepDurationProvider: attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)),
            onRetry: (exception, delay, retryCount, context) =>
            {
-               _logger.LogError($"Retry {retryCount} after {delay.TotalSeconds}s due to: {exception.Exception.Message}");
+               _logger.LogError("Retry {RetryCount} after {DelaySeconds}s due to: {ErrorMessage}",
+               retryCount, delay.TotalSeconds, exception.Exception?.Message ?? "HTTP error");
            });
     }
 
@@ -36,13 +39,18 @@ public class ApiClient : IApiClient
 
         _logger.LogInformation("Sending HTTP {Method} to {Uri}", request.Method, request.RequestUri);
 
-        var response = await retryPolicy.ExecuteAsync(() => _httpClient.SendAsync(request, cancellationToken));
+        var response = await retryPolicy.ExecuteAsync(() =>
+        {
+            var freshRequest = requestBuilder.Build();
+            return _httpClient.SendAsync(freshRequest, cancellationToken);
+        });
         _logger.LogInformation("Received {StatusCode} from {Uri}", response.StatusCode, response.RequestMessage?.RequestUri);
 
         response.EnsureSuccessStatusCode();
 
-        var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        return await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken)
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        return await JsonSerializer.DeserializeAsync<T>(stream,
+            options: null, cancellationToken: cancellationToken)
                ?? throw new InvalidOperationException("Deserialization returned null");
 
     }
@@ -53,13 +61,14 @@ public class ApiClient : IApiClient
 
         _logger.LogInformation("Sending HTTP {Method} to {Uri}", request.Method, request.RequestUri);
 
-        var response = await retryPolicy.ExecuteAsync(() => _httpClient.SendAsync(request, cancellationToken));
+        var response = await retryPolicy.ExecuteAsync(() =>
+{
+    var freshRequest = requestBuilder.Build();
+    return _httpClient.SendAsync(freshRequest, cancellationToken);
+});
         response.EnsureSuccessStatusCode();
 
         _logger.LogInformation("Received {StatusCode} from {Uri}", response.StatusCode, response.RequestMessage?.RequestUri);
     }
-    private bool IsTransientError(RequestFailedException ex)
-    {
-        return (ex.Status >= 500 && ex.Status < 600);
-    }
+
 }

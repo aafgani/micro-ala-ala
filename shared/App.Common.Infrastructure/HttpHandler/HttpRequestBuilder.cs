@@ -5,17 +5,20 @@ namespace App.Common.Infrastructure.HttpHandler;
 
 public class HttpRequestBuilder
 {
-    private readonly HttpRequestMessage _request = new();
+    private HttpMethod? _method;
+    private Uri? _requestUri;
+    private readonly Dictionary<string, string> _headers = new();
+    private HttpContent? _content;
 
     public HttpRequestBuilder WithMethod(HttpMethod method)
     {
-        _request.Method = method;
+        _method = method;
         return this;
     }
 
     public HttpRequestBuilder WithUri(Uri uri)
     {
-        _request.RequestUri = uri;
+        _requestUri = uri;
         return this;
     }
 
@@ -23,23 +26,36 @@ public class HttpRequestBuilder
     {
         foreach (var header in headers)
         {
-            _request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            _headers[header.Key] = header.Value;
         }
         return this;
     }
 
     public HttpRequestBuilder WithHeader(string name, string value)
     {
-        _request.Headers.TryAddWithoutValidation(name, value);
+        _headers[name] = value;
         return this;
     }
 
     public HttpRequestBuilder WithJsonBody(object body)
     {
         var json = JsonSerializer.Serialize(body);
-        _request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+        _content = new StringContent(json, Encoding.UTF8, "application/json");
         return this;
     }
 
-    public HttpRequestMessage Build() => _request;
+    public HttpRequestMessage Build()
+    {
+        var request = new HttpRequestMessage();
+        if (_method != null) request.Method = _method;
+        if (_requestUri != null) request.RequestUri = _requestUri;
+        if (_content != null) request.Content = _content;
+
+        foreach (var header in _headers)
+        {
+            request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+        }
+
+        return request;
+    }
 }

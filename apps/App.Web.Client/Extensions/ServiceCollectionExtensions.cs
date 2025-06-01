@@ -51,7 +51,14 @@ namespace App.Web.Client.Extensions
 
             services.AddHttpClient("TodoApi", c =>
             {
-                c.BaseAddress = new Uri(config["TodoApi:BaseUrl"]);
+                var baseUrl = config["TodoApi:BaseUrl"];
+                if (string.IsNullOrEmpty(baseUrl))
+                    throw new InvalidOperationException("TodoApi:BaseUrl configuration is required");
+
+                if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var uri))
+                    throw new InvalidOperationException($"TodoApi:BaseUrl '{baseUrl}' is not a valid URI");
+
+                c.BaseAddress = uri;
             });
 
             services.AddKeyedScoped<IApiClient, TodoApiClient>("TodoApi", (sp, key) =>
