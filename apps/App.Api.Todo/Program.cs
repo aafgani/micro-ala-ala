@@ -1,6 +1,8 @@
+using System.Text.Json;
 using App.Api.Todo.Extensions;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Http.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,11 @@ builder.Services
     .AddBusinesServices(builder.Configuration)
     .AddInfrastructureServices(builder.Configuration)
     .ConfigureHealthChecks(builder.Configuration);
+
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+});
 
 var app = builder.Build();
 
