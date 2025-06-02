@@ -1,4 +1,4 @@
-﻿using App.Api.Todo.Features.Todotask.Dtos;
+﻿using App.Common.Domain.Dtos.TodoApi;
 using App.Common.Infrastructure.Model;
 using TodoTask = App.Api.Todo.Models.TodoTask;
 

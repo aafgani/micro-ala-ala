@@ -1,6 +1,6 @@
 ﻿using App.Api.Todo.Features.Tags.Data;
-using App.Api.Todo.Features.Tags.Dtos;
 using App.Api.Todo.Features.Tags.Mapper;
+using App.Common.Domain.Dtos.TodoApi;
 
 namespace App.Api.Todo.Features.Tags.Services
 {
@@ -46,8 +46,10 @@ namespace App.Api.Todo.Features.Tags.Services
         public async Task<bool> UpdateAsync(int id, TagDto dto)
         {
             var tag = await _tagRepository.GetByIdAsync(id);
+            if (tag is null)
+                return false;
             tag.Name = dto.Name;
-            await _tagRepository.UpdateAsync(tag);  
+            await _tagRepository.UpdateAsync(tag);
             return true;
         }
     }

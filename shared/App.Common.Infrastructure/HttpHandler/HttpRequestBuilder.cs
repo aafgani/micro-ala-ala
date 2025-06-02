@@ -44,6 +44,22 @@ public class HttpRequestBuilder
         return this;
     }
 
+    public HttpRequestBuilder WithQueryParamsFromObject(object obj)
+    {
+        _requestUri = new Uri(_requestUri?.ToString() + ToQueryString(obj), UriKind.Relative);
+        return this;
+    }
+
+    private string ToQueryString(object obj)
+    {
+        var properties = from p in obj.GetType().GetProperties()
+                         let value = p.GetValue(obj)
+                         where value != null
+                         select $"{Uri.EscapeDataString(p.Name)}={Uri.EscapeDataString(value.ToString())}";
+        return "?" + string.Join("&", properties);
+    }
+
+
     public HttpRequestMessage Build()
     {
         var request = new HttpRequestMessage();

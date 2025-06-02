@@ -1,5 +1,5 @@
-﻿using App.Api.Todo.Features.Todotask.Dtos;
-using App.Api.Todo.Models;
+﻿using App.Api.Todo.Models;
+using App.Common.Domain.Dtos.TodoApi;
 using App.Common.Infrastructure.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,7 +30,7 @@ namespace App.Api.Todo.Features.Todotask.Data
 
             if (!string.IsNullOrEmpty(param.SortBy))
             {
-                query = param.SortDirection?.ToLower() switch
+                query = param.SortDirection?.ToString().ToLower() switch
                 {
                     "desc" => param.SortBy.ToLower() switch
                     {

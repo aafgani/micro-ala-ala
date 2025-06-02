@@ -1,4 +1,4 @@
-﻿using App.Api.Todo.Features.Todotask.Dtos;
+﻿using App.Common.Domain.Dtos.TodoApi;
 
 namespace App.Api.Todo.Features.Todolist.Dtos
 {

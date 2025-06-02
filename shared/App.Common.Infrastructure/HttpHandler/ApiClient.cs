@@ -49,9 +49,11 @@ public class ApiClient : IApiClient
         response.EnsureSuccessStatusCode();
 
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        return await JsonSerializer.DeserializeAsync<T>(stream,
+        var result = await JsonSerializer.DeserializeAsync<T>(stream,
             options: null, cancellationToken: cancellationToken)
                ?? throw new InvalidOperationException("Deserialization returned null");
+
+        return result;
 
     }
 

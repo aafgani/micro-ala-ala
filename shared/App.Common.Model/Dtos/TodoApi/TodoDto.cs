@@ -1,6 +1,6 @@
-﻿namespace App.Common.Domain.Dtos
+﻿namespace App.Common.Domain.Dtos.TodoApi
 {
-    public record TodoDto (
+    public record TodoDto(
         int Id,
         string Title,
         string Description,

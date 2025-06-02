@@ -1,4 +1,5 @@
-﻿using App.Common.Domain.Dtos;
+﻿using App.Common.Domain.Dtos.TodoApi;
+using App.Common.Domain.Pagination;
 using App.Common.Infrastructure.HttpHandler;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +7,7 @@ namespace App.Web.Client.Controllers
 {
     public class TodoController : Controller
     {
-        private readonly IApiClient _apiClient;
+        private readonly IApiClient _todoApiClient;
 
         // Dummy data for tasks
         private static List<TodoDto> _tasks = new List<TodoDto>
@@ -81,7 +82,7 @@ namespace App.Web.Client.Controllers
 
         public TodoController([FromKeyedServices("TodoApi")] IApiClient apiClient)
         {
-            _apiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));
+            _todoApiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));
         }
 
         // GET: Todo/Dashboard
@@ -91,11 +92,39 @@ namespace App.Web.Client.Controllers
         }
 
         // GET: Todo/DashboardPartial
-        public IActionResult DashboardPartial()
+        public async Task<IActionResult> DashboardPartial()
         {
+            var request = new HttpRequestBuilder()
+                .WithMethod(HttpMethod.Get)
+                .WithUri(new Uri("/todotasks", UriKind.Relative))
+                .WithQueryParamsFromObject(new TodoTaskQueryParam
+                {
+                    Page = 1,
+                    PageSize = 10,
+                    SortBy = "duedate",
+                    SortDirection = SortDirection.Asc
+                });
+
+            var response = await _todoApiClient.SendAsync<PagedResult<TaskDto>>(request);
+
+            if (response?.Data == null)
+            {
+                ViewBag.Metrics = new Dictionary<string, object>();
+                return PartialView("_DashboardPartial");
+            }
+
+            if (response?.Data == null)
+            {
+                // Handle API failure - use static data as fallback or return error
+                ViewBag.Metrics = new Dictionary<string, object>();
+                return PartialView("_DashboardPartial");
+            }
+
+            var tasks = response.Data;
+
             // Calculate metrics for the dashboard
             var metrics = new Dictionary<string, object>
-            {
+            {                
                 // Task completion metrics
                 { "TotalTasks", _tasks.Count },
                 { "CompletedTasks", _tasks.Count(t => t.IsCompleted) },
