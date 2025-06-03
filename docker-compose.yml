@@ -38,4 +38,4 @@ services:
       - todo-api
 
 volumes:
-  sql-data:
+  pg-data:
