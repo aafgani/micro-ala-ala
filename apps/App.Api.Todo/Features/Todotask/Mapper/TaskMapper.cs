@@ -47,7 +47,9 @@ namespace App.Api.Todo.Features.Todotask.Mapper
                 Id = st.Id,
                 Title = st.Title,
                 Notes = st.Notes,
-                IsCompleted = st.IsCompleted
+                IsCompleted = st.IsCompleted,
+                ToDoListId = st.ToDoListId,
+                DueDate = st.DueDate,
             }) ?? Enumerable.Empty<SubtaskDto>();
 
         private IEnumerable<TodoTask> MapSubTaskEntities(IEnumerable<SubtaskDto> subTasks) =>

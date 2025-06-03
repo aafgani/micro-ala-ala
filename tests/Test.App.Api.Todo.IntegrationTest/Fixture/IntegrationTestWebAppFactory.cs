@@ -1,5 +1,4 @@
-﻿using App.Api.Todo.Features.Tags.Data;
-using App.Api.Todo.Models;
+﻿using App.Api.Todo.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -32,10 +31,10 @@ namespace Test.App.Api.Todo.IntegrationTest.Fixture
 
                 services.AddDbContext<TodoContext>(options =>
                 {
-                    options.UseSqlServer(_dbFixture.ConnectionString);
+                    options.UseNpgsql(_dbFixture.ConnectionString);
                 });
 
-               
+
             });
         }
 

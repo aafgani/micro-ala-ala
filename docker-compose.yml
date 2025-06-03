@@ -1,18 +1,18 @@
-version: '3.8'
+version: "3.8"
 
 services:
   todo-db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: postgres:16
     container_name: todo-db
     environment:
-      SA_PASSWORD: "YourStrong!Pass123"
-      ACCEPT_EULA: "Y"
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: YourStrong!Pass123
     ports:
-      - "1433:1433" # Map port 1433 for SQL Server
+      - "5432:5432"
     volumes:
-        - sql-data:/var/opt/mssql         # persist database
-        - ./infrastructure/sql-scripts:/init             # bind mount init scripts
-    entrypoint: /bin/bash -c "/opt/mssql/bin/sqlservr & /init/init.sh && wait"
+      - pg-data:/var/lib/postgresql/data
+      - ./infrastructure/pg-init-scripts:/docker-entrypoint-initdb.d # auto-executes scripts on init
     restart: unless-stopped
   todo-api:
     build:
