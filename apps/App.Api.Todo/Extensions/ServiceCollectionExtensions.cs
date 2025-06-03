@@ -106,7 +106,7 @@ namespace App.Api.Todo.Extensions
         {
             services.AddDbContext<TodoContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("TodoDb"));
+                options.UseNpgsql(configuration.GetConnectionString("TodoDb"));
             });
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<ITodoTaskRepository, TodoTaskRepository>();

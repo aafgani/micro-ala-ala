@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Npgsql;
 using System.Data.Common;
 
 namespace Test.App.Api.Todo.IntegrationTest.Helper
@@ -9,7 +9,7 @@ namespace Test.App.Api.Todo.IntegrationTest.Helper
         {
             get
             {
-                return new SqlConnection(connectionString);
+                return new NpgsqlConnection(connectionString);
             }
         }
     }

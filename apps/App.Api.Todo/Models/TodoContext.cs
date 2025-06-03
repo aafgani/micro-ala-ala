@@ -30,7 +30,7 @@ public partial class TodoContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Tasks__3214EC07118C827B");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(NOW())");
 
             entity.HasOne(d => d.ParentTask).WithMany(p => p.InverseParentTask).HasConstraintName("FK__Tasks__ParentTas__2A4B4B5E");
 
@@ -56,7 +56,7 @@ public partial class TodoContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__ToDoList__3214EC07E98E7FED");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(NOW())");
         });
 
         OnModelCreatingPartial(modelBuilder);
