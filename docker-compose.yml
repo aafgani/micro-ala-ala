@@ -17,7 +17,7 @@ services:
   todo-api:
     build:
       context: .
-      dockerfile: docker/Dockerfile.App.Api.Todo
+      dockerfile: apps/App.Api.Todo/Dockerfile.App.Api.Todo
     ports:
       - "8081:8080" # Map port 8080 in the container to port 8080 on the host
     environment:
@@ -28,7 +28,7 @@ services:
   app-web-client:
     build:
       context: .
-      dockerfile: docker/Dockerfile.App.Web.Client
+      dockerfile: apps/App.Web.Client/Dockerfile.App.Web.Client
     ports:
       - "8080:8080" # Map port 8080 in the container to port 8080 on the host
     environment:
