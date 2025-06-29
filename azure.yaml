@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: mini-micoservices'
+infra:
+  path: infra
+  module: main
+metadata:
+  template: azd-init@1.16.1
+services:
+  app-api-todo:
+    project: src/apps/App.Api.Todo
+    host: containerapp
+    language: dotnet
+  app-web-client:
+    project: src/apps/App.Web.Client
+    host: containerapp
+    language: dotnet
+environment:
+  location: southeastasia

@@ -1,5 +1,0 @@
-build image :
-docker build -f docker/App.Web.Client.Dockerfile -t app-web-client .
-
-run container :
-docker run --rm -p 8080:8080 app-web-client -e "AzureEntra:ClientSecret=XXX"
