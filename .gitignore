@@ -412,3 +412,4 @@ tools/coverage/todo-api/*
 .sonarqube/*
 .azure
 /infra/tools/coverage/todo-api/report
+/infra/tools/coverage/todo-api/coverage
