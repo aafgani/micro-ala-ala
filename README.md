@@ -132,6 +132,12 @@ docker compose up -d --build
 - **Test Coverage**: Focuses on testing core business logic, service methods, and API controllers.
 - **Location**: Unit tests are located in the `/tests/unit` folder for each API module (e.g., `todo-api`, `money-manager-api`).
 
+**Run test script**
+
+```sh
+.\infra\tools\coverage\run-test-todo-api.ps1
+```
+
 #### 🧑‍💻 **Integration Testing**
 
 - **Framework**: Integration tests are written in **xUnit** as well.
