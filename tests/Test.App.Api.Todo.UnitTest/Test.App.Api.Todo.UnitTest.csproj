@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\apps\App.Api.Todo\App.Api.Todo.csproj" />
+    <ProjectReference Include="..\..\src\apps\App.Api.Todo\App.Api.Todo.csproj" />
   </ItemGroup>
 
   <ItemGroup>

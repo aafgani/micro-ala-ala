@@ -411,3 +411,4 @@ apps/App.Web.Client/published/*
 tools/coverage/todo-api/*
 .sonarqube/*
 .azure
+/infra/tools/coverage/todo-api/report

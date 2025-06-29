@@ -1,12 +1,12 @@
 # Resolve the directory where the script lives
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-# Resolve the root directory (assuming it's two levels up from tools/Code Coverage)
-$RootDir = Resolve-Path (Join-Path $ScriptDir "../..")
+# Resolve the root directory (assuming it's three levels up from tools/Code Coverage)
+$RootDir = Resolve-Path (Join-Path $ScriptDir "../../..")
 
 $InfraUnitTestProj = Join-Path $RootDir "tests/Test.App.Common.Infrastructure.UnitTest/Test.App.Common.Infrastructure.UnitTest.csproj"
 $UnitTestProj = Join-Path $RootDir "tests/Test.App.Api.Todo.UnitTest/Test.App.Api.Todo.UnitTest.csproj"
 $IntegrationTestProj = Join-Path $RootDir "tests/Test.App.Api.Todo.IntegrationTest/Test.App.Api.Todo.IntegrationTest.csproj"
-$CoverageDir = "$RootDir/tools/coverage/todo-api"
+$CoverageDir = "$RootDir/infra/tools/coverage/todo-api"
 $MergedCoverageFile = "$CoverageDir/integration/coverage.opencover.xml"
 $HtmlReportDir = "$CoverageDir/report"
 # ========================================
