@@ -2,10 +2,10 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 WORKDIR /src
 
 # Copy the rest of the source code
-COPY "../apps/App.Api.Todo/" "apps/App.Api.Todo/"
-COPY "../shared/App.Common.Abstractions/" "shared/App.Common.Abstractions/"
-COPY "../shared/App.Common.Infrastructure/" "shared/App.Common.Infrastructure/"
-COPY "../shared/App.Common.Model/" "shared/App.Common.Model/"
+COPY "./src/apps/App.Api.Todo/" "apps/App.Api.Todo/"
+COPY "./src/shared/App.Common.Abstractions/" "shared/App.Common.Abstractions/"
+COPY "./src/shared/App.Common.Infrastructure/" "shared/App.Common.Infrastructure/"
+COPY "./src/shared/App.Common.Model/" "shared/App.Common.Model/"
 
 # Publish the application
 RUN dotnet publish "apps/App.Api.Todo/App.Api.Todo.csproj" -c Release -o /app/published /p:UseAppHost=false

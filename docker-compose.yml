@@ -12,12 +12,12 @@ services:
       - "5432:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
-      - ./infrastructure/pg-init-scripts:/docker-entrypoint-initdb.d # auto-executes scripts on init
+      - ./infra/tools/pg-init-scripts:/docker-entrypoint-initdb.d # auto-executes scripts on init
     restart: unless-stopped
   todo-api:
     build:
       context: .
-      dockerfile: apps/App.Api.Todo/Dockerfile.App.Api.Todo
+      dockerfile: src/apps/App.Api.Todo/dockerfile
     ports:
       - "8081:8080" # Map port 8080 in the container to port 8080 on the host
     environment:
@@ -28,7 +28,7 @@ services:
   app-web-client:
     build:
       context: .
-      dockerfile: apps/App.Web.Client/Dockerfile.App.Web.Client
+      dockerfile: src/apps/App.Web.Client/dockerfile
     ports:
       - "8080:8080" # Map port 8080 in the container to port 8080 on the host
     environment:

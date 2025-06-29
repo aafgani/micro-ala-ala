@@ -102,7 +102,7 @@ You can run the app either by building and running the image individually, or by
 **Build the Docker image:**
 
 ```sh
-docker build -f ./apps/App.Api.Todo/Dockerfile .App.Api.Todo -t todo-api:dev --no-cache
+docker build -f ./src/apps/App.Api.Todo/dockerfile -t todo-api:dev . --no-cache
 ```
 
 **Run the container**
