@@ -34,6 +34,8 @@ namespace App.Api.Todo.Features.Tags.Services
         public async Task<IEnumerable<TagDto>> GetAllAsync()
         {
             var tags = await _tagRepository.GetAllAsync();
+
+
             return tags.Select(_tagMapper.ToDto);
         }
 
@@ -47,7 +49,7 @@ namespace App.Api.Todo.Features.Tags.Services
         {
             var tag = await _tagRepository.GetByIdAsync(id);
             tag.Name = dto.Name;
-            await _tagRepository.UpdateAsync(tag);  
+            await _tagRepository.UpdateAsync(tag);
             return true;
         }
     }
