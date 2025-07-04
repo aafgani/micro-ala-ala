@@ -1,6 +1,7 @@
 using App.Web.Client.Utilities.Middleware;
 using Microsoft.Identity.Web.UI;
 using App.Web.Client.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration
@@ -15,6 +16,13 @@ builder.Services
 builder.Services
     .AddCustomAuthentication(config)
     .AddInternalServices(config);
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear(); // ACA sets proper headers
+    options.KnownProxies.Clear();
+});
 
 var app = builder.Build();
 

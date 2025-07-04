@@ -1,6 +1,7 @@
 using App.Api.Todo.Extensions;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,13 @@ builder.Services
     .AddBusinesServices(builder.Configuration)
     .AddInfrastructureServices(builder.Configuration)
     .ConfigureHealthChecks(builder.Configuration);
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear(); // ACA sets proper headers
+    options.KnownProxies.Clear();
+});
 
 var app = builder.Build();
 
