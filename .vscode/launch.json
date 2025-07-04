@@ -7,9 +7,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build-web-client",
-      "program": "${workspaceFolder}/apps/App.Web.Client/bin/Debug/net8.0/App.Web.Client.dll", // the entry point for the debugger
+      "program": "${workspaceFolder}/src/apps/App.Web.Client/bin/Debug/net8.0/App.Web.Client.dll", // the entry point for the debugger
       "args": [],
-      "cwd": "${workspaceFolder}/apps/App.Web.Client",
+      "cwd": "${workspaceFolder}/src/apps/App.Web.Client",
       "stopAtEntry": false,
       "console": "internalConsole"
     },
@@ -18,9 +18,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build-todo-api",
-      "program": "${workspaceFolder}/apps/App.Api.Todo/bin/Debug/net8.0/App.Api.Todo.dll",
+      "program": "${workspaceFolder}/src/apps/App.Api.Todo/bin/Debug/net8.0/App.Api.Todo.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/apps/App.Api.Todo",
+      "cwd": "${workspaceFolder}/src/apps/App.Api.Todo",
       "stopAtEntry": false,
       "console": "integratedTerminal"
     }

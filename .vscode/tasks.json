@@ -8,7 +8,7 @@
       "command": "dotnet",
       "args": [
         "build",
-        "${workspaceFolder}/apps/App.Api.Todo/App.Api.Todo.csproj"
+        "${workspaceFolder}/src/apps/App.Api.Todo/App.Api.Todo.csproj"
       ],
       "problemMatcher": "$msCompile",
       "group": {
@@ -22,7 +22,7 @@
       "command": "dotnet",
       "args": [
         "build",
-        "${workspaceFolder}/apps/App.Web.Client/App.Web.Client.csproj"
+        "${workspaceFolder}/src/apps/App.Web.Client/App.Web.Client.csproj"
       ],
       "problemMatcher": "$msCompile"
     },

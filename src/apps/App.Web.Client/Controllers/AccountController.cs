@@ -38,5 +38,9 @@ namespace App.Web.Client.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Unauthorized() => View();
     }
 }

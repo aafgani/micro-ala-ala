@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 
 namespace App.Web.Client.Utilities.CustomViewComponent
 {
@@ -6,7 +7,10 @@ namespace App.Web.Client.Utilities.CustomViewComponent
     {
         public IViewComponentResult Invoke()
         {
-            var version = Environment.GetEnvironmentVariable("APP_VERSION") ?? "1.0.0"; // Default to 1.0.0 if not set
+            var version = Assembly.GetExecutingAssembly()
+                                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                         ?? Assembly.GetExecutingAssembly().GetName().Version?.ToString()
+                         ?? "1.0.0";
             return View("Default", version);
         }
     }
