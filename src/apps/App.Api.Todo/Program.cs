@@ -1,7 +1,21 @@
+using System.Diagnostics;
+using System.Reflection;
 using App.Api.Todo.Extensions;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
+
+var asm = Assembly.GetExecutingAssembly();
+var location = asm.Location;
+var version = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown";
+var fileVersion = FileVersionInfo.GetVersionInfo(asm.Location).FileVersion;
+var asmVersion = asm.GetName().Version;
+
+Console.WriteLine($"🧩 Loaded from: {location}");
+Console.WriteLine($"📦 AssemblyInformationalVersion: {version}");
+Console.WriteLine($"📦 FileVersion: {fileVersion}");
+Console.WriteLine($"📦 AssemblyVersion: {asmVersion}");
+
 
 var builder = WebApplication.CreateBuilder(args);
 

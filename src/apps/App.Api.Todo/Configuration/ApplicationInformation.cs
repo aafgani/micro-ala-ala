@@ -25,11 +25,13 @@ public class ApplicationInformation
         content.Append(Banner);
 
         var assembly = Assembly.GetExecutingAssembly();
-
+        var version = Assembly.GetExecutingAssembly()
+                      .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown";
+        var name = assembly.GetName().Name;
         var date = string.IsNullOrWhiteSpace(assembly.Location)
             ? "-- unknown --"
             : File.GetLastWriteTime(assembly.Location).ToString("u");
-        content.AppendLine($"Name: {assembly.GetName().Name} | Version: {assembly.GetName().Version} | Date: {date}");
+        content.AppendLine($"Name: {name} | Version: {version} | Date: {date}");
 
         if (environment.IsDevelopment())
         {

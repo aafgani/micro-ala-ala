@@ -1,11 +1,53 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
+<PropertyGroup>
+  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+</PropertyGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>a41d6f7e-8a08-4acb-a25a-b0466e0317b3</UserSecretsId>
   </PropertyGroup>
+
+<!-- Disable SDK-generated version attributes -->
+<PropertyGroup>
+  <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+  <GenerateFileVersionAttribute>false</GenerateFileVersionAttribute>
+  <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+</PropertyGroup>
+
+<!-- Read version from VERSION file -->
+<Target Name="ReadVersionFromFile" BeforeTargets="GenerateVersionAssembly">
+  <ReadLinesFromFile File="$(MSBuildProjectDirectory)/../../../VERSION">
+    <Output TaskParameter="Lines" PropertyName="RawVersion" />
+  </ReadLinesFromFile>
+  <PropertyGroup>
+    <TrimmedVersion>$([System.String]::Copy('$(RawVersion)').Trim())</TrimmedVersion>
+  </PropertyGroup>
+</Target>
+
+<!-- Generate ThisAssembly.Version.cs -->
+<Target Name="GenerateVersionAssembly" BeforeTargets="Compile">
+  <PropertyGroup>
+    <GeneratedCodeDir>$(IntermediateOutputPath)Generated</GeneratedCodeDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(GeneratedCodeDir)/ThisAssembly.Version.cs" AutoGen="True" />
+  </ItemGroup>
+  <MakeDir Directories="$(GeneratedCodeDir)" />
+  <WriteLinesToFile
+    File="$(GeneratedCodeDir)/ThisAssembly.Version.cs"
+    Lines="namespace System.Reflection { internal static class ThisAssembly { public const string Version = &quot;$(TrimmedVersion)&quot;; } }"
+    Overwrite="true" />
+</Target>
+
+<!-- Log final version -->
+<Target Name="LogVersion" AfterTargets="GenerateVersionAssembly">
+  <Message Text="🔧 Using version: $(TrimmedVersion)" Importance="High" />
+  <Message Text="🔍 Attempting to read version from: $(MSBuildProjectDirectory)/../../../VERSION" Importance="High" />
+</Target>
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />

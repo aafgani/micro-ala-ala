@@ -4,12 +4,9 @@
   "tasks": [
     {
       "label": "build-todo-api",
-      "type": "process",
-      "command": "dotnet",
-      "args": [
-        "build",
-        "${workspaceFolder}/src/apps/App.Api.Todo/App.Api.Todo.csproj"
-      ],
+      "type": "shell",
+      "command": "dotnet clean src/apps/App.Api.Todo/App.Api.Todo.csproj && dotnet build src/apps/App.Api.Todo/App.Api.Todo.csproj",
+      "workingDirectory": "${workspaceFolder}",
       "problemMatcher": "$msCompile",
       "group": {
         "kind": "build",
