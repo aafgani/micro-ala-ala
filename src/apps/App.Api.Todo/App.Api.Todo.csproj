@@ -1,26 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-<PropertyGroup>
-  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-</PropertyGroup>
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>a41d6f7e-8a08-4acb-a25a-b0466e0317b3</UserSecretsId>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
-<!-- Disable SDK-generated version attributes -->
-<PropertyGroup>
-  <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-  <GenerateFileVersionAttribute>false</GenerateFileVersionAttribute>
-  <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
-</PropertyGroup>
 
 <!-- Read version from VERSION file -->
 <Target Name="ReadVersionFromFile" BeforeTargets="GenerateVersionAssembly">
-  <ReadLinesFromFile File="$(MSBuildProjectDirectory)/../../../VERSION">
+  <ReadLinesFromFile File="$(MSBuildProjectDirectory)/../../../.version">
     <Output TaskParameter="Lines" PropertyName="RawVersion" />
   </ReadLinesFromFile>
   <PropertyGroup>
@@ -29,24 +19,37 @@
 </Target>
 
 <!-- Generate ThisAssembly.Version.cs -->
-<Target Name="GenerateVersionAssembly" BeforeTargets="Compile">
+<Target Name="GenerateVersionAssembly" BeforeTargets="CoreCompile">
   <PropertyGroup>
     <GeneratedCodeDir>$(IntermediateOutputPath)Generated</GeneratedCodeDir>
+    <VersionConstantLine>    public const string Version = "$(TrimmedVersion)"%3B</VersionConstantLine>
   </PropertyGroup>
+
+  <MakeDir Directories="$(GeneratedCodeDir)" />
+
+  <!-- Write each line individually as item group -->
+  <ItemGroup>
+    <VersionFileLines Include="namespace System.Reflection {" />
+    <VersionFileLines Include="  internal static class ThisAssembly {" />
+    <VersionFileLines Include="$(VersionConstantLine)" />
+    <VersionFileLines Include="  }" />
+    <VersionFileLines Include="}" />
+  </ItemGroup>
+
+  <WriteLinesToFile
+    File="$(GeneratedCodeDir)/ThisAssembly.Version.cs"
+    Lines="@(VersionFileLines)"
+    Overwrite="true" />
+
   <ItemGroup>
     <Compile Include="$(GeneratedCodeDir)/ThisAssembly.Version.cs" AutoGen="True" />
   </ItemGroup>
-  <MakeDir Directories="$(GeneratedCodeDir)" />
-  <WriteLinesToFile
-    File="$(GeneratedCodeDir)/ThisAssembly.Version.cs"
-    Lines="namespace System.Reflection { internal static class ThisAssembly { public const string Version = &quot;$(TrimmedVersion)&quot;; } }"
-    Overwrite="true" />
 </Target>
 
 <!-- Log final version -->
 <Target Name="LogVersion" AfterTargets="GenerateVersionAssembly">
   <Message Text="🔧 Using version: $(TrimmedVersion)" Importance="High" />
-  <Message Text="🔍 Attempting to read version from: $(MSBuildProjectDirectory)/../../../VERSION" Importance="High" />
+  <Message Text="🔍 Attempting to read version from: $(MSBuildProjectDirectory)/../../../.version" Importance="High" />
 </Target>
 
   <ItemGroup>
