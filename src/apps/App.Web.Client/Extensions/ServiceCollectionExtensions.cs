@@ -15,10 +15,7 @@ namespace App.Web.Client.Extensions
     {
         public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration config)
         {
-            var useEasyAuth = config.GetValue<bool>("UseEasyAuth");
-            if (!useEasyAuth)
-            {
-                services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/Account/Login"; // Optional override
@@ -34,15 +31,14 @@ namespace App.Web.Client.Extensions
                     options.Events.OnRemoteFailure += OnRemoteFailureFunc;
                 });
 
-                services.ConfigureApplicationCookie(options =>
-                {
-                    options.Cookie.HttpOnly = true;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS only
-                    options.Cookie.SameSite = SameSiteMode.Strict; // or Lax
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-                    options.SlidingExpiration = true;
-                });
-            }
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS only
+                options.Cookie.SameSite = SameSiteMode.Strict; // or Lax
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.SlidingExpiration = true;
+            });
 
             return services;
         }
