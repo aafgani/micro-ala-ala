@@ -4,6 +4,18 @@
   <RepositoryRoot>$(SolutionDir)</RepositoryRoot>
   <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$(MSBuildThisFileDirectory)</RepositoryRoot>
   </PropertyGroup>
+
+  <Target Name="EnsureVersionFileExists" BeforeTargets="ReadVersionFromFile">
+  <PropertyGroup>
+    <DefaultVersion>0.1.0</DefaultVersion>
+  </PropertyGroup>
+  <WriteLinesToFile
+    Condition="!Exists('$(RepositoryRoot).version')"
+    File="$(RepositoryRoot).version"
+    Lines="$(DefaultVersion)"
+    Overwrite="false" />
+</Target>
+
 <!-- Read version from VERSION file -->
 <Target Name="ReadVersionFromFile" BeforeTargets="GenerateVersionAssembly">
   <ReadLinesFromFile File="$(RepositoryRoot).version">
