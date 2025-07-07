@@ -1,0 +1,50 @@
+<Project>
+  <PropertyGroup>
+  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  <RepositoryRoot>$(SolutionDir)</RepositoryRoot>
+  <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$(MSBuildThisFileDirectory)</RepositoryRoot>
+  </PropertyGroup>
+<!-- Read version from VERSION file -->
+<Target Name="ReadVersionFromFile" BeforeTargets="GenerateVersionAssembly">
+  <ReadLinesFromFile File="$(RepositoryRoot).version">
+    <Output TaskParameter="Lines" PropertyName="RawVersion" />
+  </ReadLinesFromFile>
+  <PropertyGroup>
+    <TrimmedVersion>$([System.String]::Copy('$(RawVersion)').Trim())</TrimmedVersion>
+  </PropertyGroup>
+</Target>
+
+<!-- Generate ThisAssembly.Version.cs -->
+<Target Name="GenerateVersionAssembly" BeforeTargets="CoreCompile">
+  <PropertyGroup>
+    <GeneratedCodeDir>$(IntermediateOutputPath)Generated</GeneratedCodeDir>
+    <VersionConstantLine>    public const string Version = "$(TrimmedVersion)"%3B</VersionConstantLine>
+  </PropertyGroup>
+
+  <MakeDir Directories="$(GeneratedCodeDir)" />
+
+  <!-- Write each line individually as item group -->
+  <ItemGroup>
+    <VersionFileLines Include="namespace System.Reflection {" />
+    <VersionFileLines Include="  internal static class ThisAssembly {" />
+    <VersionFileLines Include="$(VersionConstantLine)" />
+    <VersionFileLines Include="  }" />
+    <VersionFileLines Include="}" />
+  </ItemGroup>
+
+  <WriteLinesToFile
+    File="$(GeneratedCodeDir)/ThisAssembly.Version.cs"
+    Lines="@(VersionFileLines)"
+    Overwrite="true" />
+
+  <ItemGroup>
+    <Compile Include="$(GeneratedCodeDir)/ThisAssembly.Version.cs" AutoGen="True" />
+  </ItemGroup>
+</Target>
+
+<!-- Log final version -->
+<Target Name="LogVersion" AfterTargets="GenerateVersionAssembly">
+  <Message Text="🔧 Using version: $(TrimmedVersion)" Importance="High" />
+  <Message Text="🔍 Attempting to read version from: $(RepositoryRoot).version" Importance="High" />
+</Target>
+</Project>
