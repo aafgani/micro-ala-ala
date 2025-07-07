@@ -413,3 +413,4 @@ tools/coverage/todo-api/*
 .azure
 /infra/tools/coverage/todo-api/report
 /infra/tools/coverage/todo-api/coverage
+.version
