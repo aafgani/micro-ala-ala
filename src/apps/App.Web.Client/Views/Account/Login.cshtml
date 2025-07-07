@@ -1,5 +1,10 @@
-﻿@{
+﻿@using System.Reflection
+@{
     Layout = null;
+    var version = Assembly.GetExecutingAssembly()
+        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+        ?? Assembly.GetExecutingAssembly().GetName().Version?.ToString()
+        ?? "1.0.0";
 }
 
 <!DOCTYPE html>
@@ -67,6 +72,9 @@
                     </a>
                 </div>
             </div>
+        </div>
+        <div class="text-center text-muted mt-2" style="font-size:small;">
+            v @version
         </div>
     </div>
 
