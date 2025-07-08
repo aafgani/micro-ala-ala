@@ -34,6 +34,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - AzureEntra:ClientSecret=${AZURE_ENTRA_CLIENT_SECRET}
+      - TodoApiBaseUrl=http://todo-api:8080 # Use service name for internal communication
     depends_on:
       - todo-api
 

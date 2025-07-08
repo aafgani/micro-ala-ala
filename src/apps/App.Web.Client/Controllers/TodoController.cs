@@ -13,11 +13,12 @@ namespace App.Web.Client.Controllers
     public class TodoController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private const string ApiBaseUrl = "http://localhost:8081";
+        private readonly string _apiBaseUrl;
 
-        public TodoController(IHttpClientFactory httpClientFactory)
+        public TodoController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
+            _apiBaseUrl = configuration["TodoApiBaseUrl"] ?? "http://localhost:8081";
         }
 
         // GET: Todo/Dashboard
@@ -30,7 +31,7 @@ namespace App.Web.Client.Controllers
         public async Task<IActionResult> DashboardPartial()
         {
             var client = _httpClientFactory.CreateClient();
-            var tasks = await client.GetFromJsonAsync<List<TodoDto>>(ApiBaseUrl + "/todotasks");
+            var tasks = await client.GetFromJsonAsync<List<TodoDto>>(_apiBaseUrl + "/todotasks");
 
             // Calculate metrics for the dashboard
             var metrics = new Dictionary<string, object>
@@ -70,7 +71,7 @@ namespace App.Web.Client.Controllers
             try
             {
                 var client = _httpClientFactory.CreateClient();
-                var pagedResult = await client.GetFromJsonAsync<PagedResult<TaskDto>>(ApiBaseUrl + "/todotasks?Page=1&PageSize=10");
+                var pagedResult = await client.GetFromJsonAsync<PagedResult<TaskDto>>(_apiBaseUrl + "/todotasks?Page=1&PageSize=10");
 
                 IEnumerable<TaskDto> filteredTasks = pagedResult?.Data ?? Enumerable.Empty<TaskDto>();
 
@@ -114,7 +115,7 @@ namespace App.Web.Client.Controllers
         public async Task<IActionResult> GetDetail(int taskId)
         {
             var client = _httpClientFactory.CreateClient();
-            var task = await client.GetFromJsonAsync<TodoDto>(ApiBaseUrl + $"/todotasks/{taskId}");
+            var task = await client.GetFromJsonAsync<TodoDto>(_apiBaseUrl + $"/todotasks/{taskId}");
 
             if (task == null)
             {
@@ -151,7 +152,7 @@ namespace App.Web.Client.Controllers
                 UpdatedAt: DateTime.Now
             );
 
-            var response = await client.PostAsJsonAsync(ApiBaseUrl + "/todotasks", newTask);
+            var response = await client.PostAsJsonAsync(_apiBaseUrl + "/todotasks", newTask);
             if (response.IsSuccessStatusCode)
             {
                 var createdTask = await response.Content.ReadFromJsonAsync<TodoDto>();
@@ -177,7 +178,7 @@ namespace App.Web.Client.Controllers
                 UpdatedAt: DateTime.Now
             );
 
-            var response = await client.PutAsJsonAsync(ApiBaseUrl + $"/todotasks/{id}", updatedTask);
+            var response = await client.PutAsJsonAsync(_apiBaseUrl + $"/todotasks/{id}", updatedTask);
             if (response.IsSuccessStatusCode)
             {
                 var task = await response.Content.ReadFromJsonAsync<TodoDto>();
@@ -191,7 +192,7 @@ namespace App.Web.Client.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.DeleteAsync(ApiBaseUrl + $"/todotasks/{id}");
+            var response = await client.DeleteAsync(_apiBaseUrl + $"/todotasks/{id}");
             if (response.IsSuccessStatusCode)
             {
                 return Json(new { success = true });
@@ -204,7 +205,7 @@ namespace App.Web.Client.Controllers
         public async Task<IActionResult> ToggleComplete(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var task = await client.GetFromJsonAsync<TodoDto>(ApiBaseUrl + $"/todotasks/{id}");
+            var task = await client.GetFromJsonAsync<TodoDto>(_apiBaseUrl + $"/todotasks/{id}");
             if (task == null)
             {
                 return Json(new { success = false, message = "Task not found" });
@@ -222,7 +223,7 @@ namespace App.Web.Client.Controllers
                 UpdatedAt: DateTime.Now
             );
 
-            var response = await client.PutAsJsonAsync(ApiBaseUrl + $"/todotasks/{id}", updatedTask);
+            var response = await client.PutAsJsonAsync(_apiBaseUrl + $"/todotasks/{id}", updatedTask);
             if (response.IsSuccessStatusCode)
             {
                 var resultTask = await response.Content.ReadFromJsonAsync<TodoDto>();
