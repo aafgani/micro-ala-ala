@@ -1,5 +1,5 @@
-﻿using App.Api.Todo.Features.Todotask.Dtos;
-using App.Api.Todo.Models;
+﻿using App.Api.Todo.Models;
+using App.Common.Domain.Dtos;
 using App.Common.Infrastructure.Model;
 using Microsoft.EntityFrameworkCore;
 

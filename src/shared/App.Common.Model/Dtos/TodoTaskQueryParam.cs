@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 
-namespace App.Api.Todo.Features.Todotask.Dtos
+namespace App.Common.Domain.Dtos
 {
     public class TodoTaskQueryParam
     {
-        public string? SortBy { get; set; } 
+        public string? SortBy { get; set; }
         public string? SortDirection { get; set; }
 
         public bool? IsCompleted { get; set; }

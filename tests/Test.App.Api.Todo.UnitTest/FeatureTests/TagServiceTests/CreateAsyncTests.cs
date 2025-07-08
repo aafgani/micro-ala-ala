@@ -1,6 +1,6 @@
-﻿using App.Api.Todo.Features.Tags.Dtos;
-using App.Api.Todo.Features.Tags.Services;
+﻿using App.Api.Todo.Features.Tags.Services;
 using App.Api.Todo.Models;
+using App.Common.Domain.Dtos;
 using Moq;
 using Shouldly;
 
@@ -16,7 +16,7 @@ namespace Test.App.Api.Todo.UnitTest.FeatureTests.TagServiceTests
             var newTag = new Tag { Id = 1, Name = "TestTag" };
             var (mockTagRepository, mockMapper) = GetDependencies();
             mockTagRepository.Setup(repo => repo.CreateAsync(It.IsAny<Tag>()))
-                .ReturnsAsync(newTag); 
+                .ReturnsAsync(newTag);
             mockMapper.Setup(mapper => mapper.ToEntity(It.IsAny<TagDto>())).Returns(newTag);
             mockMapper.Setup(mapper => mapper.ToDto(It.IsAny<Tag>())).Returns(createDto);
             var tagService = new TagService(mockTagRepository.Object, mockMapper.Object);

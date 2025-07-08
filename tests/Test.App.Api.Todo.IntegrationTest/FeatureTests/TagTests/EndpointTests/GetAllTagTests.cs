@@ -1,5 +1,5 @@
-﻿using App.Api.Todo.Features.Tags.Dtos;
-using App.Api.Todo.Models;
+﻿using App.Api.Todo.Models;
+using App.Common.Domain.Dtos;
 using Azure;
 using Shouldly;
 using System.Net.Http.Json;
@@ -18,7 +18,7 @@ namespace Test.App.Api.Todo.IntegrationTest.FeatureTests.TagTests.EndpointTests
         public async Task GivenValidRequest_GetAllTags_ShouldReturnOk()
         {
             // Arrange
-            var tags = new List<Tag>() 
+            var tags = new List<Tag>()
             {
                 new Tag { Name = "Tag 1" },
                 new Tag { Name = "Tag 2" },

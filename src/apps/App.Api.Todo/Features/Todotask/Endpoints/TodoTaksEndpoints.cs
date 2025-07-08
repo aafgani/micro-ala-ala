@@ -1,5 +1,6 @@
 ﻿using App.Api.Todo.Features.Todotask.Dtos;
 using App.Api.Todo.Features.Todotask.Services;
+using App.Common.Domain.Dtos;
 
 namespace App.Api.Todo.Features.Todotask.Endpoints
 {
@@ -34,10 +35,11 @@ namespace App.Api.Todo.Features.Todotask.Endpoints
                 if (result)
                     return Results.NoContent();
                 else
-                    return Results.NotFound(id); 
+                    return Results.NotFound(id);
             });
 
-            group.MapPost("/", async (ITodoTaskService todoTaskService, CreateTaskDto dto) => {
+            group.MapPost("/", async (ITodoTaskService todoTaskService, CreateTaskDto dto) =>
+            {
                 var result = await todoTaskService.CreateAsync(dto);
                 return Results.Ok(result);
             });

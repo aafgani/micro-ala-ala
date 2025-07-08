@@ -1,5 +1,6 @@
+@using App.Api.Todo.Features.Todotask.Dtos
 @{
-    var tasks = ViewBag.Tasks as List<TodoDto>;
+    var tasks = ViewBag.Tasks as List<TaskDto>;
     var filter = ViewBag.Filter as string;
 }
 
@@ -36,8 +37,8 @@
                     {
                         foreach (var task in tasks)
                         {
-                            var isOverdue = !task.IsCompleted && task.DueDate.Date < DateTime.Now.Date;
-                            var isDueToday = !task.IsCompleted && task.DueDate.Date == DateTime.Now.Date;
+                            var isOverdue = !task.IsCompleted && task.DueDate < DateTime.Now.Date;
+                            var isDueToday = !task.IsCompleted && task.DueDate == DateTime.Now.Date;
                             
                             <tr data-task-id="@task.Id">
                                 <td class="text-center">
@@ -60,21 +61,21 @@
                                     }
                                     else if (isDueToday)
                                     {
-                                        <span class="badge badge-warning ml-1">Due Today</span>
-                                    }
+#line default
+                                }
                                 </td>
                                 <td>
                                     <span class="text-muted">
-                                        <i class="fas fa-user mr-1"></i> @task.AssignedTo
+                                        <i class="fas fa-user mr-1"></i> "Name"
                                     </span>
                                 </td>
                                 <td>
                                     <span class="text-muted">
-                                        <i class="fas fa-calendar-day mr-1"></i> @task.DueDate.ToShortDateString()
+                                        <i class="fas fa-calendar-day mr-1"></i> @task.DueDate?.ToShortDateString()
                                     </span>
                                 </td>
                                 <td>
-                                    @if (task.Tags != null && task.Tags.Length > 0)
+                                    @if (task.Tags != null && task.Tags.Count > 0)
                                     {
                                         foreach (var tag in task.Tags)
                                         {

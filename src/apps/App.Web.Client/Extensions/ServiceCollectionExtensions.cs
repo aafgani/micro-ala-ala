@@ -51,6 +51,7 @@ namespace App.Web.Client.Extensions
         {
             services.AddSingleton<ICacheService, CacheService>();
             services.AddScoped<IUserSessionService, UserSessionService>();
+            services.AddHttpClient();
             return services;
         }
 

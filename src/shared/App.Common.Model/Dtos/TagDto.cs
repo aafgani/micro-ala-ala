@@ -1,4 +1,4 @@
-﻿namespace App.Api.Todo.Features.Tags.Dtos
+﻿namespace App.Common.Domain.Dtos
 {
     public class TagDto
     {

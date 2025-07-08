@@ -1,5 +1,5 @@
-﻿using App.Api.Todo.Features.Tags.Dtos;
-using App.Api.Todo.Models;
+﻿using App.Api.Todo.Models;
+using App.Common.Domain.Dtos;
 using Riok.Mapperly.Abstractions;
 
 namespace App.Api.Todo.Features.Tags.Mapper

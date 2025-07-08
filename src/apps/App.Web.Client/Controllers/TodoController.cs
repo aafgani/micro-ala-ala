@@ -1,82 +1,24 @@
-﻿using App.Common.Domain.Dtos;
+﻿using App.Api.Todo.Features.Todotask.Dtos;
+using App.Common.Domain.Dtos;
+using App.Common.Domain.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 
 namespace App.Web.Client.Controllers
 {
     public class TodoController : Controller
     {
-        // Dummy data for tasks
-        private static List<TodoDto> _tasks = new List<TodoDto>
+        private readonly IHttpClientFactory _httpClientFactory;
+        private const string ApiBaseUrl = "http://localhost:8081";
+
+        public TodoController(IHttpClientFactory httpClientFactory)
         {
-            new TodoDto(
-                Id: 1,
-                Title: "Complete project documentation",
-                Description: "Write comprehensive documentation for the API endpoints",
-                DueDate: DateTime.Now.AddDays(5),
-                IsCompleted: false,
-                Tags: new[] { "Work", "Documentation" },
-                AssignedTo: "John Doe",
-                CreatedAt: DateTime.Now.AddDays(-2),
-                UpdatedAt: DateTime.Now.AddDays(-1)
-            ),
-            new TodoDto(
-                Id: 2,
-                Title: "Fix UI bugs in dashboard",
-                Description: "Address the reported UI issues in the analytics dashboard",
-                DueDate: DateTime.Now.AddDays(3),
-                IsCompleted: true,
-                Tags: new[] { "Bug", "UI", "Important" },
-                AssignedTo: "Jane Smith",
-                CreatedAt: DateTime.Now.AddDays(-5),
-                UpdatedAt: DateTime.Now.AddDays(-1)
-            ),
-            new TodoDto(
-                Id: 3,
-                Title: "Prepare for client meeting",
-                Description: "Create presentation slides and demo for the upcoming client meeting",
-                DueDate: DateTime.Now.AddDays(1),
-                IsCompleted: false,
-                Tags: new[] { "Meeting", "Client", "Important" },
-                AssignedTo: "Mike Johnson",
-                CreatedAt: DateTime.Now.AddDays(-3),
-                UpdatedAt: DateTime.Now.AddDays(-2)
-            ),
-            new TodoDto(
-                Id: 4,
-                Title: "Review pull requests",
-                Description: "Review and approve pending pull requests for the feature branch",
-                DueDate: DateTime.Now.AddDays(2),
-                IsCompleted: false,
-                Tags: new[] { "Code", "Review" },
-                AssignedTo: "John Doe",
-                CreatedAt: DateTime.Now.AddDays(-1),
-                UpdatedAt: DateTime.Now.AddDays(-1)
-            ),
-            new TodoDto(
-                Id: 5,
-                Title: "Update dependencies",
-                Description: "Update project dependencies to latest stable versions",
-                DueDate: DateTime.Now.AddDays(7),
-                IsCompleted: true,
-                Tags: new[] { "Maintenance", "Code" },
-                AssignedTo: "Jane Smith",
-                CreatedAt: DateTime.Now.AddDays(-7),
-                UpdatedAt: DateTime.Now.AddDays(-2)
-            ),
-            new TodoDto(
-                Id: 6,
-                Title: "Prepare monthly report",
-                Description: "Compile and prepare the monthly progress report",
-                DueDate: DateTime.Now.AddDays(-1),
-                IsCompleted: false,
-                Tags: new[] { "Report", "Important" },
-                AssignedTo: "Mike Johnson",
-                CreatedAt: DateTime.Now.AddDays(-5),
-                UpdatedAt: DateTime.Now.AddDays(-5)
-            )
-        };
+            _httpClientFactory = httpClientFactory;
+        }
 
         // GET: Todo/Dashboard
         public IActionResult Dashboard()
@@ -85,37 +27,31 @@ namespace App.Web.Client.Controllers
         }
 
         // GET: Todo/DashboardPartial
-        public IActionResult DashboardPartial()
+        public async Task<IActionResult> DashboardPartial()
         {
+            var client = _httpClientFactory.CreateClient();
+            var tasks = await client.GetFromJsonAsync<List<TodoDto>>(ApiBaseUrl + "/todotasks");
+
             // Calculate metrics for the dashboard
             var metrics = new Dictionary<string, object>
             {
-                // Task completion metrics
-                { "TotalTasks", _tasks.Count },
-                { "CompletedTasks", _tasks.Count(t => t.IsCompleted) },
-                { "PendingTasks", _tasks.Count(t => !t.IsCompleted) },
-                { "CompletionRate", _tasks.Count > 0 ? Math.Round((double)_tasks.Count(t => t.IsCompleted) / _tasks.Count * 100, 1) : 0 },
-                
-                // Due date metrics
-                { "OverdueTasks", _tasks.Count(t => !t.IsCompleted && t.DueDate < DateTime.Now.Date) },
-                { "DueTodayTasks", _tasks.Count(t => !t.IsCompleted && t.DueDate.Date == DateTime.Now.Date) },
-                { "DueThisWeekTasks", _tasks.Count(t => !t.IsCompleted && t.DueDate.Date > DateTime.Now.Date && t.DueDate.Date <= DateTime.Now.Date.AddDays(7)) },
-                
-                // Assignment metrics
-                { "TasksByAssignee", _tasks.GroupBy(t => t.AssignedTo)
+                { "TotalTasks", tasks.Count },
+                { "CompletedTasks", tasks.Count(t => t.IsCompleted) },
+                { "PendingTasks", tasks.Count(t => !t.IsCompleted) },
+                { "CompletionRate", tasks.Count > 0 ? Math.Round((double)tasks.Count(t => t.IsCompleted) / tasks.Count * 100, 1) : 0 },
+                { "OverdueTasks", tasks.Count(t => !t.IsCompleted && t.DueDate < DateTime.Now.Date) },
+                { "DueTodayTasks", tasks.Count(t => !t.IsCompleted && t.DueDate.Date == DateTime.Now.Date) },
+                { "DueThisWeekTasks", tasks.Count(t => !t.IsCompleted && t.DueDate.Date > DateTime.Now.Date && t.DueDate.Date <= DateTime.Now.Date.AddDays(7)) },
+                { "TasksByAssignee", tasks.GroupBy(t => t.AssignedTo)
                                           .Select(g => new { Assignee = g.Key, Count = g.Count(), Completed = g.Count(t => t.IsCompleted) })
                                           .OrderByDescending(x => x.Count)
                                           .ToList() },
-                
-                // Tag metrics
-                { "TasksByTag", _tasks.SelectMany(t => t.Tags.Select(tag => new { Tag = tag, IsCompleted = t.IsCompleted }))
+                { "TasksByTag", tasks.SelectMany(t => t.Tags.Select(tag => new { Tag = tag, IsCompleted = t.IsCompleted }))
                                      .GroupBy(t => t.Tag)
                                      .Select(g => new { Tag = g.Key, Count = g.Count(), Completed = g.Count(t => t.IsCompleted) })
                                      .OrderByDescending(x => x.Count)
                                      .ToList() },
-                
-                // Recent activity
-                { "RecentTasks", _tasks.OrderByDescending(t => t.UpdatedAt).Take(5).ToList() }
+                { "RecentTasks", tasks.OrderByDescending(t => t.UpdatedAt).Take(5).ToList() }
             };
 
             ViewBag.Metrics = metrics;
@@ -129,30 +65,43 @@ namespace App.Web.Client.Controllers
         }
 
         // GET: Todo/TodoListPartial
-        public IActionResult TodoListPartial(string filter = null)
+        public async Task<IActionResult> TodoListPartial(string filter = null)
         {
-            IEnumerable<TodoDto> filteredTasks = _tasks;
-
-            // Apply filters if specified
-            if (!string.IsNullOrEmpty(filter))
+            try
             {
-                switch (filter.ToLower())
+                var client = _httpClientFactory.CreateClient();
+                var pagedResult = await client.GetFromJsonAsync<PagedResult<TaskDto>>(ApiBaseUrl + "/todotasks?Page=1&PageSize=10");
+
+                IEnumerable<TaskDto> filteredTasks = pagedResult?.Data ?? Enumerable.Empty<TaskDto>();
+
+                if (!string.IsNullOrEmpty(filter))
                 {
-                    case "completed":
-                        filteredTasks = _tasks.Where(t => t.IsCompleted);
-                        break;
-                    case "pending":
-                        filteredTasks = _tasks.Where(t => !t.IsCompleted);
-                        break;
-                    case "overdue":
-                        filteredTasks = _tasks.Where(t => !t.IsCompleted && t.DueDate < DateTime.Now.Date);
-                        break;
+                    switch (filter.ToLower())
+                    {
+                        case "completed":
+                            filteredTasks = filteredTasks.Where(t => t.IsCompleted);
+                            break;
+                        case "pending":
+                            filteredTasks = filteredTasks.Where(t => !t.IsCompleted);
+                            break;
+                        case "overdue":
+                            filteredTasks = filteredTasks.Where(t => !t.IsCompleted && t.DueDate.HasValue && t.DueDate.Value.Date < DateTime.Now.Date);
+                            break;
+                    }
                 }
+
+                ViewBag.Tasks = filteredTasks.ToList();
+                ViewBag.Filter = filter;
+                ViewBag.Pagination = pagedResult?.Pagination;
+                return PartialView("_TodoListPartial");
+            }
+            catch (Exception e)
+            {
+                // Log the exception (not implemented here)
+                ViewBag.ErrorMessage = "An error occurred while fetching the tasks. Please try again later";
+                throw;
             }
 
-            ViewBag.Tasks = filteredTasks.ToList();
-            ViewBag.Filter = filter;
-            return PartialView("_TodoListPartial");
         }
 
         // GET: Todo/Detail
@@ -162,13 +111,13 @@ namespace App.Web.Client.Controllers
         }
 
         // GET: Todo/GetDetail/5
-        public IActionResult GetDetail(int taskId)
+        public async Task<IActionResult> GetDetail(int taskId)
         {
-            var task = _tasks.Find(t => t.Id == taskId);
+            var client = _httpClientFactory.CreateClient();
+            var task = await client.GetFromJsonAsync<TodoDto>(ApiBaseUrl + $"/todotasks/{taskId}");
 
             if (task == null)
             {
-                // If task not found in our dummy data, return a sample task
                 task = new TodoDto(
                     Id: taskId,
                     Title: "Sample Task",
@@ -187,14 +136,11 @@ namespace App.Web.Client.Controllers
 
         // POST: Todo/Create
         [HttpPost]
-        public IActionResult Create(string title, string description, DateTime dueDate, string assignedTo, string[] tags)
+        public async Task<IActionResult> Create(string title, string description, DateTime dueDate, string assignedTo, string[] tags)
         {
-            // Generate a new ID (in a real app, this would be handled by the database)
-            int newId = _tasks.Count > 0 ? _tasks.Max(t => t.Id) + 1 : 1;
-
-            // Create new task
+            var client = _httpClientFactory.CreateClient();
             var newTask = new TodoDto(
-                Id: newId,
+                Id: 0,
                 Title: title,
                 Description: description,
                 DueDate: dueDate,
@@ -205,26 +151,20 @@ namespace App.Web.Client.Controllers
                 UpdatedAt: DateTime.Now
             );
 
-            // Add to our dummy data
-            _tasks.Add(newTask);
-
-            // Return JSON result for AJAX handling
-            return Json(new { success = true, task = newTask });
+            var response = await client.PostAsJsonAsync(ApiBaseUrl + "/todotasks", newTask);
+            if (response.IsSuccessStatusCode)
+            {
+                var createdTask = await response.Content.ReadFromJsonAsync<TodoDto>();
+                return Json(new { success = true, task = createdTask });
+            }
+            return Json(new { success = false, message = "Failed to create task" });
         }
 
         // POST: Todo/Update/5
         [HttpPost]
-        public IActionResult Update(int id, string title, string description, DateTime dueDate, bool isCompleted, string assignedTo, string[] tags)
+        public async Task<IActionResult> Update(int id, string title, string description, DateTime dueDate, bool isCompleted, string assignedTo, string[] tags)
         {
-            // Find the task
-            var taskIndex = _tasks.FindIndex(t => t.Id == id);
-
-            if (taskIndex == -1)
-            {
-                return Json(new { success = false, message = "Task not found" });
-            }
-
-            // Update the task
+            var client = _httpClientFactory.CreateClient();
             var updatedTask = new TodoDto(
                 Id: id,
                 Title: title,
@@ -233,49 +173,43 @@ namespace App.Web.Client.Controllers
                 IsCompleted: isCompleted,
                 Tags: tags ?? new string[0],
                 AssignedTo: assignedTo,
-                CreatedAt: _tasks[taskIndex].CreatedAt,
+                CreatedAt: DateTime.Now,
                 UpdatedAt: DateTime.Now
             );
 
-            // Replace in our dummy data
-            _tasks[taskIndex] = updatedTask;
-
-            // Return JSON result for AJAX handling
-            return Json(new { success = true, task = updatedTask });
+            var response = await client.PutAsJsonAsync(ApiBaseUrl + $"/todotasks/{id}", updatedTask);
+            if (response.IsSuccessStatusCode)
+            {
+                var task = await response.Content.ReadFromJsonAsync<TodoDto>();
+                return Json(new { success = true, task });
+            }
+            return Json(new { success = false, message = "Task not found" });
         }
 
         // POST: Todo/Delete/5
         [HttpPost]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            // Find and remove the task
-            var taskIndex = _tasks.FindIndex(t => t.Id == id);
-
-            if (taskIndex == -1)
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.DeleteAsync(ApiBaseUrl + $"/todotasks/{id}");
+            if (response.IsSuccessStatusCode)
             {
-                return Json(new { success = false, message = "Task not found" });
+                return Json(new { success = true });
             }
-
-            _tasks.RemoveAt(taskIndex);
-
-            // Return JSON result for AJAX handling
-            return Json(new { success = true });
+            return Json(new { success = false, message = "Task not found" });
         }
 
         // POST: Todo/ToggleComplete/5
         [HttpPost]
-        public IActionResult ToggleComplete(int id)
+        public async Task<IActionResult> ToggleComplete(int id)
         {
-            // Find the task
-            var taskIndex = _tasks.FindIndex(t => t.Id == id);
-
-            if (taskIndex == -1)
+            var client = _httpClientFactory.CreateClient();
+            var task = await client.GetFromJsonAsync<TodoDto>(ApiBaseUrl + $"/todotasks/{id}");
+            if (task == null)
             {
                 return Json(new { success = false, message = "Task not found" });
             }
 
-            // Toggle completion status
-            var task = _tasks[taskIndex];
             var updatedTask = new TodoDto(
                 Id: task.Id,
                 Title: task.Title,
@@ -288,11 +222,13 @@ namespace App.Web.Client.Controllers
                 UpdatedAt: DateTime.Now
             );
 
-            // Replace in our dummy data
-            _tasks[taskIndex] = updatedTask;
-
-            // Return JSON result for AJAX handling
-            return Json(new { success = true, task = updatedTask });
+            var response = await client.PutAsJsonAsync(ApiBaseUrl + $"/todotasks/{id}", updatedTask);
+            if (response.IsSuccessStatusCode)
+            {
+                var resultTask = await response.Content.ReadFromJsonAsync<TodoDto>();
+                return Json(new { success = true, task = resultTask });
+            }
+            return Json(new { success = false, message = "Task not found" });
         }
     }
 }
