@@ -32,6 +32,6 @@ ACR_IMAGE="$ACR_NAME.azurecr.io/$IMAGE_NAME:$DOCKER_TAG"
 echo "📦 Tagging image as: $ACR_IMAGE"
 
 # === [3] Build & Push ===
-docker build -t "$ACR_IMAGE" -f src/apps/App.Api.Todo/dockerfile . --no-cache
+docker build --build-arg APP_VERSION="$DOCKER_TAG" -t "$ACR_IMAGE" -f src/apps/App.Api.Todo/dockerfile . --no-cache
 az acr login --name "$ACR_NAME"
 docker push "$ACR_IMAGE"
