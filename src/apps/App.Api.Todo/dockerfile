@@ -1,13 +1,15 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build 
 WORKDIR /src
 
+ARG APP_VERSION=0.0.0
+
 # Copy the rest of the source code
-COPY [".version" , ".version"]
-COPY ["Directory.Build.props" , "Directory.Build.props"]
 COPY ["./src/apps/App.Api.Todo/" , "apps/App.Api.Todo/"]
 COPY ["./src/shared/App.Common.Abstractions/" , "shared/App.Common.Abstractions/"]
 COPY ["./src/shared/App.Common.Infrastructure/" , "shared/App.Common.Infrastructure/"]
 COPY ["./src/shared/App.Common.Model/" , "shared/App.Common.Model/"]
+
+RUN echo "$APP_VERSION" > .version
 
 # Publish the application
 RUN dotnet publish "apps/App.Api.Todo/App.Api.Todo.csproj" -c Release -o /app/published /p:UseAppHost=false
