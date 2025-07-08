@@ -1,22 +1,22 @@
 <Project>
   <PropertyGroup>
-  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  <RepositoryRoot>$(SolutionDir)</RepositoryRoot>
-  <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$(MSBuildThisFileDirectory)</RepositoryRoot>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+   
+    <RepositoryRoot>$(SolutionDir)</RepositoryRoot>
+    <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$(MSBuildThisFileDirectory)..\..\..\</RepositoryRoot>
   </PropertyGroup>
 
   <Target Name="EnsureVersionFileExists" BeforeTargets="ReadVersionFromFile">
-  <PropertyGroup>
-    <DefaultVersion>0.1.0</DefaultVersion>
-  </PropertyGroup>
-  <WriteLinesToFile
+    <PropertyGroup>
+      <DefaultVersion>0.1.0</DefaultVersion>
+    </PropertyGroup>
+    <WriteLinesToFile
     Condition="!Exists('$(RepositoryRoot).version')"
     File="$(RepositoryRoot).version"
     Lines="$(DefaultVersion)"
     Overwrite="false" />
 </Target>
 
-<!-- Read version from VERSION file -->
 <Target Name="ReadVersionFromFile" BeforeTargets="GenerateVersionAssembly">
   <ReadLinesFromFile File="$(RepositoryRoot).version">
     <Output TaskParameter="Lines" PropertyName="RawVersion" />
@@ -26,7 +26,6 @@
   </PropertyGroup>
 </Target>
 
-<!-- Generate ThisAssembly.Version.cs -->
 <Target Name="GenerateVersionAssembly" BeforeTargets="CoreCompile">
   <PropertyGroup>
     <GeneratedCodeDir>$(IntermediateOutputPath)Generated</GeneratedCodeDir>
@@ -35,7 +34,6 @@
 
   <MakeDir Directories="$(GeneratedCodeDir)" />
 
-  <!-- Write each line individually as item group -->
   <ItemGroup>
     <VersionFileLines Include="namespace System.Reflection {" />
     <VersionFileLines Include="  internal static class ThisAssembly {" />
@@ -54,7 +52,6 @@
   </ItemGroup>
 </Target>
 
-<!-- Log final version -->
 <Target Name="LogVersion" AfterTargets="GenerateVersionAssembly">
   <Message Text="🔧 Using version: $(TrimmedVersion)" Importance="High" />
   <Message Text="🔍 Attempting to read version from: $(RepositoryRoot).version" Importance="High" />
