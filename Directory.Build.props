@@ -1,50 +1,62 @@
 <Project>
   <PropertyGroup>
-  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  <RepositoryRoot>$(SolutionDir)</RepositoryRoot>
-  <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$(MSBuildThisFileDirectory)</RepositoryRoot>
-  </PropertyGroup>
-<!-- Read version from VERSION file -->
-<Target Name="ReadVersionFromFile" BeforeTargets="GenerateVersionAssembly">
-  <ReadLinesFromFile File="$(RepositoryRoot).version">
-    <Output TaskParameter="Lines" PropertyName="RawVersion" />
-  </ReadLinesFromFile>
-  <PropertyGroup>
-    <TrimmedVersion>$([System.String]::Copy('$(RawVersion)').Trim())</TrimmedVersion>
-  </PropertyGroup>
-</Target>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RepositoryRoot>$(SolutionDir)</RepositoryRoot>
+    <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$(MSBuildThisFileDirectory)</RepositoryRoot>
 
-<!-- Generate ThisAssembly.Version.cs -->
-<Target Name="GenerateVersionAssembly" BeforeTargets="CoreCompile">
-  <PropertyGroup>
-    <GeneratedCodeDir>$(IntermediateOutputPath)Generated</GeneratedCodeDir>
-    <VersionConstantLine>    public const string Version = "$(TrimmedVersion)"%3B</VersionConstantLine>
+    <!-- Control target execution based on project name -->
+    <RunVersionTargets Condition="'$(MSBuildProjectName)' == 'App.Api.Todo' Or '$(MSBuildProjectName)' == 'App.Web.Client'">true</RunVersionTargets>
   </PropertyGroup>
 
-  <MakeDir Directories="$(GeneratedCodeDir)" />
+  <Target Name="EnsureVersionFileExists" BeforeTargets="ReadVersionFromFile" Condition="'$(RunVersionTargets)' == 'true'">
+    <PropertyGroup>
+      <DefaultVersion>0.1.0</DefaultVersion>
+    </PropertyGroup>
+    <WriteLinesToFile
+      Condition="!Exists('$(RepositoryRoot).version')"
+      File="$(RepositoryRoot).version"
+      Lines="$(DefaultVersion)"
+      Overwrite="false" />
+  </Target>
 
-  <!-- Write each line individually as item group -->
-  <ItemGroup>
-    <VersionFileLines Include="namespace System.Reflection {" />
-    <VersionFileLines Include="  internal static class ThisAssembly {" />
-    <VersionFileLines Include="$(VersionConstantLine)" />
-    <VersionFileLines Include="  }" />
-    <VersionFileLines Include="}" />
-  </ItemGroup>
+  <Target Name="ReadVersionFromFile" BeforeTargets="GenerateVersionAssembly" Condition="'$(RunVersionTargets)' == 'true'">
+    <ReadLinesFromFile File="$(RepositoryRoot).version">
+      <Output TaskParameter="Lines" PropertyName="RawVersion" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <TrimmedVersion>$([System.String]::Copy('$(RawVersion)').Trim())</TrimmedVersion>
+    </PropertyGroup>
+  </Target>
 
-  <WriteLinesToFile
-    File="$(GeneratedCodeDir)/ThisAssembly.Version.cs"
-    Lines="@(VersionFileLines)"
-    Overwrite="true" />
+  <Target Name="GenerateVersionAssembly" BeforeTargets="CoreCompile" Condition="'$(RunVersionTargets)' == 'true'">
+    <PropertyGroup>
+      <GeneratedCodeDir>$(IntermediateOutputPath)Generated</GeneratedCodeDir>
+      <VersionConstantLine>    public const string Version = "$(TrimmedVersion)"%3B</VersionConstantLine>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="$(GeneratedCodeDir)/ThisAssembly.Version.cs" AutoGen="True" />
-  </ItemGroup>
-</Target>
+    <MakeDir Directories="$(GeneratedCodeDir)" />
 
-<!-- Log final version -->
-<Target Name="LogVersion" AfterTargets="GenerateVersionAssembly">
-  <Message Text="🔧 Using version: $(TrimmedVersion)" Importance="High" />
-  <Message Text="🔍 Attempting to read version from: $(RepositoryRoot).version" Importance="High" />
-</Target>
+    <ItemGroup>
+      <VersionFileLines Include="namespace System.Reflection {" />
+      <VersionFileLines Include="  internal static class ThisAssembly {" />
+      <VersionFileLines Include="$(VersionConstantLine)" />
+      <VersionFileLines Include="  }" />
+      <VersionFileLines Include="}" />
+    </ItemGroup>
+
+    <WriteLinesToFile
+      File="$(GeneratedCodeDir)/ThisAssembly.Version.cs"
+      Lines="@(VersionFileLines)"
+      Overwrite="true" />
+
+    <ItemGroup>
+      <Compile Include="$(GeneratedCodeDir)/ThisAssembly.Version.cs" AutoGen="True" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="LogVersion" AfterTargets="GenerateVersionAssembly" Condition="'$(RunVersionTargets)' == 'true'">
+    <Message Text="🚀 App:  $(MSBuildProjectName)" Importance="High" />
+    <Message Text="🔧 Using version: $(TrimmedVersion)" Importance="High" />
+    <Message Text="🔍 Attempting to read version from: $(RepositoryRoot).version" Importance="High" />
+  </Target>
 </Project>
