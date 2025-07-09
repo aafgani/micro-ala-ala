@@ -1,4 +1,6 @@
-﻿namespace App.Api.Todo.Features.Todotask.Dtos
+﻿using App.Api.Todo.Features.Todotask.Dtos;
+
+namespace App.Common.Domain.Dtos.Todo
 {
     public class CreateTaskDto : BaseTaskDto
     {

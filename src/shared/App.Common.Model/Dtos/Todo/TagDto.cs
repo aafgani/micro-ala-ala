@@ -1,4 +1,4 @@
-﻿namespace App.Common.Domain.Dtos
+﻿namespace App.Common.Domain.Dtos.Todo
 {
     public class TagDto
     {

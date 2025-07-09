@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace App.Common.Domain.Dtos
+namespace App.Common.Domain.Dtos.Todo
 {
     public class TodoTaskQueryParam
     {

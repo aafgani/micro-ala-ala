@@ -1,6 +1,6 @@
 ﻿using App.Api.Todo.Features.Tags.Data;
 using App.Api.Todo.Features.Tags.Mapper;
-using App.Common.Domain.Dtos;
+using App.Common.Domain.Dtos.Todo;
 
 namespace App.Api.Todo.Features.Tags.Services
 {

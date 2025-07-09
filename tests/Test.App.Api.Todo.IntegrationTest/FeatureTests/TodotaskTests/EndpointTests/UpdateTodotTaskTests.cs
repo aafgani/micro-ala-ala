@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using App.Api.Todo.Features.Todotask.Dtos;
 using App.Api.Todo.Models;
+using App.Common.Domain.Dtos.Todo;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
 
 namespace Test.App.Api.Todo.IntegrationTest.FeatureTests.TodotaskTests.EndpointTests;
