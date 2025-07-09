@@ -4,9 +4,10 @@ using Azure;
 using Shouldly;
 using System.Net.Http.Json;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
+using Test.App.Todo.Integration.Helper;
 using Task = System.Threading.Tasks.Task;
 
-namespace Test.App.Api.Todo.IntegrationTest.FeatureTests.TagTests.EndpointTests
+namespace Test.App.Todo.Integration.Tags.EndpointTests
 {
     public class GetAllTagTests : BaseIntegrationTest
     {

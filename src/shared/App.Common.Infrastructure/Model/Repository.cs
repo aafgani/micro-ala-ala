@@ -12,11 +12,7 @@ namespace App.Common.Infrastructure.Model
         }
         protected DbSet<T> Set => _db.Set<T>();
 
-        /*
-         * Returning IQueryable<T> gives consumers (e.g., service layer) the flexibility 
-         * to filter, sort, paginate, or project before the query is sent to the database.
-         */
-        public IQueryable<T> Query(bool tracking = false)
+        protected IQueryable<T> Query(bool tracking = false)
         {
             return tracking ? _db.Set<T>() : _db.Set<T>().AsNoTracking();
         }
@@ -28,9 +24,9 @@ namespace App.Common.Infrastructure.Model
             return entity;
         }
 
-        public async Task DeleteAsync(T album)
+        public async Task DeleteAsync(T entity)
         {
-            _db.Set<T>().Remove(album);
+            _db.Set<T>().Remove(entity);
             await _db.SaveChangesAsync();
         }
 

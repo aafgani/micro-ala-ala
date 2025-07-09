@@ -3,8 +3,9 @@ using App.Api.Todo.Features.Todotask.Dtos;
 using App.Api.Todo.Models;
 using App.Common.Domain.Dtos.Todo;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
+using Test.App.Todo.Integration.Helper;
 
-namespace Test.App.Api.Todo.IntegrationTest.FeatureTests.TodotaskTests.EndpointTests;
+namespace Test.App.Todo.Integration.TodoTasks.EndpointTests;
 
 public class UpdateTodotTaskTests : BaseIntegrationTest
 {

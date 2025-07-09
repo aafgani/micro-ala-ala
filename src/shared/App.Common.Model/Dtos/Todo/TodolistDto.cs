@@ -1,6 +1,4 @@
-﻿using App.Api.Todo.Features.Todotask.Dtos;
-
-namespace App.Api.Todo.Features.Todolist.Dtos
+﻿namespace App.Common.Domain.Dtos.Todo
 {
     public class TodolistDto
     {
@@ -11,6 +9,5 @@ namespace App.Api.Todo.Features.Todolist.Dtos
 
         public DateTime CreatedAt { get; set; }
         public string UserId { get; set; }
-        public ICollection<TaskDto> Tasks { get; set; }
     }
 }

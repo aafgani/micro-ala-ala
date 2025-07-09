@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{536C8147-8CE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.App.Api.Todo.UnitTest", "tests\Test.App.Api.Todo.UnitTest\Test.App.Api.Todo.UnitTest.csproj", "{B243F55F-5988-4BF0-AA14-1E77137563D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.App.Api.Todo.IntegrationTest", "tests\Test.App.Api.Todo.IntegrationTest\Test.App.Api.Todo.IntegrationTest.csproj", "{8902592A-E115-4075-8966-C3C2840FFF1C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.App.Todo.Integration", "tests\Test.App.Api.Todo.IntegrationTest\Test.App.Todo.Integration.csproj", "{8902592A-E115-4075-8966-C3C2840FFF1C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.App.Common.Infrastructure.UnitTest", "tests\Test.App.Common.Infrastructure.UnitTest\Test.App.Common.Infrastructure.UnitTest.csproj", "{88E9988B-E9A8-B777-3AC8-559CB663702B}"
 EndProject

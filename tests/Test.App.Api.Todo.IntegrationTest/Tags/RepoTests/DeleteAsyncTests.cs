@@ -1,9 +1,10 @@
 ﻿using App.Api.Todo.Models;
 using Shouldly;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
+using Test.App.Todo.Integration.Helper;
 using Task = System.Threading.Tasks.Task;
 
-namespace Test.App.Api.Todo.IntegrationTest.FeatureTests.TagTests.RepositoryTests
+namespace Test.App.Todo.Integration.Tags.RepoTests
 {
     public class DeleteAsyncTests : BaseIntegrationTest
     {

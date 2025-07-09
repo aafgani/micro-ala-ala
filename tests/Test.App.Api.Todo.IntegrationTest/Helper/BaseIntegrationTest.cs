@@ -1,11 +1,12 @@
 ﻿using App.Api.Todo.Features.Tags.Data;
+using App.Api.Todo.Features.Todolist.Data;
 using App.Api.Todo.Features.Todotask.Data;
 using App.Api.Todo.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
 
-namespace Test.App.Api.Todo.IntegrationTest.FeatureTests
+namespace Test.App.Todo.Integration.Helper
 {
     public class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppFactory>
     {
@@ -22,12 +23,13 @@ namespace Test.App.Api.Todo.IntegrationTest.FeatureTests
                 BaseAddress = new Uri("http://localhost") // optional
             });
         }
-        
-        protected ITagRepository TagRepository { 
-            get 
+
+        protected ITagRepository TagRepository
+        {
+            get
             {
                 return _scope.ServiceProvider.GetRequiredService<ITagRepository>();
-            } 
+            }
         }
 
         protected ITodoTaskRepository TodoTaskRepository
@@ -35,6 +37,14 @@ namespace Test.App.Api.Todo.IntegrationTest.FeatureTests
             get
             {
                 return _scope.ServiceProvider.GetRequiredService<ITodoTaskRepository>();
+            }
+        }
+
+        protected ITodolistRepository TodoListRepository
+        {
+            get
+            {
+                return _scope.ServiceProvider.GetRequiredService<ITodolistRepository>();
             }
         }
     }

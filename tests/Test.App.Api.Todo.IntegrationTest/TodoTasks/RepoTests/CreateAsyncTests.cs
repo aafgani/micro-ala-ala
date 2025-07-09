@@ -1,8 +1,9 @@
 ﻿using App.Api.Todo.Models;
 using Shouldly;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
+using Test.App.Todo.Integration.Helper;
 
-namespace Test.App.Api.Todo.IntegrationTest.FeatureTests.TodotaskTests.RepositoryTests
+namespace Test.App.Todo.Integration.TodoTasks.RepoTests
 {
     public class CreateAsyncTests : BaseIntegrationTest
     {

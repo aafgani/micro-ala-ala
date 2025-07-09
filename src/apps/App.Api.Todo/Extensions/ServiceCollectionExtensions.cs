@@ -2,6 +2,7 @@
 using App.Api.Todo.Features.Tags.Data;
 using App.Api.Todo.Features.Tags.Mapper;
 using App.Api.Todo.Features.Tags.Services;
+using App.Api.Todo.Features.Todolist.Data;
 using App.Api.Todo.Features.Todotask.Data;
 using App.Api.Todo.Features.Todotask.Mapper;
 using App.Api.Todo.Features.Todotask.Services;
@@ -110,6 +111,7 @@ namespace App.Api.Todo.Extensions
             });
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<ITodoTaskRepository, TodoTaskRepository>();
+            services.AddScoped<ITodolistRepository, TodolistRepository>();
 
             return services;
         }

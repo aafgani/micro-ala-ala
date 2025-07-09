@@ -1,21 +1,9 @@
-﻿using System.ComponentModel;
-
-namespace App.Common.Domain.Dtos.Todo
+﻿namespace App.Common.Domain.Dtos.Todo
 {
-    public class TodoTaskQueryParam
+    public class TodoTaskQueryParam : QueryParam
     {
-        public string? SortBy { get; set; }
-        public string? SortDirection { get; set; }
-
         public bool? IsCompleted { get; set; }
         public DateTime? DueDate { get; set; }
-
-        [DefaultValue(1)]
-        public int Page { get; set; }
-
-        [DefaultValue(10)]
-        public int PageSize { get; set; }
-
         public void ApplyDefaults()
         {
             SortBy ??= "Title";

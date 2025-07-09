@@ -4,8 +4,9 @@ using App.Common.Domain.Dtos.Todo;
 using Shouldly;
 using System.Net.Http.Json;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
+using Test.App.Todo.Integration.Helper;
 
-namespace Test.App.Api.Todo.IntegrationTest.FeatureTests.TodotaskTests.EndpointTests
+namespace Test.App.Todo.Integration.TodoTasks.EndpointTests
 {
     public class CreateTodoTaskTests : BaseIntegrationTest
     {
