@@ -35,7 +35,7 @@ public class UpdateTests : BaseIntegrationTest
         TodoContext.SaveChanges();
 
         // Act
-        var response = await Client.PutAsJsonAsync("/todolists/1", updateListDto);
+        var response = await Client.PutAsJsonAsync("/todos/1", updateListDto);
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();

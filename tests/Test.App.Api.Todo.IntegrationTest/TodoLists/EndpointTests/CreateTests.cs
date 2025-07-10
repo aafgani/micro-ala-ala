@@ -24,7 +24,7 @@ public class CreateTests : BaseIntegrationTest
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/todolists", createListDto);
+        var response = await Client.PostAsJsonAsync("/todos", createListDto);
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();

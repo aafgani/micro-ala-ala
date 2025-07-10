@@ -25,7 +25,7 @@ public class DeleteTests : BaseIntegrationTest
         TodoContext.SaveChanges();
 
         // Act
-        var response = await Client.DeleteAsync("/todolists/1");
+        var response = await Client.DeleteAsync("/todos/1");
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();

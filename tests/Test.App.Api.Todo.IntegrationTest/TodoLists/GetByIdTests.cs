@@ -29,7 +29,7 @@ public class GetByIdTests : BaseIntegrationTest
         TodoContext.SaveChanges();
 
         // Act
-        var response = await Client.GetAsync("/todolists/3");
+        var response = await Client.GetAsync("/todos/3");
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();

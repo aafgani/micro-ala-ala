@@ -2,11 +2,11 @@
 {
     public class EndpointGroupNames
     {
-        public const string TodolistsGroupName = "/todolists";
-        public const string TodolistsTagName = "Todolists";
+        public const string TodolistsGroupName = "/todos";
+        public const string TodolistsTagName = "Todos";
 
-        public const string TodotasksGroupName = "/todotasks";
-        public const string TodotasksTagName = "Todotasks";
+        public const string TodotasksGroupName = "/tasks";
+        public const string TodotasksTagName = "Tasks";
 
         public const string TagsGroupName = "/tags";
         public const string TagsTagName = "Tags";

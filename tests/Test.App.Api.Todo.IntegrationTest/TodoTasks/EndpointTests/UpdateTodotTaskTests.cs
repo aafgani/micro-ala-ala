@@ -83,7 +83,7 @@ public class UpdateTodotTaskTests : BaseIntegrationTest
         };
 
         // Act
-        var response = await Client.PutAsJsonAsync($"/todotasks/{todoTask.Id}", updateTaskDto);
+        var response = await Client.PutAsJsonAsync($"/tasks/{todoTask.Id}", updateTaskDto);
         if (!response.StatusCode.Equals(System.Net.HttpStatusCode.NoContent))
         {
             var errorContent = await response.Content.ReadAsStringAsync();

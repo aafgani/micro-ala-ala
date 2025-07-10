@@ -49,7 +49,7 @@ namespace Test.App.Todo.Integration.TodoTasks.EndpointTests
             };
 
             // Act
-            var response = await Client.PostAsJsonAsync("/todotasks", createTaskDto);
+            var response = await Client.PostAsJsonAsync("/tasks", createTaskDto);
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
