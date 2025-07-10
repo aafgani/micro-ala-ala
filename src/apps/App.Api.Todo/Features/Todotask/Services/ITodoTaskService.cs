@@ -1,5 +1,5 @@
 ﻿using App.Api.Todo.Features.Todotask.Dtos;
-using App.Common.Domain.Dtos;
+using App.Common.Domain.Dtos.Todo;
 using App.Common.Domain.Pagination;
 
 namespace App.Api.Todo.Features.Todotask.Services

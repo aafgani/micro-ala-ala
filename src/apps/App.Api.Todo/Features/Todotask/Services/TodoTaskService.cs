@@ -1,9 +1,8 @@
 ﻿using App.Api.Todo.Features.Todotask.Data;
 using App.Api.Todo.Features.Todotask.Dtos;
 using App.Api.Todo.Features.Todotask.Mapper;
-using App.Common.Domain.Dtos;
+using App.Common.Domain.Dtos.Todo;
 using App.Common.Domain.Pagination;
-using Microsoft.EntityFrameworkCore;
 
 namespace App.Api.Todo.Features.Todotask.Services
 {
@@ -57,16 +56,8 @@ namespace App.Api.Todo.Features.Todotask.Services
 
         public async Task<TaskDto?> GetByIdAsync(int id)
         {
-            return await Task.Run(() =>
-             {
-                 var task = _todoTaskRepository.Query()
-                    .Include(task => task.InverseParentTask)
-                    .Include(task => task.Tags)
-                    .Where(task => task.Id == id)
-                    .FirstOrDefault();
-
-                 return task is null ? null : _taskMapper.ToDto(task);
-             });
+            return await _todoTaskRepository.GetByIdWithRelationsAsync(id)
+                .ContinueWith(task => task.Result is null ? null : _taskMapper.ToDto(task.Result));
         }
 
         public async Task<bool> UpdateAsync(int id, TaskDto dto)

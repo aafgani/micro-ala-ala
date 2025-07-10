@@ -1,6 +1,6 @@
 ﻿using App.Api.Todo.Features.Tags.Services;
 using App.Api.Todo.Models;
-using App.Common.Domain.Dtos;
+using App.Common.Domain.Dtos.Todo;
 using Moq;
 using Shouldly;
 

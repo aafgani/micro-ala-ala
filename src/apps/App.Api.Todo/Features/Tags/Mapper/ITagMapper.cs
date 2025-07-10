@@ -1,5 +1,5 @@
 ﻿using App.Api.Todo.Models;
-using App.Common.Domain.Dtos;
+using App.Common.Domain.Dtos.Todo;
 
 namespace App.Api.Todo.Features.Tags.Mapper
 {
