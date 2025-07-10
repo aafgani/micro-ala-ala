@@ -42,5 +42,8 @@ namespace App.Web.Client.Controllers
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Unauthorized() => View();
+
+        [HttpGet]
+        public IActionResult AccessDenied() => View();
     }
 }
