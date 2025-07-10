@@ -3,6 +3,8 @@ using App.Api.Todo.Features.Tags.Data;
 using App.Api.Todo.Features.Tags.Mapper;
 using App.Api.Todo.Features.Tags.Services;
 using App.Api.Todo.Features.Todolist.Data;
+using App.Api.Todo.Features.Todolist.Mapper;
+using App.Api.Todo.Features.Todolist.Services;
 using App.Api.Todo.Features.Todotask.Data;
 using App.Api.Todo.Features.Todotask.Mapper;
 using App.Api.Todo.Features.Todotask.Services;
@@ -91,7 +93,7 @@ namespace App.Api.Todo.Extensions
         {
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<ITodoTaskService, TodoTaskService>();
-
+            services.AddScoped<ITodolistService, TodolistService>();
             return services;
         }
 
@@ -99,6 +101,7 @@ namespace App.Api.Todo.Extensions
         {
             services.AddSingleton<ITagMapper, TagMapper>();
             services.AddSingleton<ITaskMapper, TaskMapper>();
+            services.AddSingleton<ITodoListMapper, TodoListMapper>();
 
             return services;
         }

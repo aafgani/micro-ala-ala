@@ -72,32 +72,30 @@ namespace App.Api.Todo.Features.Todolist.Services
             return task is null ? null : _mapper.ToDto(task);
         }
 
-        public Task<bool> UpdateAsync(int id, TodolistDto dto)
+        public async Task<bool> UpdateAsync(int id, TodolistDto dto)
         {
             if (dto == null)
                 throw new ArgumentNullException(nameof(dto));
 
-            return Task.Run(async () =>
+            var existingTodoList = await _todolistRepository.GetByIdAsync(id);
+            if (existingTodoList is null)
+                return false;
+
+            existingTodoList.Title = dto.Title;
+            existingTodoList.UserId = dto.UserId;
+            existingTodoList.Description = dto.Description;
+
+            try
             {
-                var existingTodoList = await _todolistRepository.GetByIdAsync(id);
-                if (existingTodoList is null)
-                    return false;
-
-                var updatedTodoList = _mapper.ToEntity(dto);
-                updatedTodoList.Id = id; // Ensure the ID is set to the existing one
-
-                try
-                {
-                    await _todolistRepository.UpdateAsync(updatedTodoList);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    // Optionally log the exception here
-                    // _logger?.LogError(ex, "Failed to update ToDoList with id {Id}", id);
-                    return false;
-                }
-            });
+                await _todolistRepository.UpdateAsync(existingTodoList);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Optionally log the exception here
+                // _logger?.LogError(ex, "Failed to update ToDoList with id {Id}", id);
+                return false;
+            }
         }
     }
 }
