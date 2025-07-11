@@ -7,10 +7,14 @@ namespace App.Web.Client.Utilities.CustomViewComponent
     public class InfoBoxViewComponent : ViewComponent
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<InfoBoxViewComponent> _logger;
+        private readonly string _apiBaseUrl;
 
-        public InfoBoxViewComponent(IHttpClientFactory httpClientFactory)
+        public InfoBoxViewComponent(IHttpClientFactory httpClientFactory, ILogger<InfoBoxViewComponent> logger, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
+            _logger = logger;
+            _apiBaseUrl = configuration["TodoApiBaseUrl"] ?? "http://localhost:8081";
         }
 
         public async Task<IViewComponentResult> InvokeAsync(string title)
@@ -56,7 +60,7 @@ namespace App.Web.Client.Utilities.CustomViewComponent
             try
             {
                 var client = _httpClientFactory.CreateClient();
-                var weatherData = await client.GetFromJsonAsync<WeatherForecast[]>("http://localhost:8081/weatherforecast");
+                var weatherData = await client.GetFromJsonAsync<WeatherForecast[]>("" + _apiBaseUrl + "/weatherforecast");
 
                 var todayWeather = weatherData?.FirstOrDefault();
                 if (todayWeather != null)
