@@ -21,7 +21,11 @@
         "build",
         "${workspaceFolder}/src/apps/App.Web.Client/App.Web.Client.csproj"
       ],
-      "problemMatcher": "$msCompile"
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
     },
     {
       "label": "build sln",

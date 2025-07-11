@@ -1,11 +1,12 @@
 using System.Diagnostics;
+using App.Common.Domain.Auth;
 using App.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Web.Controllers
 {
-    [Authorize]
+    [Authorize(policy: Policy.AuthenticatedUser)]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

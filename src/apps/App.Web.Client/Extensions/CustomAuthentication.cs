@@ -1,5 +1,6 @@
 using System.Net;
 using System.Security.Claims;
+using App.Common.Domain.Auth;
 using App.Web.Client.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -31,13 +32,13 @@ public static class CustomAuthentication
 
         services.AddAuthorization(options =>
         {
-            options.AddPolicy("AuthenticatedUser", policy =>
+            options.AddPolicy(Policy.AuthenticatedUser, policy =>
             {
                 policy.RequireAuthenticatedUser();
                 policy.RequireClaim(ClaimTypes.NameIdentifier);
             });
 
-            options.AddPolicy("Admin", policy =>
+            options.AddPolicy(Policy.Todos, policy =>
             {
                 policy.RequireAuthenticatedUser();
                 policy.RequireClaim(ClaimTypes.Role, "Admin");
@@ -73,6 +74,9 @@ public static class CustomAuthentication
 
     private static async Task OnTokenValidatedFunc(TokenValidatedContext context)
     {
+        // TODO: Replace hardcoded roles with roles retrieved from User API.
+        //       Add logic to call User API and enrich claims with user-specific roles and info.
+
         var userId = context.Principal.GetNameIdentifierId();
         var sessionId = Guid.NewGuid().ToString();
         var sessionService = context.HttpContext.RequestServices.GetRequiredService<IUserSessionService>();
@@ -86,9 +90,24 @@ public static class CustomAuthentication
             return;
         }
 
+        await sessionService.SetUserSessionAsync(userId, sessionId, CancellationToken.None);
+
+        // Example roles, replace with actual API call
+        var userRolesFromApi = new[] {
+            Roles.Admin,
+            // Roles.TodosAdmin,
+            Roles.FinanceAdmin
+      };
+
         var identity = (ClaimsIdentity)context.Principal.Identity;
         identity.AddClaim(new Claim("session_id", sessionId));
-        await sessionService.SetUserSessionAsync(userId, sessionId, CancellationToken.None);
+        identity.AddClaim(new Claim("session_created_at", DateTime.UtcNow.ToString("o"))); // ISO 8601 format
+        identity.AddClaim(new Claim("session_expires_at", DateTime.UtcNow.AddMinutes(30).ToString("o"))); // 30 minutes expiration
+
+        foreach (var role in userRolesFromApi)
+        {
+            identity.AddClaim(new Claim(ClaimTypes.Role, role));
+        }
 
         await Task.CompletedTask.ConfigureAwait(false);
     }

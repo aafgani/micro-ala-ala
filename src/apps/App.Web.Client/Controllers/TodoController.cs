@@ -1,6 +1,8 @@
 ﻿using App.Api.Todo.Features.Todotask.Dtos;
+using App.Common.Domain.Auth;
 using App.Common.Domain.Dtos;
 using App.Common.Domain.Pagination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
@@ -10,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace App.Web.Client.Controllers
 {
+    [Authorize(Policy = Policy.Todos)]
     public class TodoController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
