@@ -25,6 +25,7 @@ namespace App.Web.Client.Controllers
         }
 
         // GET: Todo/Dashboard
+        [Authorize(Policy = Policy.TodosDashboard)]
         public IActionResult Dashboard()
         {
             return View();

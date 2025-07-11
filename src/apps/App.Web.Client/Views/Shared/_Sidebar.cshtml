@@ -1,7 +1,7 @@
 ﻿@{
   var user = Context.User;
   bool isAdmin = user.IsInRole(Roles.Admin);
-  bool isTodosAdmin = user.IsInRole(Roles.TodosAdmin);
+  bool isTodosUser = user.IsInRole(Roles.TodosUser);
 }
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -22,7 +22,7 @@
             <p>Home</p>
           </a>
         </li>
-        @if (isTodosAdmin)
+        @if (isTodosUser)
         {
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">

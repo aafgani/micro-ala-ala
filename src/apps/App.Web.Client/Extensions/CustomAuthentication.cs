@@ -30,21 +30,6 @@ public static class CustomAuthentication
                options.Events.OnRemoteFailure += OnRemoteFailureFunc;
            });
 
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy(Policy.AuthenticatedUser, policy =>
-            {
-                policy.RequireAuthenticatedUser();
-                policy.RequireClaim(ClaimTypes.NameIdentifier);
-            });
-
-            options.AddPolicy(Policy.Todos, policy =>
-            {
-                policy.RequireAuthenticatedUser();
-                policy.RequireClaim(ClaimTypes.Role, "Admin");
-            });
-        });
-
         services.ConfigureApplicationCookie(options =>
         {
             options.Cookie.HttpOnly = true;
@@ -95,7 +80,8 @@ public static class CustomAuthentication
         // Example roles, replace with actual API call
         var userRolesFromApi = new[] {
             Roles.Admin,
-            // Roles.TodosAdmin,
+            Roles.TodosUser,
+            Roles.TodosAdmin,
             Roles.FinanceAdmin
       };
 
