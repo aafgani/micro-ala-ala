@@ -1,5 +1,3 @@
-using System;
-
 namespace App.Common.Domain.Auth;
 
 public static class Policy
