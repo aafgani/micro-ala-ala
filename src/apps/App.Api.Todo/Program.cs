@@ -1,5 +1,6 @@
 using App.Api.Todo.Extensions;
 using App.Api.Todo.Models;
+using App.Common.Domain.Dtos;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;

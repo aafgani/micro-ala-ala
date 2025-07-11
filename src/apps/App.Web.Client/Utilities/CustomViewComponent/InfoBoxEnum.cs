@@ -5,7 +5,8 @@
         TotalBalance,
         MonthlyIncome,
         MonthlyExpense,
-        SavingsRate
+        SavingsRate,
+        WeatherForecast
     }
 
     public static class InfoBoxEnumExtensions
@@ -18,6 +19,7 @@
                 InfoBoxEnum.MonthlyIncome => "MonthlyIncome",
                 InfoBoxEnum.MonthlyExpense => "Monthly Expense",
                 InfoBoxEnum.SavingsRate => "Savings Rate",
+                InfoBoxEnum.WeatherForecast => "Weather Forecast",
                 _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
             };
         }

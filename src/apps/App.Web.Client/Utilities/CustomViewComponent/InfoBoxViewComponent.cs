@@ -1,11 +1,19 @@
-﻿using App.Web.Client.Models.ViewComponents;
+﻿using App.Common.Domain.Dtos;
+using App.Web.Client.Models.ViewComponents;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Web.Client.Utilities.CustomViewComponent
 {
     public class InfoBoxViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(string title)
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public InfoBoxViewComponent(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync(string title)
         {
             var box = new InfoBoxModel();
             switch (title)
@@ -34,10 +42,83 @@ namespace App.Web.Client.Utilities.CustomViewComponent
                     box.IconClass = "fas fa-piggy-bank";
                     box.BgColorClass = "bg-warning";
                     break;
+                case "WeatherForecast":
+                    box = await GetWeatherForecastInfoAsync();
+                    break;
                 default:
                     break;
             }
             return View(box);
+        }
+
+        private async Task<InfoBoxModel> GetWeatherForecastInfoAsync()
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                var weatherData = await client.GetFromJsonAsync<WeatherForecast[]>("http://localhost:8081/weatherforecast");
+
+                var todayWeather = weatherData?.FirstOrDefault();
+                if (todayWeather != null)
+                {
+                    return new InfoBoxModel
+                    {
+                        Title = InfoBoxEnum.WeatherForecast.GetDisplayName(),
+                        Value = $"{todayWeather.Summary}, {todayWeather.TemperatureC}°C",
+                        IconClass = GetWeatherIcon(todayWeather.Summary),
+                        BgColorClass = GetWeatherBgColor(todayWeather.Summary)
+                    };
+                }
+            }
+            catch (Exception)
+            {
+                // Handle error gracefully
+            }
+
+            // Fallback if API call fails
+            return new InfoBoxModel
+            {
+                Title = InfoBoxEnum.WeatherForecast.GetDisplayName(),
+                Value = "Weather unavailable",
+                IconClass = "fas fa-cloud",
+                BgColorClass = "bg-secondary"
+            };
+        }
+
+        private string GetWeatherBgColor(string summary)
+        {
+            return summary?.ToLower() switch
+            {
+                "freezing" => "bg-info",         // Blue for freezing weather
+                "bracing" => "bg-primary",       // Dark blue for bracing weather
+                "chilly" => "bg-info",           // Blue for cold weather
+                "cool" => "bg-primary",          // Blue for cool weather
+                "mild" => "bg-secondary",        // Gray for mild weather
+                "warm" => "bg-success",          // Green for nice warm weather
+                "balmy" => "bg-warning",         // Orange/yellow for pleasant weather
+                "hot" => "bg-warning",           // Orange for hot weather
+                "sweltering" => "bg-danger",     // Red for extremely hot weather
+                "scorching" => "bg-danger",      // Red for scorching weather
+                _ => "bg-secondary"               // Gray for unknown weather
+            };
+        }
+
+        private string GetWeatherIcon(string summary)
+        {
+            return summary?.ToLower() switch
+            {
+                "freezing" => "fas fa-icicles",
+                "bracing" => "fas fa-snowflake",
+                "chilly" => "fas fa-thermometer-quarter",
+                "cool" => "fas fa-wind",
+                "mild" => "fas fa-cloud-sun",
+                "warm" => "fas fa-thermometer-half",
+                "balmy" => "fas fa-sun",
+                "hot" => "fas fa-thermometer-three-quarters",
+                "sweltering" => "fas fa-fire",
+                "scorching" => "fas fa-fire-flame-curved",
+                _ => "fas fa-cloud-sun"
+            };
         }
     }
 }

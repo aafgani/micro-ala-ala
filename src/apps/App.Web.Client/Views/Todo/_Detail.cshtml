@@ -1,4 +1,4 @@
-﻿@model TodoDto
+﻿@model TodolistDto
 
 <!-- Title-->
 @await Html.PartialAsync("_FormGroup", new FormGroupModel
@@ -22,7 +22,7 @@
                        Type = "text",
                        Placeholder = "Select due date",
                        IsInputGroup = true,
-                       Value = Model.DueDate.ToShortDateString(),
+                       @* Value = Model.DueDate.ToShortDateString(), *@
                        InputGroupAppendHtml = "<div class='input-group-append'><span class='input-group-text'><i class='far fa-calendar-alt'></i></span></div>"
                    })
 

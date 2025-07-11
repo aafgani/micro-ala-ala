@@ -8,26 +8,32 @@
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-6"><h3 class="mb-0">Welcome!</h3></div>
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Welcome!</h3>
+                </div>
             </div>
         </div>
     </div>
-    <br/>
+    <br />
     <div class="app-content">
         <div class="container-fluid">
+            <div>
+                @await Component.InvokeAsync("InfoBoxLoading", "WeatherForecast")
+            </div>
             @* <div class="row">
                 @await Component.InvokeAsync("InfoBoxLoading", InfoBoxEnum.TotalBalance.ToString())
                 @await Component.InvokeAsync("InfoBoxLoading", InfoBoxEnum.MonthlyIncome.ToString())
                 @await Component.InvokeAsync("InfoBoxLoading", InfoBoxEnum.MonthlyExpense.ToString())
                 @await Component.InvokeAsync("InfoBoxLoading", InfoBoxEnum.SavingsRate.ToString())
             </div> *@
+        </div>
     </div>
 </div>
 
-<script src="~/js/home.js"></script>
-    <script>
-        function toggleEdit() {
-          document.getElementById('profile-view').classList.toggle('d-none');
-          document.getElementById('profile-form').classList.toggle('d-none');
-        }
-    </script>
+<script src="~/js/home.js?v1.03"></script>
+<script>
+    function toggleEdit() {
+        document.getElementById('profile-view').classList.toggle('d-none');
+        document.getElementById('profile-form').classList.toggle('d-none');
+    }
+</script>

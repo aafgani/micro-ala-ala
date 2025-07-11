@@ -13,7 +13,7 @@
     
     var tasksByAssignee = metrics["TasksByAssignee"] as List<dynamic>;
     var tasksByTag = metrics["TasksByTag"] as List<dynamic>;
-    var recentTasks = metrics["RecentTasks"] as List<TodoDto>;
+    var recentTasks = metrics["RecentTasks"] as List<TodolistDto>;
 }
 
 <!-- Task Summary Cards -->
@@ -239,13 +239,13 @@
                         {
                             <div class="time-label">
                                 <span class="bg-secondary">
-                                    @task.UpdatedAt.ToString("MMM dd, yyyy")
+                                    @* @task.UpdatedAt.ToString("MMM dd, yyyy") *@
                                 </span>
                             </div>
                             <div>
                                 <i class="fas fa-tasks bg-info"></i>
                                 <div class="timeline-item">
-                                    <span class="time"><i class="fas fa-clock"></i> @task.UpdatedAt.ToString("HH:mm")</span>
+                                    @* <span class="time"><i class="fas fa-clock"></i> @task.UpdatedAt.ToString("HH:mm")</span> *@
                                     <h3 class="timeline-header">
                                         <a href="#" class="task-title" data-task-id="@task.Id">@task.Title</a>
                                     </h3>
@@ -253,11 +253,11 @@
                                         @(task.Description?.Length > 100 ? task.Description.Substring(0, 100) + "..." : task.Description)
                                     </div>
                                     <div class="timeline-footer">
-                                        <span class="badge @(task.IsCompleted ? "badge-success" : "badge-warning")">
+                                        @* <span class="badge @(task.IsCompleted ? "badge-success" : "badge-warning")">
                                             @(task.IsCompleted ? "Completed" : "Pending")
                                         </span>
                                         <span class="badge badge-info">Due: @task.DueDate.ToShortDateString()</span>
-                                        <span class="badge badge-secondary">@task.AssignedTo</span>
+                                        <span class="badge badge-secondary">@task.AssignedTo</span> *@
                                     </div>
                                 </div>
                             </div>

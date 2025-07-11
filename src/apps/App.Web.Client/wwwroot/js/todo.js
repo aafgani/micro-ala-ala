@@ -369,4 +369,97 @@ function setupNavigation() {
       history.pushState(null, null, href);
     }
   });
+
+  // Handle todo list title click to open edit modal
+  $(document).on("click", ".todolist-title", function (e) {
+    e.preventDefault();
+    var todoListId = $(this).data("todolist-id");
+    openEditTodoListModal(todoListId);
+  });
+
+  // Handle edit button click for todo list
+  $(document).on("click", ".edit-todolist", function (e) {
+    e.preventDefault();
+    var todoListId = $(this).data("todolist-id");
+    openEditTodoListModal(todoListId);
+  });
+
+  // Handle delete button click for todo list
+  $(document).on("click", ".delete-todolist", function (e) {
+    e.preventDefault();
+    var todoListId = $(this).data("todolist-id");
+    var todoListTitle = $('tr[data-todolist-id="' + todoListId + '"]')
+      .find(".todolist-title")
+      .text();
+
+    // Set the todo list title in the confirmation modal
+    $("#deleteTodoListTitle").text(todoListTitle);
+
+    // Set the todo list ID for the confirm button
+    $("#confirmDeleteTodoListBtn").data("todolist-id", todoListId);
+
+    // Show the delete confirmation modal
+    $("#deleteTodoListModal").modal("show");
+  });
+
+  // Handle confirm delete button click for todo list
+  $("#confirmDeleteTodoListBtn").on("click", function () {
+    var todoListId = $(this).data("todolist-id");
+    deleteTodoList(todoListId);
+  });
+
+  // Function to delete a todo list
+  function deleteTodoList(todoListId) {
+    $.ajax({
+      url: "/Todo/DeleteTodoList",
+      type: "POST",
+      data: { id: todoListId },
+      success: function (response) {
+        if (response.success) {
+          // Close the modal
+          $("#deleteTodoListModal").modal("hide");
+
+          // Show success message
+          toastr.success("Todo list deleted successfully");
+
+          // Reload the todo list
+          loadTodoList();
+        } else {
+          toastr.error("Failed to delete todo list: " + response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        toastr.error("Failed to delete todo list: " + error);
+      },
+    });
+  }
+
+  // Function to open edit todo list modal and load data
+  function openEditTodoListModal(todoListId) {
+    // Reset form
+    $("#editTodoListForm")[0].reset();
+
+    // Get todo list data via AJAX
+    $.ajax({
+      url: "/Todo/GetTodoListDetail",
+      type: "GET",
+      data: { id: todoListId },
+      success: function (todoList) {
+        // Populate form fields with todo list data
+        $("#editTodoListId").val(todoList.id);
+        $("#editTodoListTitle").val(todoList.title);
+        $("#editTodoListDescription").val(todoList.description);
+        $("#editTodoListCreatedAt").text(
+          formatDate(new Date(todoList.createdAt))
+        );
+        $("#editTodoListUserId").val(todoList.userId);
+
+        // Show the modal
+        $("#editTodoListModal").modal("show");
+      },
+      error: function (xhr, status, error) {
+        toastr.error("Failed to load todo list details: " + error);
+      },
+    });
+  }
 }
