@@ -15,6 +15,7 @@ builder.Services
 
 builder.Services
     .AddCustomAuthentication(config)
+    .AddCustomAuthorization()
     .AddInternalServices(config);
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>

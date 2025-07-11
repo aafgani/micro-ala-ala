@@ -9,6 +9,7 @@ namespace App.Api.Todo.Features.Todotask.Dtos
         public bool IsCompleted { get; set; }
         public int ToDoListId { get; set; }
         public DateTime? DueDate { get; set; }
+        public string AssignedUserName { get; set; }
 
     }
     public class TaskDto : BaseTaskDto

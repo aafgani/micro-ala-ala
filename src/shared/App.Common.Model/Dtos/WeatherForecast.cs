@@ -1,4 +1,4 @@
-namespace App.Api.Todo.Models;
+namespace App.Common.Domain.Dtos;
 
 public class WeatherForecast
 {
