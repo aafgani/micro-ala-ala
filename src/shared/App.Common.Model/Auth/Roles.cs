@@ -1,4 +1,3 @@
-using System;
 
 namespace App.Common.Domain.Auth;
 
