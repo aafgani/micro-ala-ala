@@ -70,9 +70,9 @@ namespace App.Web.Client.Utilities.CustomViewComponent
                     };
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Handle error gracefully
+                _logger.LogError(ex, "An error occurred while fetching the weather forecast.");
             }
 
             // Fallback if API call fails
