@@ -22,6 +22,7 @@ public class CreateTests : BaseIntegrationTest
             Title = "New Todo List",
             UserId = "1"
         };
+        AuthenticateAsUser("1");
 
         // Act
         var response = await Client.PostAsJsonAsync("/todos", createListDto);

@@ -1,9 +1,15 @@
-﻿using App.Api.Todo.Models;
+﻿using System.Security.Claims;
+using App.Api.Todo.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Test.App.Todo.Integration.Helper;
 using Task = System.Threading.Tasks.Task;
 
 namespace Test.App.Api.Todo.IntegrationTest.Fixture
@@ -21,6 +27,10 @@ namespace Test.App.Api.Todo.IntegrationTest.Fixture
         {
             builder.ConfigureTestServices(services =>
             {
+                // Add test authentication
+                services.AddAuthentication("Test")
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>("Test", options => { });
+
                 var dbContextDescriptor = services.SingleOrDefault(
                     d => d.ServiceType == typeof(DbContextOptions<TodoContext>));
 
@@ -33,9 +43,9 @@ namespace Test.App.Api.Todo.IntegrationTest.Fixture
                 {
                     options.UseNpgsql(_dbFixture.ConnectionString);
                 });
-
-
             });
+
+            builder.UseEnvironment("Testing");
         }
 
         public async Task DisposeAsync()

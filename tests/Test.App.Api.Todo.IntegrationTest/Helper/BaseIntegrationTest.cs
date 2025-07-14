@@ -1,4 +1,5 @@
-﻿using App.Api.Todo.Features.Tags.Data;
+﻿using System.Net.Http.Headers;
+using App.Api.Todo.Features.Tags.Data;
 using App.Api.Todo.Features.Todolist.Data;
 using App.Api.Todo.Features.Todotask.Data;
 using App.Api.Todo.Models;
@@ -46,6 +47,29 @@ namespace Test.App.Todo.Integration.Helper
             {
                 return _scope.ServiceProvider.GetRequiredService<ITodolistRepository>();
             }
+        }
+
+        protected void AuthenticateAsUser(string userId, params string[] additionalRoles)
+        {
+            Client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Test", userId);
+        }
+
+        /// <summary>
+        /// Clears any authentication for testing unauthorized scenarios
+        /// </summary>
+        protected void ClearAuthentication()
+        {
+            Client.DefaultRequestHeaders.Authorization = null;
+        }
+
+        /// <summary>
+        /// Authenticates with a real JWT Bearer token (for more realistic testing)
+        /// </summary>
+        protected void AuthenticateWithBearerToken(string token)
+        {
+            Client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
         }
     }
 }
