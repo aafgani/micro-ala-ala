@@ -32,11 +32,12 @@ public static class CustomAuthentication
 
         services.ConfigureApplicationCookie(options =>
         {
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS only
-            options.Cookie.SameSite = SameSiteMode.Strict; // or Lax
-            options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-            options.SlidingExpiration = true;
+            options.Cookie.Name = "AppWebClientAuth"; // Custom cookie name
+            options.Cookie.HttpOnly = true; // Prevents JavaScript access
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Use HTTPS
+            options.Cookie.SameSite = SameSiteMode.Strict; // Prevents CSRF attacks
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Session expiration
+            options.SlidingExpiration = true; // Resets expiration on each request
         });
         return services;
     }
