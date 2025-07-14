@@ -1,16 +1,59 @@
+using System.Reflection;
 using App.Api.Todo.Extensions;
-using App.Api.Todo.Models;
 using App.Common.Domain.Dtos;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var assembly = Assembly.GetExecutingAssembly();
+var version = assembly.GetName().Version.ToString() ?? "1.0.0";
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Todo API",
+        Version = version,
+        Description = "A microservice for managing todo tasks",
+        Contact = new OpenApiContact
+        {
+            Name = "Your Name",
+            Email = "your.email@domain.com"
+        }
+    });
+
+    // Add JWT Bearer Authentication
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token (without 'Bearer' prefix).\r\n\r\nExample: \"Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...\""
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 var keyVaultUrl = builder.Configuration["KeyVaultUrl"];
 if (!string.IsNullOrEmpty(keyVaultUrl))
@@ -21,6 +64,7 @@ if (!string.IsNullOrEmpty(keyVaultUrl))
 // Setup all the services.
 builder.Services
     .AddApplicationInformation()
+    .AddCustomAuthentication(builder.Configuration)
     .AddConfigurationOptions(builder.Configuration)
     .AddBusinesServices(builder.Configuration)
     .AddInfrastructureServices(builder.Configuration)
@@ -39,10 +83,22 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Todo API V1");
+        c.RoutePrefix = string.Empty;
+
+        // Enable authorization persistence
+        c.EnablePersistAuthorization();
+
+        // Custom title with version info
+        c.DocumentTitle = $"Todo API Documentation - Version {version}";
+    });
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapEndpoints();
 app.MapHealthChecks("/health", new HealthCheckOptions

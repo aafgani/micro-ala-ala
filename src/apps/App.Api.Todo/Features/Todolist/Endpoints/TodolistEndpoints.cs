@@ -9,7 +9,8 @@ namespace App.Api.Todo.Features.Todolist.Endpoints
         {
             var group = routes
                .MapGroup(EndpointGroupNames.TodolistsGroupName)
-               .WithTags(EndpointGroupNames.TodolistsTagName);
+               .WithTags(EndpointGroupNames.TodolistsTagName)
+               .RequireAuthorization();
 
             group.MapGet("/", async (ITodolistService todoListService, [AsParameters] TodoListQueryParam param) =>
             {
