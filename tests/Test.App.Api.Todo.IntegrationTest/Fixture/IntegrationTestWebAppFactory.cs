@@ -1,10 +1,6 @@
-﻿using System.Security.Claims;
-using App.Api.Todo.Models;
+﻿using App.Api.Todo.Models;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +21,11 @@ namespace Test.App.Api.Todo.IntegrationTest.Fixture
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            // Set environment variable
+            // to enable authentication in tests
+            // This allows us to test endpoints that require authentication
+            Environment.SetEnvironmentVariable("EnableAuthentication", "true");
+
             builder.ConfigureTestServices(services =>
             {
                 // Add test authentication
