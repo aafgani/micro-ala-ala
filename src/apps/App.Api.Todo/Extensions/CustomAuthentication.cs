@@ -32,8 +32,6 @@ public static class CustomAuthentication
             };
         });
 
-        services.AddAuthorization();
-
         return services;
     }
 

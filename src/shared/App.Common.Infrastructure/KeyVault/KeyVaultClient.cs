@@ -1,8 +1,8 @@
 ﻿using Azure.Security.KeyVault.Secrets;
 using Azure;
-using App.Common.Domain;
 using Microsoft.Extensions.Options;
 using Azure.Identity;
+using App.Common.Domain.Configuration;
 
 namespace App.Common.Infrastructure.KeyVault
 {

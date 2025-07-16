@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
+using App.Common.Domain.Configuration;
 
 namespace Test.App.Common.Infrastructure.UnitTest.KeyVaultTests
 {
@@ -106,7 +107,7 @@ namespace Test.App.Common.Infrastructure.UnitTest.KeyVaultTests
             var method = typeof(KeyVaultSecretService)
                 .GetMethod("IsTransientError", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-            var result = (bool) method.Invoke(service, new object[] { ex });
+            var result = (bool)method.Invoke(service, new object[] { ex });
 
             // Assert
             result.ShouldBe(expected);

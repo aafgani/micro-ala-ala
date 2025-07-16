@@ -1,4 +1,4 @@
-﻿namespace App.Common.Domain
+﻿namespace App.Common.Domain.Configuration
 {
     public class EntraConfiguration
     {

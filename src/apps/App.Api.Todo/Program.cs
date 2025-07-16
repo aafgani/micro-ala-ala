@@ -65,6 +65,7 @@ if (!string.IsNullOrEmpty(keyVaultUrl))
 builder.Services
     .AddApplicationInformation()
     .AddCustomAuthentication(builder.Configuration)
+    .AddCustomAuthorization(builder.Configuration)
     .AddConfigurationOptions(builder.Configuration)
     .AddBusinesServices(builder.Configuration)
     .AddInfrastructureServices(builder.Configuration)
