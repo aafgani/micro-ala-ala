@@ -29,6 +29,7 @@ namespace Test.App.Todo.Integration.Tags.EndpointTests
             {
                 await TagRepository.CreateAsync(tag);
             }
+            AuthenticateAsUser("1");
 
             // Act
             var response = await Client.GetAsync("/tags");

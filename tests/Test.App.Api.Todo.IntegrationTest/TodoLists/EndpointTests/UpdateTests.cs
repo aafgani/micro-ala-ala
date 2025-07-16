@@ -33,6 +33,7 @@ public class UpdateTests : BaseIntegrationTest
         };
         TodoContext.ToDoLists.AddRange(todoList);
         TodoContext.SaveChanges();
+        AuthenticateAsUser("1");
 
         // Act
         var response = await Client.PutAsJsonAsync("/todos/1", updateListDto);

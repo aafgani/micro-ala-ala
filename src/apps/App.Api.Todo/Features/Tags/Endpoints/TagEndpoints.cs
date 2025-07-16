@@ -8,7 +8,8 @@ namespace App.Api.Todo.Features.Tags.Endpoints
         {
             var group = routes
                 .MapGroup(EndpointGroupNames.TagsGroupName)
-                .WithTags(EndpointGroupNames.TagsTagName);
+                .WithTags(EndpointGroupNames.TagsTagName)
+                .RequireAuthorization();
 
             group.MapGet("/", async (ITagService tagService) =>
             {

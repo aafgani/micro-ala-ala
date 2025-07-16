@@ -23,6 +23,7 @@ public class DeleteTests : BaseIntegrationTest
         };
         TodoContext.ToDoLists.AddRange(todoList);
         TodoContext.SaveChanges();
+        AuthenticateAsUser("1");
 
         // Act
         var response = await Client.DeleteAsync("/todos/1");

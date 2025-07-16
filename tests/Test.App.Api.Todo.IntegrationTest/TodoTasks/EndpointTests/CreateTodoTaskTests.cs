@@ -47,6 +47,7 @@ namespace Test.App.Todo.Integration.TodoTasks.EndpointTests
                     }
                 }
             };
+            AuthenticateAsUser("1");
 
             // Act
             var response = await Client.PostAsJsonAsync("/tasks", createTaskDto);

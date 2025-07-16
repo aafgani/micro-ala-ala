@@ -81,6 +81,7 @@ public class UpdateTodotTaskTests : BaseIntegrationTest
                     }
                 }
         };
+        AuthenticateAsUser("1");
 
         // Act
         var response = await Client.PutAsJsonAsync($"/tasks/{todoTask.Id}", updateTaskDto);
