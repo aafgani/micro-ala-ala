@@ -1,10 +1,14 @@
 using System.Net;
 using System.Security.Claims;
 using App.Common.Domain.Auth;
+using App.Common.Domain.Configuration;
+using App.Web.Client.Services;
 using App.Web.Client.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
@@ -14,21 +18,46 @@ public static class CustomAuthentication
 {
     public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration config)
     {
-        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-           .AddCookie(options =>
-           {
-               options.LoginPath = "/Account/Login"; // Optional override
-               options.AccessDeniedPath = "/Account/AccessDenied"; // Optional
-           })
-           .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
-           {
-               config.Bind("AzureEntra", options);
-               options.ResponseType = OpenIdConnectResponseType.Code;
-               options.Events ??= new OpenIdConnectEvents();
-               options.Events.OnTokenValidated += OnTokenValidatedFunc;
-               options.Events.OnAuthorizationCodeReceived += OnAuthorizationCodeReceivedFunc;
-               options.Events.OnRemoteFailure += OnRemoteFailureFunc;
-           });
+        // ✅ Add Microsoft.Identity.Web services first for token acquisition
+        var todoApiConfig = config.GetSection("TodoApi").Get<TodoApi>();
+        var scopes = todoApiConfig?.Scopes?.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+
+        services.AddMicrosoftIdentityWebAppAuthentication(config, "AzureEntra")
+            .EnableTokenAcquisitionToCallDownstreamApi(scopes)
+            .AddInMemoryTokenCaches();
+
+        // services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        //    .AddCookie(options =>
+        //    {
+        //        options.LoginPath = "/Account/Login"; // Optional override
+        //        options.AccessDeniedPath = "/Account/AccessDenied"; // Optional
+        //    })
+        //    .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+        //    {
+        //        config.Bind("AzureEntra", options);
+
+        //        // ✅ Use authorization code flow with PKCE
+        //        options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+        //        options.UsePkce = true;
+        //        options.SaveTokens = true; // Required for token acquisition
+        //        options.GetClaimsFromUserInfoEndpoint = true;
+
+        //        // ✅ Custom events
+        //        options.Events = new OpenIdConnectEvents
+        //        {
+        //            OnRemoteFailure = OnRemoteFailureFunc,
+        //            OnAuthorizationCodeReceived = OnAuthorizationCodeReceivedFunc,
+        //            OnTokenValidated = OnTokenValidatedFunc
+        //        };
+        //    });
+
+        // ✅ Configure OpenIdConnect events AFTER Microsoft.Identity.Web setup
+        services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+        {
+            options.Events.OnRemoteFailure = OnRemoteFailureFunc;
+            options.Events.OnAuthorizationCodeReceived = OnAuthorizationCodeReceivedFunc;
+            options.Events.OnTokenValidated = OnTokenValidatedFunc;
+        });
 
         services.ConfigureApplicationCookie(options =>
         {
@@ -39,6 +68,10 @@ public static class CustomAuthentication
             options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Session expiration
             options.SlidingExpiration = true; // Resets expiration on each request
         });
+
+        // ✅ Register token service for easy token acquisition
+        services.AddScoped<ITokenService, TokenService>();
+
         return services;
     }
 
@@ -55,7 +88,41 @@ public static class CustomAuthentication
 
     private static async Task OnAuthorizationCodeReceivedFunc(AuthorizationCodeReceivedContext context)
     {
-        await Task.CompletedTask.ConfigureAwait(false);
+        try
+        {
+            var configuration = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+            var todoApi = configuration.GetSection("TodoApi").Get<TodoApi>();
+            var tokenAcquisition = context.HttpContext.RequestServices.GetRequiredService<ITokenAcquisition>();
+
+            var code = context.ProtocolMessage.Code;
+            var scopes = todoApi.Scopes.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // ✅ Acquire token using Microsoft.Identity.Web
+            var accessToken = await tokenAcquisition.GetAccessTokenForUserAsync(
+                scopes,
+                user: context.Principal);
+
+            // ✅ Cache the token for downstream API calls
+            var memoryCache = context.HttpContext.RequestServices.GetRequiredService<IMemoryCache>();
+            var userId = context.Principal?.GetObjectId() ?? context.Principal?.GetNameIdentifierId();
+
+            if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(accessToken))
+            {
+                var cacheKey = $"user_token_{userId}";
+                memoryCache.Set(cacheKey, accessToken, TimeSpan.FromMinutes(55)); // Cache for 55 minutes (before token expires)
+            }
+        }
+        catch (Exception ex)
+        {
+            // ✅ Log the error and handle gracefully
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ITokenAcquisition>>();
+            logger.LogError(ex, "Failed to acquire access token during authorization code received event");
+
+            throw new Exception("Failed to acquire access token during authorization code received event", ex);
+
+            // Don't fail the authentication, let it continue
+            // The token can be acquired later when needed
+        }
     }
 
     private static async Task OnTokenValidatedFunc(TokenValidatedContext context)
@@ -63,7 +130,19 @@ public static class CustomAuthentication
         // TODO: Replace hardcoded roles with roles retrieved from User API.
         //       Add logic to call User API and enrich claims with user-specific roles and info.
 
+        if (context.Principal?.Identity is not ClaimsIdentity identity)
+        {
+            context.Fail("Invalid principal or identity");
+            return;
+        }
+
         var userId = context.Principal.GetNameIdentifierId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            context.Fail("User ID not found in claims");
+            return;
+        }
+
         var sessionId = Guid.NewGuid().ToString();
         var sessionService = context.HttpContext.RequestServices.GetRequiredService<IUserSessionService>();
 
@@ -86,7 +165,6 @@ public static class CustomAuthentication
             Roles.FinanceAdmin
       };
 
-        var identity = (ClaimsIdentity)context.Principal.Identity;
         identity.AddClaim(new Claim("session_id", sessionId));
         identity.AddClaim(new Claim("session_created_at", DateTime.UtcNow.ToString("o"))); // ISO 8601 format
         identity.AddClaim(new Claim("session_expires_at", DateTime.UtcNow.AddMinutes(30).ToString("o"))); // 30 minutes expiration

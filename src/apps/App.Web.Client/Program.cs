@@ -15,7 +15,7 @@ builder.Services
 
 builder.Services
     .AddCustomAuthentication(config)
-    .AddCustomAuthorization()
+    .AddCustomAuthorization(config)
     .AddInternalServices(config);
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -40,8 +40,9 @@ app.UseStatusCodePagesWithReExecute("/error/?statusCode={0}");
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseMiddleware<SessionValidationMiddleware>();
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<SessionValidationMiddleware>();
 
 app.MapControllerRoute(
     name: "default",
