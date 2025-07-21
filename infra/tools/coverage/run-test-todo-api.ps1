@@ -5,7 +5,7 @@ $RootDir = Resolve-Path (Join-Path $ScriptDir "../../..")
 
 $InfraUnitTestProj = Join-Path $RootDir "tests/Test.App.Common.Infrastructure.UnitTest/Test.App.Common.Infrastructure.UnitTest.csproj"
 $UnitTestProj = Join-Path $RootDir "tests/Test.App.Api.Todo.UnitTest/Test.App.Api.Todo.UnitTest.csproj"
-$IntegrationTestProj = Join-Path $RootDir "tests/Test.App.Api.Todo.IntegrationTest/Test.App.Api.Todo.IntegrationTest.csproj"
+$IntegrationTestProj = Join-Path $RootDir "tests/Test.App.Api.Todo.IntegrationTest/Test.App.Todo.Integration.csproj"
 $CoverageDir = "$RootDir/infra/tools/coverage/todo-api"
 $MergedCoverageFile = "$CoverageDir/integration/coverage.opencover.xml"
 $HtmlReportDir = "$CoverageDir/report"

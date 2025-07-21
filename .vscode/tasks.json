@@ -61,13 +61,13 @@
     {
       "label": "Run Tests Todo API",
       "type": "shell",
-      "command": "./tools/coverage/run-test-todo-api.ps1",
+      "command": "./infra/tools/coverage/run-test-todo-api.ps1",
       "problemMatcher": "$msCompile"
     },
     {
       "label": "Run Sonar Scan Todo API",
       "type": "shell",
-      "command": "./tools/coverage/run-sonar-todo-api.ps1",
+      "command": "./infra/tools/coverage/run-sonar-todo-api.ps1",
       "problemMatcher": []
     },
     {
