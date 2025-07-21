@@ -51,4 +51,64 @@ public class GetAllTests : BaseIntegrationTest
         result.ShouldNotBeNull();
         result.Data.Count().ShouldBe(2); // Assuming we only want lists for userId "
     }
+
+
+    [Fact(Skip = "User validation not implemented yet - cannot verify if user exists")]
+    public async Task GivenInvalidUserId_GetAllTodoLists_ShouldReturnNotFoundAsync()
+    {
+        // Arrange
+        var userId = "999"; // Assuming no user with ID 999 exists
+        var param = new TodoListQueryParam
+        {
+            Page = 1,
+            PageSize = 10,
+            UserId = userId
+        };
+        AuthenticateAsUser("1");
+
+        // Act
+        var response = await Client.GetAsync($"/todos?userId={param.UserId}&page={param.Page}&pageSize={param.PageSize}");
+
+        // Assert.
+        response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GivenNoTodoLists_GetAllTodoLists_ShouldReturnEmptyPagedResultAsync()
+    {
+        // Arrange
+        TodoContext.ToDoLists.RemoveRange(TodoContext.ToDoLists);
+        TodoContext.SaveChanges();
+        var userId = "1"; // Assuming a user with ID 1 exists
+        var param = new TodoListQueryParam
+        {
+            Page = 1,
+            PageSize = 10,
+            UserId = userId
+        };
+        AuthenticateAsUser("1");
+
+        // Act
+        var response = await Client.GetAsync($"/todos?userId={param.UserId}&page={param.Page}&pageSize={param.PageSize}");
+
+        // Assert.
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<PagedResult<TodolistDto>>();
+        result.ShouldNotBeNull();
+        result.Data.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task GivenInvalidQueryParams_GetAllTodoLists_ShouldReturnBadRequestAsync()
+    {
+        // Arrange
+        var userId = "1"; // Assuming a user with ID 1 exists
+        AuthenticateAsUser("1");
+
+        // Act
+        var response = await Client.GetAsync($"/todos?userId={userId}&page=invalid&pageSize=10");
+
+        // Assert.
+        response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+    }
 }

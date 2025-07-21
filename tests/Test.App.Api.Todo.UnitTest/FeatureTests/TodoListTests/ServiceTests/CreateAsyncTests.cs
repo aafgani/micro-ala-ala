@@ -2,8 +2,10 @@ using App.Api.Todo.Features.Todolist.Data;
 using App.Api.Todo.Features.Todolist.Mapper;
 using App.Api.Todo.Features.Todolist.Services;
 using App.Api.Todo.Models;
+using App.Common.Domain.Dtos.ApiResponse;
 using App.Common.Domain.Dtos.Todo;
 using Moq;
+using Shouldly;
 
 namespace Test.App.Api.Todo.UnitTest.FeatureTests.TodoListTests.ServiceTests;
 
@@ -54,9 +56,10 @@ public class CreateAsyncTests
         var result = service.CreateAsync(dto).Result;
 
         // Assert
-        Assert.Equal(dto.Id, result.Id);
-        Assert.Equal(dto.Title, result.Title);
-        Assert.Equal(dto.Description, result.Description);
-        Assert.Equal(dto.CreatedAt, result.CreatedAt);
+        result.ShouldBeOfType<Result<TodolistDto, ApiError>>();
+        result.Value.Id.ShouldBe(dto.Id);
+        result.Value.Title.ShouldBe(dto.Title);
+        result.Value.Description.ShouldBe(dto.Description);
+        result.Value.CreatedAt.ShouldBe(dto.CreatedAt);
     }
 }

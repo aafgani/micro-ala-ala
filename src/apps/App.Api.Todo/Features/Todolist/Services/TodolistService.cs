@@ -1,5 +1,7 @@
-﻿using App.Api.Todo.Features.Todolist.Data;
+﻿using System.Net;
+using App.Api.Todo.Features.Todolist.Data;
 using App.Api.Todo.Features.Todolist.Mapper;
+using App.Common.Domain.Dtos.ApiResponse;
 using App.Common.Domain.Dtos.Todo;
 using App.Common.Domain.Pagination;
 
@@ -16,14 +18,14 @@ namespace App.Api.Todo.Features.Todolist.Services
             _mapper = todolistMapper;
         }
 
-        public async Task<TodolistDto> CreateAsync(TodolistDto dto)
+        public async Task<Result<TodolistDto, ApiError>> CreateAsync(TodolistDto dto)
         {
             var todolist = _mapper.ToEntity(dto);
             var result = await _todolistRepository.CreateAsync(todolist);
             return _mapper.ToDto(result);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<Result<bool, ApiError>> DeleteAsync(int id)
         {
             var todolist = await _todolistRepository.GetByIdAsync(id);
             if (todolist is null)
@@ -42,37 +44,47 @@ namespace App.Api.Todo.Features.Todolist.Services
             }
         }
 
-        public async Task<PagedResult<TodolistDto>> GetAllAsync(TodoListQueryParam queryParam)
+        public async Task<Result<PagedResult<TodolistDto>, ApiError>> GetAllAsync(TodoListQueryParam queryParam)
         {
-            if (queryParam == null)
-                throw new ArgumentNullException(nameof(queryParam));
-
-            queryParam.ApplyDefaults();
-
-            var (todolists, totalItems, totalPages) = await _todolistRepository.GetWithParamAsync(queryParam);
-
-            var dtoList = todolists?.Select(_mapper.ToDto).ToList() ?? new List<TodolistDto>();
-
-            return new PagedResult<TodolistDto>
+            try
             {
-                Data = dtoList,
-                Pagination = new PaginationMetadata
+                if (queryParam == null)
+                    throw new ArgumentNullException(nameof(queryParam));
+
+                queryParam.ApplyDefaults();
+
+                var (todolists, totalItems, totalPages) = await _todolistRepository.GetWithParamAsync(queryParam);
+
+                var dtoList = todolists?.Select(_mapper.ToDto).ToList() ?? new List<TodolistDto>();
+
+                return new PagedResult<TodolistDto>
                 {
-                    CurrentPage = queryParam.Page,
-                    PageSize = queryParam.PageSize,
-                    TotalItems = totalItems,
-                    TotalPages = totalPages
-                }
-            };
+                    Data = dtoList,
+                    Pagination = new PaginationMetadata
+                    {
+                        CurrentPage = queryParam.Page,
+                        PageSize = queryParam.PageSize,
+                        TotalItems = totalItems,
+                        TotalPages = totalPages
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiError($"Failed to retrieve todolists: {ex.Message}", HttpStatusCode.InternalServerError); // Uses implicit operator
+            }
         }
 
-        public async Task<TodolistDto?> GetByIdAsync(int id)
+        public async Task<Result<TodolistDto?, ApiError>> GetByIdAsync(int id)
         {
             var task = await _todolistRepository.GetByIdAsync(id);
-            return task is null ? null : _mapper.ToDto(task);
+            if (task is null)
+                return new ApiError("Todolist not found", HttpStatusCode.NotFound);
+
+            return _mapper.ToDto(task);
         }
 
-        public async Task<bool> UpdateAsync(int id, TodolistDto dto)
+        public async Task<Result<bool, ApiError>> UpdateAsync(int id, TodolistDto dto)
         {
             if (dto == null)
                 throw new ArgumentNullException(nameof(dto));

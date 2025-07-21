@@ -2,8 +2,10 @@ using App.Api.Todo.Features.Todolist.Data;
 using App.Api.Todo.Features.Todolist.Mapper;
 using App.Api.Todo.Features.Todolist.Services;
 using App.Api.Todo.Models;
+using App.Common.Domain.Dtos.ApiResponse;
 using App.Common.Domain.Dtos.Todo;
 using Moq;
+using Shouldly;
 
 namespace Test.App.Api.Todo.UnitTest.FeatureTests.TodoListTests.ServiceTests;
 
@@ -28,7 +30,9 @@ public class DeleteAsyncTests
         var result = await service.DeleteAsync(todoListId);
 
         // Assert
-        Assert.True(result);
+        result.ShouldBeOfType<Result<bool, ApiError>>();
+        result.Value.ShouldBeTrue();
+        mockRepository.Verify(r => r.DeleteAsync(It.IsAny<ToDoList>()), Times.Once);
     }
 
     [Fact]
@@ -50,6 +54,7 @@ public class DeleteAsyncTests
         var result = await service.DeleteAsync(todoListId);
 
         // Assert
-        Assert.False(result);
+        result.ShouldBeOfType<Result<bool, ApiError>>();
+        result.Value.ShouldBeFalse();
     }
 }
