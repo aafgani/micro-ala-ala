@@ -3,6 +3,7 @@ using App.Api.Todo.Features.Todotask.Services;
 using App.Api.Todo.Models;
 using App.Common.Domain.Dtos.ApiResponse;
 using App.Common.Domain.Dtos.Todo;
+using App.Common.Domain.Pagination;
 
 namespace App.Api.Todo.Features.Todotask.Endpoints
 {
@@ -18,7 +19,7 @@ namespace App.Api.Todo.Features.Todotask.Endpoints
             group.MapGet("/", async (ITodoTaskService todoTaskService, [AsParameters] TodoTaskQueryParam param) =>
             {
                 var result = await todoTaskService.GetAllAsync(param);
-                return Results.Ok(result);
+                return (EndpointResult<PagedResult<TaskDto>, ApiError>)result;
             });
 
             group.MapGet("{id:int}", async (int id, ITodoTaskService todoTaskService) =>

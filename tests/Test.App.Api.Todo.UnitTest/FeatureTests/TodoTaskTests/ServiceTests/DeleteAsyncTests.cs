@@ -5,7 +5,7 @@ using App.Api.Todo.Models;
 using Moq;
 using Shouldly;
 
-namespace Test.App.Api.Todo.UnitTest.FeatureTests.TodoTaskServiceTests;
+namespace Test.App.Api.Todo.UnitTest.FeatureTests.TodoTaskTests.ServiceTests;
 
 public class DeleteAsyncTests
 {

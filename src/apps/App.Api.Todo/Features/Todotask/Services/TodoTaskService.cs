@@ -40,8 +40,6 @@ namespace App.Api.Todo.Features.Todotask.Services
 
             var (tasks, totalItems, totalPages) = await _todoTaskRepository.GetWithParamAsync(queryParam);
 
-            var test = tasks.Select(task => _taskMapper.ToDto(task));
-
             return new PagedResult<TaskDto>
             {
                 Data = tasks.Select(_taskMapper.ToDto),
