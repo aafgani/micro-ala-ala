@@ -1,6 +1,7 @@
 ﻿using App.Api.Todo.Features.Todotask.Data;
 using App.Api.Todo.Features.Todotask.Dtos;
 using App.Api.Todo.Features.Todotask.Mapper;
+using App.Common.Domain.Dtos.ApiResponse;
 using App.Common.Domain.Dtos.Todo;
 using App.Common.Domain.Pagination;
 
@@ -17,14 +18,14 @@ namespace App.Api.Todo.Features.Todotask.Services
             _taskMapper = taskMapper;
         }
 
-        public async Task<TaskDto> CreateAsync(CreateTaskDto dto)
+        public async Task<Result<TaskDto, ApiError>> CreateAsync(CreateTaskDto dto)
         {
             var task = _taskMapper.ToEntity(dto);
             var result = await _todoTaskRepository.CreateAsync(task);
             return _taskMapper.ToDto(result);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<Result<bool, ApiError>> DeleteAsync(int id)
         {
             var task = await _todoTaskRepository.GetByIdAsync(id);
             if (task is null) return false;
@@ -33,7 +34,7 @@ namespace App.Api.Todo.Features.Todotask.Services
             return true;
         }
 
-        public async Task<PagedResult<TaskDto>> GetAllAsync(TodoTaskQueryParam queryParam)
+        public async Task<Result<PagedResult<TaskDto>, ApiError>> GetAllAsync(TodoTaskQueryParam queryParam)
         {
             queryParam.ApplyDefaults();
 
@@ -54,13 +55,13 @@ namespace App.Api.Todo.Features.Todotask.Services
             };
         }
 
-        public async Task<TaskDto?> GetByIdAsync(int id)
+        public async Task<Result<TaskDto?, ApiError>> GetByIdAsync(int id)
         {
             return await _todoTaskRepository.GetByIdWithRelationsAsync(id)
                 .ContinueWith(task => task.Result is null ? null : _taskMapper.ToDto(task.Result));
         }
 
-        public async Task<bool> UpdateAsync(int id, TaskDto dto)
+        public async Task<Result<bool, ApiError>> UpdateAsync(int id, TaskDto dto)
         {
             // Verify the task exists before attempting to update
             var existingTask = await _todoTaskRepository.GetByIdWithRelationsAsync(id);

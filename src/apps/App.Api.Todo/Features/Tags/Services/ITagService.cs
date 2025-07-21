@@ -1,13 +1,14 @@
-﻿using App.Common.Domain.Dtos.Todo;
+﻿using App.Common.Domain.Dtos.ApiResponse;
+using App.Common.Domain.Dtos.Todo;
 
 namespace App.Api.Todo.Features.Tags.Services
 {
     public interface ITagService
     {
-        Task<IEnumerable<TagDto>> GetAllAsync();
-        Task<TagDto?> GetByIdAsync(int id);
-        Task<TagDto> CreateAsync(TagDto dto);
-        Task<bool> UpdateAsync(int id, TagDto dto);
-        Task<bool> DeleteAsync(int id);
+        Task<Result<IEnumerable<TagDto>, ApiError>> GetAllAsync();
+        Task<Result<TagDto?, ApiError>> GetByIdAsync(int id);
+        Task<Result<TagDto, ApiError>> CreateAsync(TagDto dto);
+        Task<Result<bool, ApiError>> UpdateAsync(int id, TagDto dto);
+        Task<Result<bool, ApiError>> DeleteAsync(int id);
     }
 }

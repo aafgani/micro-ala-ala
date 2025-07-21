@@ -29,9 +29,9 @@ namespace Test.App.Api.Todo.UnitTest.FeatureTests.TagServiceTests
             var result = await tagService.GetAllAsync();
 
             // Assert
-            result.ShouldNotBeNull();
-            result.Count().ShouldBe(2);
-            result.First().Name.ShouldBe("Tag1");
+            result.Value.ShouldNotBeNull();
+            result.Value.Count().ShouldBe(2);
+            result.Value.First().Name.ShouldBe("Tag1");
         }
     }
 }

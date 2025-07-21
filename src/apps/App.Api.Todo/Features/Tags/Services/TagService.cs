@@ -1,5 +1,6 @@
 ﻿using App.Api.Todo.Features.Tags.Data;
 using App.Api.Todo.Features.Tags.Mapper;
+using App.Common.Domain.Dtos.ApiResponse;
 using App.Common.Domain.Dtos.Todo;
 
 namespace App.Api.Todo.Features.Tags.Services
@@ -15,14 +16,14 @@ namespace App.Api.Todo.Features.Tags.Services
             _tagMapper = tagMapper;
         }
 
-        public async Task<TagDto> CreateAsync(TagDto dto)
+        public async Task<Result<TagDto, ApiError>> CreateAsync(TagDto dto)
         {
             var tag = _tagMapper.ToEntity(dto);
             await _tagRepository.CreateAsync(tag);
             return _tagMapper.ToDto(tag);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<Result<bool, ApiError>> DeleteAsync(int id)
         {
             var tag = await _tagRepository.GetByIdAsync(id);
             if (tag is null) return false;
@@ -31,19 +32,19 @@ namespace App.Api.Todo.Features.Tags.Services
             return true;
         }
 
-        public async Task<IEnumerable<TagDto>> GetAllAsync()
+        public async Task<Result<IEnumerable<TagDto>, ApiError>> GetAllAsync()
         {
             var tags = await _tagRepository.GetAllAsync();
-            return tags.Select(_tagMapper.ToDto);
+            return tags.Select(_tagMapper.ToDto).ToList();
         }
 
-        public async Task<TagDto?> GetByIdAsync(int id)
+        public async Task<Result<TagDto?, ApiError>> GetByIdAsync(int id)
         {
             var tag = await _tagRepository.GetByIdAsync(id);
             return tag is null ? null : _tagMapper.ToDto(tag);
         }
 
-        public async Task<bool> UpdateAsync(int id, TagDto dto)
+        public async Task<Result<bool, ApiError>> UpdateAsync(int id, TagDto dto)
         {
             var tag = await _tagRepository.GetByIdAsync(id);
             tag.Name = dto.Name;

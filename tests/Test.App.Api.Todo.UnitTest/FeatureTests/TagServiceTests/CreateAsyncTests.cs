@@ -26,8 +26,8 @@ namespace Test.App.Api.Todo.UnitTest.FeatureTests.TagServiceTests
 
             // Assert.
             mockTagRepository.Verify(repo => repo.CreateAsync(It.Is<Tag>(t => t.Name.Equals(createDto.Name))), Times.Once);
-            result.ShouldNotBeNull();
-            result.Name.ShouldBe(createDto.Name);
+            result.Value.ShouldNotBeNull();
+            result.Value.Name.ShouldBe(createDto.Name);
         }
     }
 }

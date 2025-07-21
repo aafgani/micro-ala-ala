@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using App.Api.Todo.Features.Todotask.Dtos;
 using App.Api.Todo.Models;
 using App.Common.Domain.Dtos.Todo;
+using Shouldly;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
 using Test.App.Todo.Integration.Helper;
 
@@ -85,13 +86,13 @@ public class UpdateTodotTaskTests : BaseIntegrationTest
 
         // Act
         var response = await Client.PutAsJsonAsync($"/tasks/{todoTask.Id}", updateTaskDto);
-        if (!response.StatusCode.Equals(System.Net.HttpStatusCode.NoContent))
-        {
-            var errorContent = await response.Content.ReadAsStringAsync();
-            throw new Exception($"Failed to update task: {errorContent}");
-        }
 
         // Assert
-
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to update todo list: {errorContent}");
+        }
+        response.EnsureSuccessStatusCode();
     }
 }
