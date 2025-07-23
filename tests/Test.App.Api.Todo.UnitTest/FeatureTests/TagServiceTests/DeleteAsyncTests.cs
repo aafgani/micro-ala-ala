@@ -18,14 +18,14 @@ namespace Test.App.Api.Todo.UnitTest.FeatureTests.TagServiceTests
             mockTagRepository.Setup(repo => repo.GetByIdAsync(tagId)).ReturnsAsync(tag);
             mockTagRepository.Setup(repo => repo.DeleteAsync(tag)).Returns(Task.CompletedTask);
             var tagService = new TagService(mockTagRepository.Object, mockMapper.Object);
-            
+
             // Act.
             var result = await tagService.DeleteAsync(tagId);
-            
+
             // Assert.
             mockTagRepository.Verify(repo => repo.GetByIdAsync(tagId), Times.Once);
             mockTagRepository.Verify(repo => repo.DeleteAsync(tag), Times.Once);
-            result.ShouldBeTrue();
-        }   
+            result.Value.ShouldBeTrue();
+        }
     }
 }

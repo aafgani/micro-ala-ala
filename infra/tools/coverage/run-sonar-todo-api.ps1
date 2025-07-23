@@ -5,7 +5,7 @@ $RootDir = Resolve-Path (Join-Path $ScriptDir "../../..")
 
 # === CONFIGURE YOUR PROJECT INFO HERE ===
 $SonarProjectKey = "Todo-Api"
-$SonarToken = "sqp_41de6feb399066c73fdf97c08ea2df9371f3b0f2"
+$SonarToken = "sqp_3a234a34ff11515454f31a9adc97fe393b7e2b69"
 $SonarHostUrl = "http://localhost:9000"
 $SlnPath = Join-Path $RootDir "src/apps/App.Api.Todo/App.Api.Todo.csproj"
 $CoverageDir = "$RootDir/infra/tools/coverage/todo-api"

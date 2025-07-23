@@ -3,6 +3,7 @@ using App.Api.Todo.Features.Todolist.Data;
 using App.Api.Todo.Features.Todolist.Mapper;
 using App.Api.Todo.Features.Todolist.Services;
 using App.Api.Todo.Models;
+using App.Common.Domain.Dtos.ApiResponse;
 using App.Common.Domain.Dtos.Todo;
 using Moq;
 using Shouldly;
@@ -29,7 +30,8 @@ public class UpdateAsyncTests
         var result = await service.UpdateAsync(1, updateDto);
 
         // Assert
-        result.ShouldBeTrue();
+        result.ShouldBeOfType<Result<bool, ApiError>>();
+        result.Value.ShouldBeTrue();
         mockRepository.Verify(repo => repo.UpdateAsync(It.IsAny<ToDoList>()), Times.Once);
     }
 }

@@ -24,8 +24,8 @@ namespace Test.App.Api.Todo.UnitTest.FeatureTests.TagServiceTests
 
             // Assert.
             mockTagRepository.Verify(repo => repo.GetByIdAsync(tagId), Times.Once);
-            result.ShouldNotBeNull();
-            result.Name.ShouldBe(tag.Name);
+            result.Value.ShouldNotBeNull();
+            result.Value.Name.ShouldBe(tag.Name);
         }
     }
 }

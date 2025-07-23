@@ -1,4 +1,7 @@
 ﻿using App.Api.Todo.Features.Tags.Services;
+using App.Api.Todo.Models;
+using App.Common.Domain.Dtos.ApiResponse;
+using App.Common.Domain.Dtos.Todo;
 
 namespace App.Api.Todo.Features.Tags.Endpoints
 {
@@ -14,7 +17,7 @@ namespace App.Api.Todo.Features.Tags.Endpoints
             group.MapGet("/", async (ITagService tagService) =>
             {
                 var result = await tagService.GetAllAsync();
-                return Results.Ok(result);
+                return (EndpointResult<IEnumerable<TagDto>, ApiError>)result;
             })
                 .WithName("GetAllTags")
                 .WithOpenApi();

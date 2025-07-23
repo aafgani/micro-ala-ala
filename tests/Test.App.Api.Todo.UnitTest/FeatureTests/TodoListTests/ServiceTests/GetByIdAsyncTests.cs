@@ -3,8 +3,10 @@ using App.Api.Todo.Features.Todolist.Data;
 using App.Api.Todo.Features.Todolist.Mapper;
 using App.Api.Todo.Features.Todolist.Services;
 using App.Api.Todo.Models;
+using App.Common.Domain.Dtos.ApiResponse;
 using App.Common.Domain.Dtos.Todo;
 using Moq;
+using Shouldly;
 
 namespace Test.App.Api.Todo.UnitTest.FeatureTests.TodoListTests.ServiceTests;
 
@@ -30,8 +32,9 @@ public class GetByIdAsyncTests
         var result = await service.GetByIdAsync(todoListId);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(todoListId, result.Id);
-        Assert.Equal("Test List", result.Title);
+        result.ShouldBeOfType<Result<TodolistDto, ApiError>>();
+        result.Value.ShouldNotBeNull();
+        result.Value.Id.ShouldBe(todoListId);
+        result.Value.Title.ShouldBe("Test List");
     }
 }

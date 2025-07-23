@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace App.Api.Todo.Configuration;
 
+[ExcludeFromCodeCoverage]
 public class ApplicationInformation
 {
     private const string Banner = @"

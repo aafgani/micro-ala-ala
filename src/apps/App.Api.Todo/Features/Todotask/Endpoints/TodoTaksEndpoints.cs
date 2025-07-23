@@ -1,5 +1,9 @@
-﻿using App.Api.Todo.Features.Todotask.Services;
+﻿using App.Api.Todo.Features.Todotask.Dtos;
+using App.Api.Todo.Features.Todotask.Services;
+using App.Api.Todo.Models;
+using App.Common.Domain.Dtos.ApiResponse;
 using App.Common.Domain.Dtos.Todo;
+using App.Common.Domain.Pagination;
 
 namespace App.Api.Todo.Features.Todotask.Endpoints
 {
@@ -15,42 +19,33 @@ namespace App.Api.Todo.Features.Todotask.Endpoints
             group.MapGet("/", async (ITodoTaskService todoTaskService, [AsParameters] TodoTaskQueryParam param) =>
             {
                 var result = await todoTaskService.GetAllAsync(param);
-                return Results.Ok(result);
+                return (EndpointResult<PagedResult<TaskDto>, ApiError>)result;
             });
 
             group.MapGet("{id:int}", async (int id, ITodoTaskService todoTaskService) =>
             {
                 var result = await todoTaskService.GetByIdAsync(id);
 
-                if (result is null)
-                    return Results.NotFound();
-                else
-                    return Results.Ok(result); ;
+                return (EndpointResult<TaskDto?, ApiError>)result;
             });
 
             group.MapDelete("/{id:int}", async (int id, ITodoTaskService todoTaskService) =>
             {
                 var result = await todoTaskService.DeleteAsync(id);
 
-                if (result)
-                    return Results.NoContent();
-                else
-                    return Results.NotFound(id);
+                return (EndpointResult<bool, ApiError>)result;
             });
 
             group.MapPost("/", async (ITodoTaskService todoTaskService, CreateTaskDto dto) =>
             {
                 var result = await todoTaskService.CreateAsync(dto);
-                return Results.Ok(result);
+                return (EndpointResult<TaskDto, ApiError>)result;
             });
 
             group.MapPut("/{id:int}", async (int id, ITodoTaskService todoTaskService, UpdateTaskDto dto) =>
             {
                 var result = await todoTaskService.UpdateAsync(dto.Id, dto);
-                if (result)
-                    return Results.NoContent();
-                else
-                    return Results.NotFound(dto.Id);
+                return (EndpointResult<bool, ApiError>)result;
             });
 
             return group;
