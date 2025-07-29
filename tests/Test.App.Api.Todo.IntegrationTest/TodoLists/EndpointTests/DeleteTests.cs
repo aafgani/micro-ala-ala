@@ -1,3 +1,4 @@
+using System.Net;
 using App.Api.Todo.Models;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
 using Test.App.Todo.Integration.Helper;
@@ -35,5 +36,20 @@ public class DeleteTests : BaseIntegrationTest
 
         // Assert
         response.EnsureSuccessStatusCode();
+    }
+
+    [Fact]
+    public async Task GivenInvalidId_DeleteTodoList_ShouldReturnBadRequestAsync()
+    {
+        // Arrange
+        AuthenticateAsUser("1");
+
+        // Act
+        var response = await Client.DeleteAsync("/todos/0");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        var errorContent = await response.Content.ReadAsStringAsync();
+        Assert.Contains("Id must be greater than zero.", errorContent);
     }
 }

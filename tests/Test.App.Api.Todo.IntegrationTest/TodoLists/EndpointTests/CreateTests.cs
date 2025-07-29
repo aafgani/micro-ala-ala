@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using App.Api.Todo.Models;
 using App.Common.Domain.Dtos.Todo;
@@ -36,5 +37,25 @@ public class CreateTests : BaseIntegrationTest
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<TodolistDto>();
         result.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task GivenInvalidTodoListRequest_CreateTodoList_ShouldReturnBadRequestAsync()
+    {
+        // Arrange
+        var createListDto = new TodolistDto
+        {
+            Title = "", // Invalid title
+            UserId = "1"
+        };
+        AuthenticateAsUser("1");
+
+        // Act
+        var response = await Client.PostAsJsonAsync("/todos", createListDto);
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        var errorContent = await response.Content.ReadAsStringAsync();
+        errorContent.ShouldContain("Title is required");
     }
 }

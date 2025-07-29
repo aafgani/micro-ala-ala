@@ -1,4 +1,5 @@
 ﻿using App.Api.Todo.Configuration;
+using App.Api.Todo.Dtos.Validators;
 using App.Api.Todo.Features.Tags.Data;
 using App.Api.Todo.Features.Tags.Mapper;
 using App.Api.Todo.Features.Tags.Services;
@@ -13,6 +14,8 @@ using App.Common.Domain;
 using App.Common.Domain.Configuration;
 using App.Common.Infrastructure.HealthCheck;
 using App.Common.Infrastructure.KeyVault;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
@@ -92,6 +95,11 @@ namespace App.Api.Todo.Extensions
 
         public static IServiceCollection AddBusinesServices(this IServiceCollection services, IConfiguration configuration)
         {
+            #region Validators
+            services.AddFluentValidationAutoValidation();
+            services.AddValidatorsFromAssemblyContaining<TodolistDtoValidator>();
+            #endregion
+
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<ITodoTaskService, TodoTaskService>();
             services.AddScoped<ITodolistService, TodolistService>();
