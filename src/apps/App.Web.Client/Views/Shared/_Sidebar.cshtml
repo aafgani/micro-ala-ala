@@ -1,4 +1,5 @@
-﻿@{
+﻿@using App.Common.Domain.Auth
+@{
   var user = Context.User;
   bool isAdmin = user.IsInRole(Roles.Admin);
   bool isTodosUser = user.IsInRole(Roles.TodosUser);
@@ -34,13 +35,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/Todo/Dashboard" class="nav-link">
+                <a href="/Todos/Dashboard" class="nav-link">
                   <i class="nav-icon fas fa-chart-pie"></i>
                   <p>Dashboard</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="/Todo/Index" class="nav-link">
+                <a href="/Todos/Index" class="nav-link">
                   <i class="nav-icon fas fa-list"></i>
                   <p>TodoList</p>
                 </a>
