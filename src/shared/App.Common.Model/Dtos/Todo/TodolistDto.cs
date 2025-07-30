@@ -9,5 +9,6 @@
         public string CreatedBy { get; set; }
         public DateTime? DueDate { get; set; }
         public string UserId { get; set; }
+        public bool IsCompleted { get; set; }
     }
 }

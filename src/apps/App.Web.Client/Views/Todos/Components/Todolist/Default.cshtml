@@ -1,0 +1,162 @@
+﻿@using App.Common.Domain.Dtos.Todo
+@using App.Common.Domain.Pagination
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model PagedResult<TodolistDto>
+
+@{
+    // Local function to generate human-readable time remaining descriptions
+    string GetTimeRemaining(DateTime dueDate)
+    {
+        var timeSpan = dueDate - DateTime.Now;
+
+        // If the date is in the past (overdue)
+        if (timeSpan.TotalMinutes < 0)
+        {
+            var overdue = DateTime.Now - dueDate;
+
+            if (overdue.TotalMinutes < 1)
+                return "just overdue";
+
+            if (overdue.TotalMinutes < 60)
+                return $"{(int)overdue.TotalMinutes} minute{((int)overdue.TotalMinutes != 1 ? "s" : "")} overdue";
+
+            if (overdue.TotalHours < 24)
+                return $"{(int)overdue.TotalHours} hour{((int)overdue.TotalHours != 1 ? "s" : "")} overdue";
+
+            if (overdue.TotalDays < 7)
+                return $"{(int)overdue.TotalDays} day{((int)overdue.TotalDays != 1 ? "s" : "")} overdue";
+
+            if (overdue.TotalDays < 30)
+            {
+                var weeks = (int)(overdue.TotalDays / 7);
+                return $"{weeks} week{(weeks != 1 ? "s" : "")} overdue";
+            }
+
+            if (overdue.TotalDays < 365)
+            {
+                var months = (int)(overdue.TotalDays / 30);
+                return $"{months} month{(months != 1 ? "s" : "")} overdue";
+            }
+
+            var yearPast = (int)(overdue.TotalDays / 365);
+            return $"{yearPast} year{(yearPast != 1 ? "s" : "")} overdue";
+        }
+
+        // If the date is in the future (time remaining)
+        if (timeSpan.TotalMinutes < 1)
+            return "due now";
+
+        if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} minute{((int)timeSpan.TotalMinutes != 1 ? "s" : "")} left";
+
+        if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} hour{((int)timeSpan.TotalHours != 1 ? "s" : "")} left";
+
+        if (timeSpan.TotalDays < 7)
+            return $"{(int)timeSpan.TotalDays} day{((int)timeSpan.TotalDays != 1 ? "s" : "")} left";
+
+        if (timeSpan.TotalDays < 30)
+        {
+            var weeks = (int)(timeSpan.TotalDays / 7);
+            return $"{weeks} week{(weeks != 1 ? "s" : "")} left";
+        }
+
+        if (timeSpan.TotalDays < 365)
+        {
+            var months = (int)(timeSpan.TotalDays / 30);
+            return $"{months} month{(months != 1 ? "s" : "")} left";
+        }
+
+        var years = (int)(timeSpan.TotalDays / 365);
+        return $"{years} year{(years != 1 ? "s" : "")} left";
+    }
+
+    // Helper function to get appropriate badge class based on time remaining
+    string GetBadgeClass(DateTime dueDate)
+    {
+        var timeSpan = dueDate - DateTime.Now;
+
+        if (timeSpan.TotalMinutes < 0)
+            return "badge-danger"; // Overdue
+
+        if (timeSpan.TotalHours < 24)
+            return "badge-warning"; // Due soon
+
+        if (timeSpan.TotalDays < 7)
+            return "badge-info"; // Due this week
+
+        return "badge-success"; // Plenty of time
+    }
+}
+
+
+<div class="card" style="position: relative;">
+    <div class="card-header ui-sortable-handle" style="cursor: move;">
+        <h3 class="card-title">
+            <i class="ion ion-clipboard mr-1"></i>
+            To Do List
+        </h3>
+        <div class="card-tools">
+            <ul class="pagination pagination-sm">
+                <li class="page-item"><a href="#" class="page-link">«</a></li>
+                @for (int i = 1; i <= Model.Pagination.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.Pagination.CurrentPage ? "active" : "")">
+                        <a href="#" class="page-link">@i</a>
+                    </li>
+                }
+                <li class="page-item"><a href="#" class="page-link">»</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <ul class="todo-list ui-sortable" data-widget="todo-list">
+            @{
+                foreach (var item in Model.Data)
+                {
+                    <li>
+                        <span class="handle ui-sortable-handle">
+                            <i class="fas fa-ellipsis-v"></i>
+                            <i class="fas fa-ellipsis-v"></i>
+                        </span>
+                        <div class="icheck-primary d-inline ml-2">
+                            <input type="checkbox" checked="@item.IsCompleted">
+                        </div>
+                        <span class="text">@item.Title</span>
+                        <small class="badge @GetBadgeClass(item.CreatedAt)"><i class="far fa-clock"></i>
+                            @GetTimeRemaining(item.CreatedAt)</small>
+                        <div class="tools">
+                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-trash-o"></i>
+                        </div>
+                    </li>
+                }
+            }
+            <li>
+                <span class="handle ui-sortable-handle">
+                    <i class="fas fa-ellipsis-v"></i>
+                    <i class="fas fa-ellipsis-v"></i>
+                </span>
+                <div class="icheck-primary d-inline ml-2">
+                    <input type="checkbox" value="" name="todo3" id="todoCheck3">
+                    <label for="todoCheck3"></label>
+                </div>
+                <span class="text">Let theme shine like a star</span>
+                <small class="badge badge-warning"><i class="far fa-clock"></i> 1 day</small>
+                <div class="tools">
+                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-trash-o"></i>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer clearfix">
+        <button type="button" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Add
+            item</button>
+    </div>
+</div>
