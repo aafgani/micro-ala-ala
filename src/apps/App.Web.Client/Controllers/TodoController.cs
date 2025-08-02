@@ -2,6 +2,7 @@
 using App.Common.Domain.Dtos.Todo;
 using App.Common.Domain.Pagination;
 using App.Web.Client.Extensions;
+using App.Web.Client.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,12 +12,16 @@ namespace App.Web.Client.Controllers
     public class TodoController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ITokenService _tokenService;
+        private readonly IConfiguration _configuration;
         private readonly string _apiBaseUrl;
 
-        public TodoController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public TodoController(IHttpClientFactory httpClientFactory, IConfiguration configuration, ITokenService tokenService)
         {
             _httpClientFactory = httpClientFactory;
             _apiBaseUrl = configuration["TodoApiBaseUrl"] ?? "http://localhost:8081";
+            this._tokenService = tokenService;
+            _configuration = configuration;
         }
 
         // GET: Todo/Dashboard
@@ -69,6 +74,13 @@ namespace App.Web.Client.Controllers
         {
             try
             {
+                foreach (var claim in HttpContext.User.Claims)
+                {
+                    Console.WriteLine($"{claim.Type} = {claim.Value}");
+                }
+
+                var scopes = _configuration["TodoApi:Scopes"]?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+                var accessToken = await _tokenService.GetAccessTokenAsync(HttpContext.User, scopes);
                 var client = _httpClientFactory.CreateClient();
                 var pagedResult = await client.GetFromJsonAsync<PagedResult<TodolistDto>>(_apiBaseUrl + "/todos?Page=1&PageSize=10");
 
