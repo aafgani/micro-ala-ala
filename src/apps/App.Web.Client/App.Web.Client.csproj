@@ -42,8 +42,4 @@
     <ProjectReference Include="..\..\shared\App.Common.Model\App.Common.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Utilities\Enums\" />
-  </ItemGroup>
-
 </Project>

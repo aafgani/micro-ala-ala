@@ -1,6 +1,7 @@
 ﻿using App.Common.Infrastructure.Cache;
 using App.Web.Client.Services.Abstractions;
 using App.Web.Client.Services.Implementation;
+using App.Web.Client.Utilities.Http;
 
 namespace App.Web.Client.Extensions
 {
@@ -10,7 +11,18 @@ namespace App.Web.Client.Extensions
         {
             services.AddSingleton<ICacheService, CacheService>();
             services.AddScoped<IUserSessionService, UserSessionService>();
+            services.AddHttpContextAccessor();
+
+            #region Http Clients
             services.AddHttpClient();
+            services.AddTransient<TodoApiAuthHandler>();
+            services.AddHttpClient<ITodoApiClient, TodoApiClient>(client =>
+            {
+                client.BaseAddress = new Uri(config["TodoApi:BaseUrl"] ?? throw new ArgumentNullException("TodoApiClient BaseAddress"));
+            })
+            .AddHttpMessageHandler<TodoApiAuthHandler>();
+            #endregion
+
             return services;
         }
     }

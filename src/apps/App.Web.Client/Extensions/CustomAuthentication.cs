@@ -2,8 +2,8 @@ using System.Net;
 using System.Security.Claims;
 using App.Common.Domain.Auth;
 using App.Common.Domain.Configuration;
-using App.Web.Client.Services;
 using App.Web.Client.Services.Abstractions;
+using App.Web.Client.Utilities.Http;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -37,7 +37,7 @@ public static class CustomAuthentication
                options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
                options.UsePkce = true;
                options.SaveTokens = true; // Required for token acquisition
-               options.GetClaimsFromUserInfoEndpoint = true;
+               options.GetClaimsFromUserInfoEndpoint = false;
 
                // ✅ Custom events
                options.Events = new OpenIdConnectEvents
@@ -46,6 +46,10 @@ public static class CustomAuthentication
                    OnAuthorizationCodeReceived = OnAuthorizationCodeReceivedFunc,
                    OnTokenValidated = OnTokenValidatedFunc
                };
+
+               options.Scope.Add("openid");
+               options.Scope.Add("profile");
+               options.Scope.Add("email");
            });
 
         // ✅ Configure OpenIdConnect events AFTER Microsoft.Identity.Web setup
@@ -85,37 +89,43 @@ public static class CustomAuthentication
 
     private static async Task OnAuthorizationCodeReceivedFunc(AuthorizationCodeReceivedContext context)
     {
-        await Task.CompletedTask.ConfigureAwait(false);
-        // try
-        // {
-        //     var config = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
-        //     var scopes = config["TodoApi:Scopes"]?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+        try
+        {
+            var config = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<TokenService>>();
 
-        //     var cca = ConfidentialClientApplicationBuilder
-        //         .Create(config["AzureEntra:ClientId"])
-        //         .WithClientSecret(config["AzureEntra:ClientSecret"])
-        //         .WithRedirectUri(config["AzureEntra:RedirectUri"])
-        //         .WithAuthority(new Uri(config["AzureEntra:Authority"]))
-        //         .Build();
+            var scopes = config["TodoApi:Scopes"]?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
 
-        //     var result = await cca.AcquireTokenByAuthorizationCode(scopes, context.ProtocolMessage.Code).ExecuteAsync();
+            var app = ConfidentialClientApplicationBuilder
+                .Create(config["AzureEntra:ClientId"])
+                .WithClientSecret(config["AzureEntra:ClientSecret"])
+                .WithRedirectUri(config["AzureEntra:RedirectUri"])
+                .WithAuthority(new Uri(config["AzureEntra:Authority"]))
+                .Build();
 
-        //     // Optionally persist the account identifier for future silent token calls
-        //     var oid = context.Principal.FindFirst("oid")?.Value;
-        //     var tid = context.Principal.FindFirst("tid")?.Value;
-        //     var accountId = $"{oid}.{tid}";
+            app.AddInMemoryTokenCache();
 
-        //     // Save token or account ID to session/cookie/db if needed
-        //     context.HandleCodeRedemption(result.AccessToken, result.IdToken);
-        // }
-        // catch (Exception ex)
-        // {
-        //     // ✅ Log the error and handle gracefully
-        //     var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ITokenAcquisition>>();
-        //     logger.LogError(ex, "Failed to acquire access token during authorization code received event");
+            var result = await app.AcquireTokenByAuthorizationCode(scopes, context.ProtocolMessage.Code).ExecuteAsync();
 
-        //     throw new Exception("Failed to acquire access token during authorization code received event", ex);
-        // }
+            var accountId = result.Account.HomeAccountId.Identifier;
+            if (context.Principal?.Identity is ClaimsIdentity identity)
+            {
+                identity.AddClaim(new Claim("msal_account_id", accountId));
+            }
+
+            logger.LogInformation("Successfully acquired token and added account {AccountId} to MSAL cache", accountId);
+
+            // Save token or account ID to session/cookie/db if needed
+            context.HandleCodeRedemption(result.AccessToken, result.IdToken);
+        }
+        catch (Exception ex)
+        {
+            // ✅ Log the error and handle gracefully
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ITokenAcquisition>>();
+            logger.LogError(ex, "Failed to acquire access token during authorization code received event");
+
+            throw new Exception("Failed to acquire access token during authorization code received event", ex);
+        }
     }
 
     private static async Task OnTokenValidatedFunc(TokenValidatedContext context)
