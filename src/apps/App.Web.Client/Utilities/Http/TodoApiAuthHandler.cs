@@ -21,6 +21,14 @@ public class TodoApiAuthHandler : DelegatingHandler
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         var accountId = _httpContextAccessor.HttpContext?.User.FindFirst(CustomClaimTypes.MsalAccountId)?.Value;
+        if (string.IsNullOrEmpty(accountId))
+        {
+            return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized)
+            {
+                RequestMessage = request,
+                ReasonPhrase = "Missing or invalid account ID for authentication."
+            };
+        }
         var token = await _tokenService.GetAccessTokenAsync(accountId, _scopes);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         return await base.SendAsync(request, cancellationToken);
