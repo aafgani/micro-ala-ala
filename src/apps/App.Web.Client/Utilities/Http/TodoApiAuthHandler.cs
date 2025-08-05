@@ -15,7 +15,7 @@ public class TodoApiAuthHandler : DelegatingHandler
     {
         _tokenService = tokenService;
         _httpContextAccessor = httpContextAccessor;
-        _scopes = configuration["TodoApi:Scopes"]?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+        _scopes = configuration["TodoApi:Scopes"]?.Split(',', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
