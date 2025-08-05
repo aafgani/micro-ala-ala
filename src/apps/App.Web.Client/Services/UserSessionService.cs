@@ -26,7 +26,7 @@ namespace App.Web.Client.Services.Implementation
                 {
                     return new UserSession(userId, sessionId, DateTime.Now);
                 },
-                TimeSpan.FromMinutes(30),
+                CacheDefaults.DefaultTimeout,
                 cancellationToken);
         }
     }

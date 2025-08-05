@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\ExampleTodoController.cs" />
     <Compile Remove="Utilities\CustomViewComponent\MonthlyExpenseViewComponent.cs" />
     <Compile Remove="Utilities\CustomViewComponent\MonthlyIncomeViewComponent.cs" />
   </ItemGroup>
@@ -32,16 +33,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Identity.Web" Version="3.8.4" />
+    <PackageReference Include="Microsoft.Identity.Web.TokenAcquisition" Version="3.10.0" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="3.8.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\shared\App.Common.Infrastructure\App.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\..\shared\App.Common.Model\App.Common.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Utilities\Enums\" />
   </ItemGroup>
 
 </Project>
