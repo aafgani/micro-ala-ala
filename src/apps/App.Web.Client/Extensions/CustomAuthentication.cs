@@ -94,7 +94,11 @@ public static class CustomAuthentication
             var config = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<TokenService>>();
 
-            var scopes = config["TodoApi:Scopes"]?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+            var scopes = config["TodoApi:Scopes"]?
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim())
+                .Where(s => !string.IsNullOrEmpty(s))
+                .ToArray() ?? Array.Empty<string>();
 
             var app = ConfidentialClientApplicationBuilder
                 .Create(config["AzureEntra:ClientId"])
