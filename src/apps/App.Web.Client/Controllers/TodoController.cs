@@ -66,11 +66,6 @@ namespace App.Web.Client.Controllers
         {
             try
             {
-                foreach (var claim in HttpContext.User.Claims)
-                {
-                    Console.WriteLine($"{claim.Type} = {claim.Value}");
-                }
-
                 var pagedResult = await _todoApiClient.GetTodosAsync(1, 10);
 
                 IEnumerable<TodolistDto> filteredTasks = pagedResult?.Data ?? Enumerable.Empty<TodolistDto>();
