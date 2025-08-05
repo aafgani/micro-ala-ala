@@ -72,6 +72,10 @@ public class TokenService : ITokenService
                     _logger.LogDebug("Successfully acquired token for account {AccountId}", accountId);
 
                     var cacheExpiration = result.ExpiresOn.Subtract(DateTimeOffset.UtcNow).Subtract(TimeSpan.FromMinutes(5));
+                    if (cacheExpiration < TimeSpan.FromMinutes(1))
+                    {
+                        cacheExpiration = TimeSpan.FromMinutes(1); // Minimum cache duration
+                    }
                     return new TokenResult(result.AccessToken, cacheExpiration);
                 },
                 CacheDefaults.DefaultTimeout, // default cache duration
