@@ -16,6 +16,11 @@ public class TodoApiClient : ITodoApiClient
     {
         var response = await _httpClient.GetAsync("/todos?page=" + pageNumber + "&pageSize=" + pageSize, cancellationToken);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<PagedResult<TodolistDto>>(cancellationToken: cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<PagedResult<TodolistDto>>(cancellationToken: cancellationToken);
+        if (result == null)
+        {
+            throw new InvalidOperationException("Failed to deserialize the response to PagedResult<TodolistDto>. The response content was null or invalid.");
+        }
+        return result;
     }
 }
