@@ -18,7 +18,7 @@ namespace App.Web.Client.Extensions
             services.AddTransient<TodoApiAuthHandler>();
             services.AddHttpClient<ITodoApiClient, TodoApiClient>(client =>
             {
-                client.BaseAddress = new Uri(config["TodoApi:BaseUrl"] ?? throw new ArgumentNullException("TodoApiClient BaseAddress"));
+                client.BaseAddress = new Uri(config["TodoApi:BaseUrl"] ?? throw new ArgumentNullException(nameof(config)));
             })
             .AddHttpMessageHandler<TodoApiAuthHandler>();
             #endregion
