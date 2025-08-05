@@ -8,7 +8,7 @@ namespace App.Common.Infrastructure.Cache
         private readonly IMemoryCache _cache = cache;
         private readonly ILogger<CacheService> _logger = logger;
 
-        public async Task<T?> FetchFromCacheOrDataSourceAsync<T>(string cacheKey, Func<CancellationToken, Task<T?>> fallback, TimeSpan cacheTime, CancellationToken cancellationToken)
+        public async Task<T?> FetchFromCacheOrDataSourceAsync<T>(string cacheKey, Func<CancellationToken, Task<T?>> fallback, TimeSpan cacheTime, CancellationToken cancellationToken, Func<T, TimeSpan>? getCustomExpiration = null)
         {
             if (!_cache.TryGetValue(cacheKey, out T? resultValue) ||
                 resultValue == null)
@@ -16,10 +16,10 @@ namespace App.Common.Infrastructure.Cache
                 resultValue = await fallback(cancellationToken);
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                 .SetAbsoluteExpiration(cacheTime);
+                 .SetAbsoluteExpiration(getCustomExpiration?.Invoke(resultValue) ?? cacheTime);
 
                 _cache.Set(cacheKey, resultValue, cacheEntryOptions);
-                _logger.LogTrace("Cached for {@cacheTime}. Cached key: {@cacheKey}", cacheTime, cacheKey);
+                _logger.LogTrace("Cached for {@cacheTime}. Cached key: {@cacheKey}", cacheEntryOptions.AbsoluteExpirationRelativeToNow, cacheKey);
             }
             else
             {
