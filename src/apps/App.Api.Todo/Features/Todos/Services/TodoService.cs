@@ -29,7 +29,7 @@ public class TodoService : ITodoService
     {
         var todo = await _todoRepository.GetByIdAsync(id);
         if (todo is null)
-            return false;
+            return new ApiError("Todolist not found", HttpStatusCode.BadRequest);
 
         await _todoRepository.DeleteAsync(todo);
         return true;
@@ -70,7 +70,7 @@ public class TodoService : ITodoService
     {
         var todo = await _todoRepository.GetByIdAsync(id);
         if (todo is null)
-            return new ApiError("Todolist not found", HttpStatusCode.NotFound);
+            return new ApiError("Todolist not found", HttpStatusCode.BadRequest);
 
         return _mapper.ToDto(todo);
     }
@@ -82,7 +82,7 @@ public class TodoService : ITodoService
 
         var existingTodo = await _todoRepository.GetByIdAsync(id);
         if (existingTodo is null)
-            return new ApiError("Todolist not found", HttpStatusCode.NotFound);
+            return new ApiError("Todolist not found", HttpStatusCode.BadRequest);
 
         existingTodo.Title = dto.Title;
         existingTodo.DueDate = dto.DueDate;
