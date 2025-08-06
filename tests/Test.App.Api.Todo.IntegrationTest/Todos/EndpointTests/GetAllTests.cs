@@ -6,7 +6,7 @@ using Shouldly;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
 using Test.App.Todo.Integration.Helper;
 
-namespace Test.App.Todo.Integration.TodoLists.EndpointTests;
+namespace Test.App.Todo.Integration.Todos.EndpointTests;
 
 public class GetAllTests : BaseIntegrationTest
 {
@@ -15,25 +15,26 @@ public class GetAllTests : BaseIntegrationTest
     }
 
     [Fact]
-    public async Task GivenValidRequest_GetAllTodoLists_ShouldReturnOkAsync()
+    public async Task GivenValidRequest_GetAllTodos_ShouldReturnOkAsync()
     {
         // Arrange
         var userId = "1"; // Assuming a user with ID 1 exists
         var title = "Test List 1";
-        var param = new TodoListQueryParam  
+        var param = new TodoListQueryParam
         {
             Page = 1,
             PageSize = 10,
             UserId = "1"
         };
-        var todoList = new List<ToDoList>
+        var todoList = new List<MyTodo>
         {
-            new ToDoList { Title = title  , UserId = userId },
-            new ToDoList { Title = "Test Lis2", UserId = "2" },
-            new ToDoList { Title = "Test List3", UserId = "3" },
-            new ToDoList { Title = "Test List4", UserId = userId }
+            new MyTodo { Title = title, CreatedBy = userId },
+            new MyTodo { Title = "Test Lis2", CreatedBy = "2" },
+            new MyTodo { Title = "Test List3", CreatedBy = "3" },
+            new MyTodo { Title = "Test List4", CreatedBy = userId }
         };
-        TodoContext.ToDoLists.AddRange(todoList);
+
+        TodoContext.MyTodo.AddRange(todoList);
         TodoContext.SaveChanges();
         AuthenticateAsUser("1");
 
@@ -52,9 +53,8 @@ public class GetAllTests : BaseIntegrationTest
         result.Data.Count().ShouldBe(2); // Assuming we only want lists for userId "
     }
 
-
     [Fact(Skip = "User validation not implemented yet - cannot verify if user exists")]
-    public async Task GivenInvalidUserId_GetAllTodoLists_ShouldReturnNotFoundAsync()
+    public async Task GivenInvalidUserId_GetAllTodos_ShouldReturnNotFoundAsync()
     {
         // Arrange
         var userId = "999"; // Assuming no user with ID 999 exists
@@ -72,9 +72,8 @@ public class GetAllTests : BaseIntegrationTest
         // Assert.
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
     }
-
     [Fact]
-    public async Task GivenNoTodoLists_GetAllTodoLists_ShouldReturnEmptyPagedResultAsync()
+    public async Task GivenNoTodoLists_GetAllTodos_ShouldReturnEmptyPagedResultAsync()
     {
         // Arrange
         TodoContext.ToDoLists.RemoveRange(TodoContext.ToDoLists);
@@ -99,7 +98,7 @@ public class GetAllTests : BaseIntegrationTest
     }
 
     [Fact]
-    public async Task GivenInvalidQueryParams_GetAllTodoLists_ShouldReturnBadRequestAsync()
+    public async Task GivenInvalidQueryParams_GetAllTodos_ShouldReturnBadRequestAsync()
     {
         // Arrange
         var userId = "1"; // Assuming a user with ID 1 exists

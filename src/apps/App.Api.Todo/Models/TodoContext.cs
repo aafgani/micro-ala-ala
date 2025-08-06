@@ -19,6 +19,8 @@ public partial class TodoContext : DbContext
 
     public virtual DbSet<ToDoList> ToDoLists { get; set; }
 
+    public virtual DbSet<MyTodo> MyTodo { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Tag>(entity =>
@@ -57,6 +59,21 @@ public partial class TodoContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__ToDoList__3214EC07E98E7FED");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(NOW())");
+        });
+
+        modelBuilder.Entity<MyTodo>(entity =>
+        {
+            entity.ToTable("Todos");
+
+            entity.HasIndex(e => e.AssignTo, "idx_todos_user_id");
+            entity.HasIndex(e => e.IsCompleted, "idx_todos_is_completed");
+            entity.HasIndex(e => e.DueDate, "idx_todos_due_date");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("NOW()");
+
+            entity.Property(e => e.IsCompleted)
+                .HasDefaultValue(false);
         });
 
         OnModelCreatingPartial(modelBuilder);
