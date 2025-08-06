@@ -80,7 +80,7 @@ VALUES
 ('Read Chapter 1', NULL, FALSE, NULL, 2, 4);
 
 -- Create simplified todos table
-CREATE TABLE "todos" (
+CREATE TABLE "Todos" (
     "id" SERIAL PRIMARY KEY,
     "title" VARCHAR(255) NOT NULL,
     "due_date" TIMESTAMPTZ,
@@ -92,12 +92,12 @@ CREATE TABLE "todos" (
 );
 
 -- Create index for better query performance
-CREATE INDEX "idx_todos_user_id" ON "todos"("user_id");
-CREATE INDEX "idx_todos_is_completed" ON "todos"("is_completed");
-CREATE INDEX "idx_todos_due_date" ON "todos"("due_date");
+CREATE INDEX "idx_todos_user_id" ON "Todos"("user_id");
+CREATE INDEX "idx_todos_is_completed" ON "Todos"("is_completed");
+CREATE INDEX "idx_todos_due_date" ON "Todos"("due_date");
 
 -- Insert sample todos data
-INSERT INTO "todos" ("title", "due_date", "assign_to", "is_completed", "notes", "user_id")
+INSERT INTO "Todos" ("title", "due_date", "assign_to", "is_completed", "notes", "user_id")
 VALUES 
 ('Finish quarterly presentation', '2025-08-15 17:00:00+00', 'john.doe@company.com', FALSE, 'Include Q2 metrics and projections', 'user-123'),
 ('Team standup meeting', '2025-08-07 09:00:00+00', 'team@company.com', TRUE, 'Daily sync with development team', 'user-123'),
