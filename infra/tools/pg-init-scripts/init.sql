@@ -88,16 +88,16 @@ CREATE TABLE "Todos" (
     "is_completed" BOOLEAN NOT NULL DEFAULT FALSE,
     "notes" TEXT,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "user_id" VARCHAR(255) NOT NULL  -- for user-specific todos
+    "created_by" VARCHAR(255) NOT NULL  -- for user-specific todos
 );
 
 -- Create index for better query performance
-CREATE INDEX "idx_todos_user_id" ON "Todos"("user_id");
+CREATE INDEX "idx_todos_user_id" ON "Todos"("created_by");
 CREATE INDEX "idx_todos_is_completed" ON "Todos"("is_completed");
 CREATE INDEX "idx_todos_due_date" ON "Todos"("due_date");
 
 -- Insert sample todos data
-INSERT INTO "Todos" ("title", "due_date", "assign_to", "is_completed", "notes", "user_id")
+INSERT INTO "Todos" ("title", "due_date", "assign_to", "is_completed", "notes", "created_by")
 VALUES 
 ('Finish quarterly presentation', '2025-08-15 17:00:00+00', 'john.doe@company.com', FALSE, 'Include Q2 metrics and projections', 'user-123'),
 ('Team standup meeting', '2025-08-07 09:00:00+00', 'team@company.com', TRUE, 'Daily sync with development team', 'user-123'),

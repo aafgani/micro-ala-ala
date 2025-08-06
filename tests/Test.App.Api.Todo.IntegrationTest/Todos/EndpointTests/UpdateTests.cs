@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http.Json;
 using App.Api.Todo.Models;
 using App.Common.Domain.Dtos.Todo;
@@ -6,11 +7,11 @@ using Shouldly;
 using Test.App.Api.Todo.IntegrationTest.Fixture;
 using Test.App.Todo.Integration.Helper;
 
-namespace Test.App.Todo.Integration.TodoLists.EndpointTests;
+namespace Test.App.Todo.Integration.Todos.EndpointTests;
 
-public class GetByIdTests : BaseIntegrationTest
+public class UpdateTests : BaseIntegrationTest
 {
-    public GetByIdTests(IntegrationTestWebAppFactory factory) : base(factory)
+    public UpdateTests(IntegrationTestWebAppFactory factory) : base(factory)
     {
     }
 
@@ -19,14 +20,15 @@ public class GetByIdTests : BaseIntegrationTest
     {
         // Arrange
         var userId = "1";
-        var todoList = new List<ToDoList>
+        var todoList = new List<MyTodo>
         {
-            new ToDoList { Id = 1, Title = "Test List1", UserId = "1" },
-            new ToDoList { Id = 2, Title = "Test List2", UserId = "2" },
-            new ToDoList { Id = 3, Title = "Test List3", UserId = "3" },
-            new ToDoList { Id = 4, Title = "Test List4", UserId = "4" }
+            new MyTodo { Id = 1, Title = "Test List1", CreatedBy = "1" },
+            new MyTodo { Id = 2, Title = "Test List2", CreatedBy = "2" },
+            new MyTodo { Id = 3, Title = "Test List3", CreatedBy = "3" },
+            new MyTodo { Id = 4, Title = "Test List4", CreatedBy = "4" }
         };
-        TodoContext.ToDoLists.AddRange(todoList);
+
+        TodoContext.MyTodo.AddRange(todoList);
         TodoContext.SaveChanges();
 
         // ✅ Explicitly authenticate this test
