@@ -11,4 +11,5 @@ public interface ITodoService
     Task<Result<TodolistDto, ApiError>> CreateAsync(TodolistDto dto);
     Task<Result<bool, ApiError>> UpdateAsync(int id, TodolistDto dto);
     Task<Result<bool, ApiError>> DeleteAsync(int id);
+    Task<Result<TodoStatsDto, ApiError>> GetStatsAsync(string? userId = null);
 }
