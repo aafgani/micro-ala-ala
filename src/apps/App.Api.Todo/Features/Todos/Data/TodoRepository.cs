@@ -11,6 +11,47 @@ public class TodoRepository : Repository<MyTodo>, ITodoRepository
     {
     }
 
+    public async Task<TodoStatsDto> GetStatsAsync(string userId = null)
+    {
+        var query = Set.AsQueryable();
+
+        if (!string.IsNullOrEmpty(userId))
+        {
+            query = query.Where(c => c.CreatedBy == userId);
+        }
+
+        var stats = await query
+        .GroupBy(t => 1)
+        .Select(g => new TodoStatsDto
+        {
+            TotalTodos = g.Count(),
+            CompletedTodos = g.Count(c => c.IsCompleted),
+            PendingTodos = g.Count(t => !t.IsCompleted),
+            TodaysCreated = g.Count(t => t.CreatedAt.Date == DateTime.UtcNow.Date),
+            TodaysCompleted = g.Count(t => t.IsCompleted && t.CreatedAt.Date == DateTime.UtcNow.Date)
+        })
+        .FirstOrDefaultAsync();
+
+        if (stats == null)
+        {
+            return new TodoStatsDto
+            {
+                TotalTodos = 0,
+                CompletedTodos = 0,
+                PendingTodos = 0,
+                CompletionRate = 0.0,
+                TodaysCreated = 0,
+                TodaysCompleted = 0
+            };
+        }
+
+        stats.CompletionRate = stats.TotalTodos > 0
+            ? Math.Round((double)stats.CompletedTodos / stats.TotalTodos * 100, 1)
+            : 0.0;
+
+        return stats;
+    }
+
     public async Task<(IEnumerable<MyTodo>, int, int)> GetWithParamAsync(TodoListQueryParam param)
     {
         var query = Set.AsQueryable();
