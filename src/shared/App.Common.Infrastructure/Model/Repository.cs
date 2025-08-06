@@ -38,7 +38,7 @@ namespace App.Common.Infrastructure.Model
         public async Task<T> GetByIdAsync(int id)
         {
             var entity = await _db.Set<T>().FindAsync(id);
-            return entity ?? throw new InvalidOperationException($"Entity of type {typeof(T).Name} with ID {id} not found.");
+            return entity;
         }
 
         public async Task<int> UpdateAsync(T entity)
