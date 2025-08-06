@@ -75,6 +75,19 @@ public class TodoService : ITodoService
         return _mapper.ToDto(todo);
     }
 
+    public async Task<Result<TodoStatsDto, ApiError>> GetStatsAsync(string? userId = null)
+    {
+        try
+        {
+            var stats = await _todoRepository.GetStatsAsync(userId);
+            return stats;
+        }
+        catch (Exception ex)
+        {
+            return new ApiError($"Failed to retrieve todo statistics: {ex.Message}", HttpStatusCode.InternalServerError);
+        }
+    }
+
     public async Task<Result<bool, ApiError>> UpdateAsync(int id, TodolistDto dto)
     {
         if (dto == null)
