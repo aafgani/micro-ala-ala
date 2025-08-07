@@ -7,8 +7,11 @@
 <section class="content">
     <div class="container-fluid">
         <div class="row">
-            <section class="col-lg-6" id="todolist-section">
+            <section class="col-lg-4" id="todolist-section">
                 @await Component.InvokeAsync("Todolist")
+            </section>
+            <section class="col-lg-4">
+                @await Component.InvokeAsync("TodolistStats")
             </section>
         </div>
     </div>

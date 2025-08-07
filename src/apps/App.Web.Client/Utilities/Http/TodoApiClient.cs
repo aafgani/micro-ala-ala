@@ -23,4 +23,12 @@ public class TodoApiClient : ITodoApiClient
         }
         return result;
     }
+
+    public async Task<TodoStatsDto> GetTodoStatsAsync(string? userId, CancellationToken cancellationToken = default)
+    {
+        var requestUri = string.IsNullOrEmpty(userId) ? "/todos/stats" : $"/todos/stats?userId={userId}";
+        var response = await _httpClient.GetAsync(requestUri, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<TodoStatsDto>(cancellationToken: cancellationToken);
+    }
 }
