@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using App.Common.Domain.Dtos.Todo
+@using App.Web.Client.Models.ViewComponents
+@model TodoStatsDto
+
+<div class="row">
+    <div class="col-lg-6 col-6">
+    @await Component.InvokeAsync("InformationBox",  
+        new InfoBoxModel{
+            Title = "Total Todos",
+            Value = Model.TotalTodos.ToString(),
+            IconClass = "fas fa-list",
+            BgColorClass = "bg-info"
+            })
+    </div>
+
+    <div class="col-lg-6 col-6">
+        @await Component.InvokeAsync("InformationBox",  
+            new InfoBoxModel{
+                Title = "Completed Todos",
+                Value = Model.CompletedTodos.ToString(),
+                IconClass = "fas fa-check",
+                BgColorClass = "bg-success"
+            })
+    </div>
+
+    <div class="col-lg-6 col-6">
+        @await Component.InvokeAsync("InformationBox",  
+            new InfoBoxModel{
+                Title = "Pending Todos",
+                Value = Model.PendingTodos.ToString(),
+                IconClass = "fas fa-clock",
+                BgColorClass = "bg-warning"
+            })
+    </div>
+    
+    <div class="col-lg-6 col-6">
+        @await Component.InvokeAsync("InformationBox",  
+            new InfoBoxModel{
+                Title = "Completion Rate",
+                Value = $"{Model.CompletionRate:F1}%",
+                IconClass = "fas fa-percentage",
+                BgColorClass = "bg-primary"
+            })
+    </div>
+</div>
