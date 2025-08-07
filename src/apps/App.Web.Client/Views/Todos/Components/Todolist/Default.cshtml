@@ -118,15 +118,15 @@
             @{
                 foreach (var item in Model.Data)
                 {
-                    <li>
+                    <li data-todo-id="@item.Id">
                         <span class="handle ui-sortable-handle">
                             <i class="fas fa-ellipsis-v"></i>
                             <i class="fas fa-ellipsis-v"></i>
                         </span>
                         <div class="icheck-primary d-inline ml-2">
-                            <input type="checkbox" checked="@item.IsCompleted">
+                            <input type="checkbox" id="todoCheck@(item.Id)" checked="@item.IsCompleted" data-todo-id="@item.Id">
                         </div>
-                        <span class="text">@item.Title</span>
+                        <span class="text @(item.IsCompleted ? "text-muted line-through" : "")">@item.Title</span>
                         <small class="badge @GetBadgeClass(item.CreatedAt)"><i class="far fa-clock"></i>
                             @GetTimeRemaining(item.CreatedAt)</small>
                         <div class="tools">
@@ -136,27 +136,24 @@
                     </li>
                 }
             }
-            <li>
-                <span class="handle ui-sortable-handle">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <i class="fas fa-ellipsis-v"></i>
-                </span>
-                <div class="icheck-primary d-inline ml-2">
-                    <input type="checkbox" value="" name="todo3" id="todoCheck3">
-                    <label for="todoCheck3"></label>
-                </div>
-                <span class="text">Let theme shine like a star</span>
-                <small class="badge badge-warning"><i class="far fa-clock"></i> 1 day</small>
-                <div class="tools">
-                    <i class="fas fa-edit"></i>
-                    <i class="fas fa-trash-o"></i>
-                </div>
-            </li>
         </ul>
     </div>
     <!-- /.card-body -->
     <div class="card-footer clearfix">
-        <button type="button" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Add
-            item</button>
+        <button type="button" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Add item</button>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('.todo-list input[type="checkbox"]').on('change', function () {
+            handleTodoStatusChange(this);
+        });
+
+        function handleTodoStatusChange() {
+
+        }
+
+        console.log("Todo list initialized with @Model.Data.Count() items.");
+    });
+</script>
