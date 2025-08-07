@@ -47,6 +47,11 @@ public static class TodoEndpoints
             return (EndpointResult<bool, ApiError>)result;
         });
 
+        group.MapGet("/stats", async (string? userId, ITodoService todoService) =>
+        {
+            var result = await todoService.GetStatsAsync(userId);
+            return (EndpointResult<TodoStatsDto, ApiError>)result;
+        });
 
         return group;
     }
