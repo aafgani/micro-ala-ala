@@ -150,10 +150,66 @@
             handleTodoStatusChange(this);
         });
 
-        function handleTodoStatusChange() {
+        function handleTodoStatusChange(checkbox) {
+            const $checkbox = $(checkbox);
+            const $listItem = $checkbox.closest('li');
+            const todoId = $listItem.data('todo-id');
+            const isCompleted = $checkbox.is(':checked');
+
+            console.log(`Todo ${todoId} status changed to: ${isCompleted}`);
+
+            // Show loading state
+            $checkbox.prop('disabled', true);
+            $listItem.addClass('updating');
+
+            $.ajax({
+                url: `/Todos/UpdateStatus/${todoId}`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ isCompleted: isCompleted }),
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        updateTodoUI($listItem, isCompleted);
+                        console.log('Todo status updated successfully');
+                    } else {
+                        $checkbox.prop('checked', !isCompleted);
+                        console.error('Failed to update todo status:', response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $checkbox.prop('checked', !isCompleted);
+                    console.error('AJAX Error:', error);
+                },
+                complete: function () {
+                    // Remove loading state (always runs)
+                    $checkbox.prop('disabled', false);
+                    $listItem.removeClass('updating');
+                }
+            });
 
         }
 
+        function updateTodoUI(listItem, isCompleted) {
+            const $listItem = $(listItem);
+            const $text = $listItem.find('.text');
+
+            if (isCompleted) {
+                $text.addClass('text-muted line-through');
+            } else {
+                $text.removeClass('text-muted line-through');
+            }
+        }
         console.log("Todo list initialized with @Model.Data.Count() items.");
+
     });
 </script>
+
+<style>
+    .todo-list li.updating {
+        opacity: 0.6;
+        transition: opacity 0.3s;
+    }
+</style>
