@@ -14,6 +14,17 @@
       "console": "internalConsole"
     },
     {
+      "name": "web-ui",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-web-ui",
+      "program": "${workspaceFolder}/src/apps/App.Web.UI/bin/Debug/net8.0/App.Web.UI.dll", // the entry point for the debugger
+      "args": [],
+      "cwd": "${workspaceFolder}/src/apps/App.Web.UI",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    },
+    {
       "name": "todo-api",
       "type": "coreclr",
       "request": "launch",

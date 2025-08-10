@@ -28,6 +28,20 @@
       }
     },
     {
+      "label": "build-web-ui",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/src/apps/App.Web.UI/App.Web.UI.csproj"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
       "label": "build sln",
       "type": "process",
       "command": "dotnet",
