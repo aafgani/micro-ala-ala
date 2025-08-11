@@ -39,6 +39,11 @@
       "provider": "unpkg",
       "library": "pace-js@1.2.4",
       "destination": "wwwroot/lib/pace"
+    },
+    {
+      "provider": "unpkg",
+      "library": "toastr@2.1.4",
+      "destination": "wwwroot/lib/toastr"
     }
   ]
 }

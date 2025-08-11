@@ -25,10 +25,10 @@
                 headers: { "RequestVerificationToken": "@GetAntiXsrfRequestToken()" },
                 data: person,
                 success: function (data) {
-                    console.log(data.id);
+                    toastr.success('Data saved successfully! ID: ' + data.id, 'Success');
                 },
                 error: function (req, status, error) {
-                    alert(error);
+                    toastr.error('Failed to save data : ' + error, 'Error');
                 }
             });
         }
@@ -45,10 +45,10 @@
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(person),
                 success: function (data) {
-                    console.log(data.id)
+                    toastr.success('Data saved successfully! ID: ' + data.id, 'Success');
                 },
                 error: function (req, status, error) {
-                    alert(error);
+                    toastr.error('Failed to save data : ' + error, 'Error');
                 }
             });
         }
