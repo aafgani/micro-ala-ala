@@ -34,6 +34,11 @@
     {
       "library": "axios@1.2.2",
       "destination": "wwwroot/lib/axios/dist"
+    },
+    {
+      "provider": "unpkg",
+      "library": "pace-js@1.2.4",
+      "destination": "wwwroot/lib/pace"
     }
   ]
 }
