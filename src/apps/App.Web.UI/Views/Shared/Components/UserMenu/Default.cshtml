@@ -1,0 +1,25 @@
+﻿<li class="nav-item dropdown user-menu">
+    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+        <img src="~/lib/admin-lte/dist/img/user1-128x128.jpg" class="user-image img-circle elevation-2"
+            alt="User Image">
+        <span class="d-none d-md-inline">Hello @User.GetName()</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        <!-- User Profile Section -->
+        <li class="user-header bg-primary">
+            <img src="~/lib/admin-lte/dist/img/user1-128x128.jpg" class="img-circle elevation-2" alt="User Image">
+            <p>
+                @User.GetName()
+                <small>Member since Jan 2024</small>
+            </p>
+        </li>
+        <!-- User Actions (Profile, Logout) -->
+        <li class="user-footer d-flex justify-content-between">
+            <a href="/Account/Profile" class="btn btn-default btn-flat">Profile</a>
+
+            <form asp-controller="Account" asp-action="Logout" method="post" style="margin: 0;">
+                <button type="submit" class="btn btn-default btn-flat">Sign out</button>
+            </form>
+        </li>
+    </ul>
+</li>
