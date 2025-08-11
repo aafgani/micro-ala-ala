@@ -1,0 +1,12 @@
+﻿@await Component.InvokeAsync("SectionHeader", "Todo")
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col-lg-5">
+                @await Component.InvokeAsync("Todolist")
+            </section>
+            <section class="col-lg-7"></section>
+        </div>
+    </div>
+</section>

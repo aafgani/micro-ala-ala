@@ -14,9 +14,13 @@ public class HomeController : Controller
         _logger = logger;
     }
 
-    [HttpGet("")]
-    [HttpGet("{api}")]
-    public IActionResult Index(string api = "jquery")
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+
+    public IActionResult TestForgery(string api = "jquery")
     {
         var allowedApis = new[] { "jquery", "fetch", "axios" };
 

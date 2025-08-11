@@ -8,3 +8,12 @@ $(document).ajaxStart(function () {
     Pace.restart();
   }
 });
+
+// Show the overlay
+function showCardOverlay(card) {
+  $(card).find(".overlay").show();
+}
+// Hide the overlay
+function hideCardOverlay(card) {
+  $(card).find(".overlay").fadeOut();
+}
