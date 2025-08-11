@@ -131,7 +131,7 @@
             <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button"><i
                     class="fas fa-th-large"></i></a>
         </li> *@
-        @if (!User.Identity.IsAuthenticated)
+        @if (User.Identity.IsAuthenticated)
         {
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
