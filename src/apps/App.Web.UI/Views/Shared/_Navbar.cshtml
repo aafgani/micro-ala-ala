@@ -8,7 +8,7 @@
         <li class="nav-item d-none d-sm-inline-block">
             <a href="index3.html" class="nav-link">Home</a>
         </li>
-        <li class="nav-item d-none d-sm-inline-block">
+        @* <li class="nav-item d-none d-sm-inline-block">
             <a href="#" class="nav-link">Contact</a>
         </li>
         <li class="nav-item dropdown">
@@ -22,7 +22,7 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Contact</a>
             </div>
-        </li>
+        </li> *@
     </ul>
 
     <!-- SEARCH FORM -->
@@ -127,10 +127,37 @@
                 <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
             </div>
         </li>
-        <li class="nav-item">
+        @* <li class="nav-item">
             <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button"><i
                     class="fas fa-th-large"></i></a>
-        </li>
+        </li> *@
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <li class="nav-item dropdown user-menu">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                    <img src="~/images/user.jpg" class="user-image img-circle elevation-2" alt="User Image">
+                    <span class="d-none d-md-inline">Hello @User.GetName()</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    <!-- User Profile Section -->
+                    <li class="user-header bg-primary">
+                        <img src="~/images/user.jpg" class="img-circle elevation-2" alt="User Image">
+                        <p>
+                            @User.GetName()
+                            <small>Member since Jan 2024</small>
+                        </p>
+                    </li>
+                    <!-- User Actions (Profile, Logout) -->
+                    <li class="user-footer d-flex justify-content-between">
+                        <a href="/Account/Profile" class="btn btn-default btn-flat">Profile</a>
+
+                        <form asp-controller="Account" asp-action="Logout" method="post" style="margin: 0;">
+                            <button type="submit" class="btn btn-default btn-flat">Sign out</button>
+                        </form>
+                    </li>
+                </ul>
+            </li>
+        }
     </ul>
 </nav>
 <!-- /.navbar -->
