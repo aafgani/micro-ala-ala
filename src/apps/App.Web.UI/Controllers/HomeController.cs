@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using App.Web.UI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App.Web.UI.Controllers;
 
@@ -33,6 +34,8 @@ public class HomeController : Controller
     //[Consumes("application/x-www-form-urlencoded")]
     public IActionResult PostAjaxData(PersonViewModel personViewModel)
     {
+        Task.Delay(1000).Wait(); // Simulate a delay for demonstration purposes
+
         // Todo: Save person to database
         return Json(new { Id = personViewModel.Id });
     }
@@ -42,6 +45,8 @@ public class HomeController : Controller
     //[Consumes("application/json")]
     public IActionResult PostAjaxJson([FromBody] PersonViewModel personViewModel)
     {
+        Task.Delay(1000).Wait(); // Simulate a delay for demonstration purposes
+
         // Todo: Save person to database
         return Json(new { Id = personViewModel.Id });
     }
@@ -50,5 +55,11 @@ public class HomeController : Controller
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    [Authorize]
+    public IActionResult DashboardV3()
+    {
+        return View();
     }
 }
