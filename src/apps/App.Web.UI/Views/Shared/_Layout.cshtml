@@ -6,9 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - App.Web.UI</title>
     <script type="importmap"></script>
-    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/App.Web.UI.styles.css" asp-append-version="true" /> *@
+
+    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="~/lib/font-awesome/dist/css/all.min.css" />
@@ -16,6 +15,7 @@
     <link rel="stylesheet" href="~/lib/admin-lte/dist/css/adminlte.min.css" />
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap-icons/dist/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     @await RenderSectionAsync("Styles", required: false)
@@ -42,14 +42,13 @@
     </div>
 
     <!-- jQuery -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
     <!-- Bootstrap Bundle -->
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <!-- Admin LTE  -->
-    <script src="~/lib/admin-lte/dist/js/adminlte.min.js"></script>
+    <script src="~/lib/admin-lte/dist/js/adminlte.min.js" asp-append-version="true"></script>
+    <!-- Custom Scripts -->
     <script src="~/js/site.js" asp-append-version="true"></script>
-
 
 </body>
 
