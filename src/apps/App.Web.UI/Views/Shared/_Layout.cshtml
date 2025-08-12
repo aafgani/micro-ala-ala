@@ -79,6 +79,10 @@
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut"
         };
+
+        $(document).ready(function () {
+            $('body').Layout('fixLayoutHeight');
+        });
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
