@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Web.UI.Utilities.CustomViewComponent;
+namespace App.Web.UI.Utilities.CustomViewComponent.Todo;
 
 public class TodoGroupViewComponent : ViewComponent
 {
