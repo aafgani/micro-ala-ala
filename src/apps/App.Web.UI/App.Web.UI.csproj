@@ -1,13 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>0191e877-d523-4276-bfef-1ba49d9a620a</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Utilities\CustomViewComponent\NavBar\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\shared\App.Common.Infrastructure\App.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\shared\App.Common.Model\App.Common.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.8.4" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="3.8.4" />
   </ItemGroup>
 
 </Project>

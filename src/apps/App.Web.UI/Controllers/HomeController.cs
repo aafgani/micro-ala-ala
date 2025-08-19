@@ -2,9 +2,11 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using App.Web.UI.Models;
 using Microsoft.AspNetCore.Authorization;
+using App.Common.Domain.Auth;
 
 namespace App.Web.UI.Controllers;
 
+[Authorize(policy: Policy.AuthenticatedUser)]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -61,7 +63,6 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
-    [Authorize]
     public IActionResult DashboardV3()
     {
         return View();

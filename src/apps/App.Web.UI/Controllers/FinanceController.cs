@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Web.UI.Controllers
 {
 
+    [Authorize]
     public class FinanceController : Controller
     {
         private readonly ILogger<FinanceController> _logger;
