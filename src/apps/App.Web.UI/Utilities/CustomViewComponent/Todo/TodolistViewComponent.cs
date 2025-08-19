@@ -1,9 +1,17 @@
+using App.Web.UI.Utilities.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Web.UI.Utilities.CustomViewComponent.Todo;
 
 public class TodolistViewComponent : ViewComponent
 {
+    private readonly ITodoApiClient _todoApiClient;
+
+    public TodolistViewComponent(ITodoApiClient todoApiClient)
+    {
+        _todoApiClient = todoApiClient;
+    }
+
     public async Task<IViewComponentResult> InvokeAsync()
     {
         // Here you can fetch data from a database or any other source
