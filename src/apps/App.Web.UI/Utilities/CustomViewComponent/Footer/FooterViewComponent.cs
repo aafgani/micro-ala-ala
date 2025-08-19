@@ -1,7 +1,7 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Web.UI.Utilities.CustomViewComponent;
+namespace App.Web.UI.Utilities.CustomViewComponent.Footer;
 
 public class FooterViewComponent : ViewComponent
 {

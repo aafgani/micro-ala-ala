@@ -1,4 +1,6 @@
-﻿<div class="card">
+﻿@model PagedResult<TodolistDto>
+
+<div class="card">
     <div class="card-header ui-sortable-handle" style="cursor: move;">
         <h3 class="card-title">
             <i class="ion ion-clipboard mr-1"></i>
@@ -50,6 +52,25 @@
                     <i class="fas fa-trash-o"></i>
                 </div>
             </li>
+            @foreach (var item in Model.Data)
+            {
+                <li>
+                    <span class="handle ui-sortable-handle">
+                        <i class="fas fa-ellipsis-v"></i>
+                        <i class="fas fa-ellipsis-v"></i>
+                    </span>
+                    <div class="icheck-primary d-inline ml-2">
+                        <input type="checkbox" value="" name="@item.Id" id="todoCheck@item.Id">
+                        <label for="todoCheck@item.Id"></label>
+                    </div>
+                    <span class="text">@item.Title</span>
+                    <small class="badge badge-info"><i class="far fa-clock"></i> 1 hours</small>
+                    <div class="tools">
+                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-trash-o"></i>
+                    </div>
+                </li>
+            }
         </ul>
     </div>
     <!-- /.card-body -->
