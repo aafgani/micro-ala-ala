@@ -1,11 +1,12 @@
 using System.Net;
 using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Web.UI.Controllers
 {
+    [AllowAnonymous]
     [Route("error")]
-    [ApiController]
     public class ErrorController : Controller
     {
         [HttpGet]
