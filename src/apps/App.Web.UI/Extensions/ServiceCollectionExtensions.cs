@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using App.Common.Infrastructure.Cache;
 using App.Web.UI.Utilities.Http;
 using App.Web.UI.Utilities.Session;
@@ -18,6 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient<ITodoApiClient, TodoApiClient>(client =>
         {
             client.BaseAddress = new Uri(config["TodoApi:BaseUrl"] ?? throw new ArgumentNullException(nameof(config)));
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         })
         .AddHttpMessageHandler<TodoApiAuthHandler>();
         #endregion

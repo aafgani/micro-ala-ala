@@ -5,11 +5,48 @@ namespace App.Web.UI.Utilities.Http;
 
 public class TodoApiClient : ITodoApiClient
 {
+    private readonly ILogger<TodoApiClient> _logger;
     private readonly HttpClient _httpClient;
 
-    public TodoApiClient(HttpClient httpClient)
+    public TodoApiClient(HttpClient httpClient, ILogger<TodoApiClient> logger)
     {
         _httpClient = httpClient;
+        _logger = logger;
+    }
+
+    public async Task<TodolistDto> CreateTodoAsync(TodolistDto todolistDto)
+    {
+        try
+        {
+            _logger.LogInformation("Creating todo: {@TodolistDto}", todolistDto);
+
+            var response = await _httpClient.PostAsJsonAsync("/todos", todolistDto);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to create todo. Status: {StatusCode}, Error: {Error}",
+                    response.StatusCode, error);
+
+                throw new HttpRequestException(
+                    $"Failed to create todo. Status: {response.StatusCode}, Error: {error}");
+            }
+
+            var createdTodo = await response.Content.ReadFromJsonAsync<TodolistDto>();
+
+            if (createdTodo == null)
+            {
+                throw new InvalidOperationException("Created todo response was null");
+            }
+
+            _logger.LogInformation("Successfully created todo: {@CreatedTodo}", createdTodo);
+            return createdTodo;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating todo: {@TodolistDto}", todolistDto);
+            throw;
+        }
     }
 
     public async Task<PagedResult<TodolistDto>> GetTodosAsync(int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default)

@@ -1,4 +1,100 @@
-﻿@model PagedResult<TodolistDto>
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+@model PagedResult<TodolistDto>
+
+@{
+    // Local function to generate human-readable time remaining descriptions
+    string GetTimeRemaining(DateTime dueDate)
+    {
+        var timeSpan = dueDate - DateTime.Now;
+
+        // If the date is in the past (overdue)
+        if (timeSpan.TotalMinutes < 0)
+        {
+            var overdue = DateTime.Now - dueDate;
+
+            if (overdue.TotalMinutes < 1)
+                return "just overdue";
+
+            if (overdue.TotalMinutes < 60)
+                return $"{(int)overdue.TotalMinutes} minute{((int)overdue.TotalMinutes != 1 ? "s" : "")} overdue";
+
+            if (overdue.TotalHours < 24)
+                return $"{(int)overdue.TotalHours} hour{((int)overdue.TotalHours != 1 ? "s" : "")} overdue";
+
+            if (overdue.TotalDays < 7)
+                return $"{(int)overdue.TotalDays} day{((int)overdue.TotalDays != 1 ? "s" : "")} overdue";
+
+            if (overdue.TotalDays < 30)
+            {
+                var weeks = (int)(overdue.TotalDays / 7);
+                return $"{weeks} week{(weeks != 1 ? "s" : "")} overdue";
+            }
+
+            if (overdue.TotalDays < 365)
+            {
+                var months = (int)(overdue.TotalDays / 30);
+                return $"{months} month{(months != 1 ? "s" : "")} overdue";
+            }
+
+            var yearPast = (int)(overdue.TotalDays / 365);
+            return $"{yearPast} year{(yearPast != 1 ? "s" : "")} overdue";
+        }
+
+        // If the date is in the future (time remaining)
+        if (timeSpan.TotalMinutes < 1)
+            return "due now";
+
+        if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} minute{((int)timeSpan.TotalMinutes != 1 ? "s" : "")} left";
+
+        if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} hour{((int)timeSpan.TotalHours != 1 ? "s" : "")} left";
+
+        if (timeSpan.TotalDays < 7)
+            return $"{(int)timeSpan.TotalDays} day{((int)timeSpan.TotalDays != 1 ? "s" : "")} left";
+
+        if (timeSpan.TotalDays < 30)
+        {
+            var weeks = (int)(timeSpan.TotalDays / 7);
+            return $"{weeks} week{(weeks != 1 ? "s" : "")} left";
+        }
+
+        if (timeSpan.TotalDays < 365)
+        {
+            var months = (int)(timeSpan.TotalDays / 30);
+            return $"{months} month{(months != 1 ? "s" : "")} left";
+        }
+
+        var years = (int)(timeSpan.TotalDays / 365);
+        return $"{years} year{(years != 1 ? "s" : "")} left";
+    }
+
+    // Helper function to get appropriate badge class based on time remaining
+    string GetBadgeClass(DateTime dueDate)
+    {
+        var timeSpan = dueDate - DateTime.Now;
+
+        if (timeSpan.TotalMinutes < 0)
+            return "badge-danger"; // Overdue
+
+        if (timeSpan.TotalHours < 24)
+            return "badge-warning"; // Due soon
+
+        if (timeSpan.TotalDays < 7)
+            return "badge-info"; // Due this week
+
+        return "badge-success"; // Plenty of time
+    }
+}
+
+@functions
+{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
 
 <div class="card">
     <div class="card-header ui-sortable-handle" style="cursor: move;">
@@ -14,6 +110,40 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
+        <div class="mailbox-controls">
+            <!-- Check all button -->
+            <button type="button" class="btn btn-default btn-sm checkbox-toggle" id="addTodo">
+                <i class="fas fa-plus"></i>
+            </button>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default btn-sm">
+                    <i class="far fa-square"></i>
+                </button>
+                <button type="button" class="btn btn-default btn-sm">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+                <button type="button" class="btn btn-default btn-sm">
+                    <i class="fas fa-share"></i>
+                </button>
+            </div>
+            <!-- /.btn-group -->
+            <button type="button" class="btn btn-default btn-sm">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+            <div class="float-right">
+                1-50/200
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <!-- /.btn-group -->
+            </div>
+            <!-- /.float-right -->
+        </div>
         <ul class="todo-list ui-sortable" data-widget="todo-list">
             <li>
                 <!-- drag handle -->
@@ -64,7 +194,8 @@
                         <label for="todoCheck@item.Id"></label>
                     </div>
                     <span class="text">@item.Title</span>
-                    <small class="badge badge-info"><i class="far fa-clock"></i> 1 hours</small>
+                    <small class="badge @GetBadgeClass(item.CreatedAt)"><i class="far fa-clock"></i>
+                        @GetTimeRemaining(item.CreatedAt)</small>
                     <div class="tools">
                         <i class="fas fa-edit"></i>
                         <i class="fas fa-trash-o"></i>
@@ -74,17 +205,114 @@
         </ul>
     </div>
     <!-- /.card-body -->
-    <div class="overlay">
+    @* <div class="overlay">
         <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-    </div>
+    </div> *@
 </div>
 <!-- /.card -->
 
-@section Scripts {
-    <script>
-        // Initialize sortable
-        $(document).ready(function () {
+<div class="modal fade" id="addTodoModal" tabindex="-1" aria-labelledby="addTodoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTodoModalLabel">Add New Todo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addTodoForm">
+                    <div class="form-group">
+                        <label for="todoTitle">Title</label>
+                        <input type="text" class="form-control" id="todoTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="todoDueDate">Due Date</label>
+                        <input type="datetime-local" class="form-control" id="todoDueDate">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveTodoBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-        });
-    </script>
-}
+<script type="text/javascript">
+    (function checkJquery() {
+        if (window.jQuery) {
+            $(document).ready(function () {
+                console.log('Document ready - Todo component initialized');
+
+                // Add click handler for Add Todo button
+                $('#addTodo').on('click', function (e) {
+                    e.preventDefault();
+                    console.log('Add todo button clicked');
+                    $('#addTodoModal').modal('show');
+                });
+
+                // Modal event handlers
+                $('#addTodoModal')
+                    .on('show.bs.modal', function () {
+                        console.log('Modal is showing');
+                    })
+                    .on('shown.bs.modal', function () {
+                        console.log('Modal is visible');
+                        $('#todoTitle').focus(); // Auto-focus the title field
+                    })
+                    .on('hide.bs.modal', function () {
+                        console.log('Modal is hiding');
+                    })
+                    .on('hidden.bs.modal', function () {
+                        console.log('Modal is hidden');
+                        // Clear form
+                        $('#addTodoForm').trigger('reset');
+                    });
+
+                // Save button handler
+                $('#saveTodoBtn').on('click', function () {
+                    var title = $('#todoTitle').val().trim();
+                    var dueDate = $('#todoDueDate').val();
+
+                    if (!title) {
+                        alert('Please enter a title');
+                        $('#todoTitle').focus();
+                        return;
+                    }
+
+                    // TODO: Add API call here
+                    const todo = { Title: title, DueDate: dueDate };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("AddTodo", "Todo")",
+                        headers: { "RequestVerificationToken": "@GetAntiXsrfRequestToken()" },
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(todo),
+                        success: function (data) {
+                            toastr.success('Data saved successfully! ID: ' + data.id, 'Success');
+                        },
+                        error: function (req, status, error) {
+                            toastr.error('Failed to save data : ' + error, 'Error');
+                        }
+                    });
+
+                    // Hide modal after successful save
+                    $('#addTodoModal').modal('hide');
+                });
+
+                // Form submission handler (for Enter key)
+                $('#addTodoForm').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#saveTodoBtn').click();
+                });
+            });
+        } else {
+            console.log('Waiting for jQuery...');
+            setTimeout(checkJquery, 100);
+        }
+    })();
+</script>
