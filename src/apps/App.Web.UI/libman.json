@@ -1,0 +1,78 @@
+{
+  "version": "3.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "jquery@3.7.1",
+      "destination": "wwwroot/lib/jquery/dist",
+      "files": ["jquery.min.js", "jquery.min.map"]
+    },
+    {
+      "library": "jquery-validate@1.21.0",
+      "destination": "wwwroot/lib/jquery-validation/dist",
+      "files": ["jquery.validate.min.js"]
+    },
+    {
+      "library": "jquery-validation-unobtrusive@4.0.0",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive/dist",
+      "files": [
+        "jquery.validate.unobtrusive.js",
+        "jquery.validate.unobtrusive.min.js"
+      ]
+    },
+    {
+      "library": "bootstrap@4.6.0",
+      "destination": "wwwroot/lib/bootstrap/dist",
+      "files": [
+        "css/bootstrap.min.css",
+        "css/bootstrap.min.css.map",
+        "js/bootstrap.bundle.js",
+        "js/bootstrap.bundle.js.map",
+        "js/bootstrap.bundle.min.js",
+        "js/bootstrap.bundle.min.js.map",
+        "js/bootstrap.js"
+      ]
+    },
+    {
+      "library": "admin-lte@3.2.0",
+      "destination": "wwwroot/lib/admin-lte/dist",
+      "files": [
+        "css/adminlte.css",
+        "css/adminlte.css.map",
+        "css/adminlte.min.css",
+        "js/adminlte.js",
+        "js/adminlte.js.map",
+        "js/adminlte.min.js",
+        "js/adminlte.min.js.map",
+        "img/*"
+      ]
+    },
+    {
+      "library": "font-awesome@6.5.0",
+      "destination": "wwwroot/lib/font-awesome/dist"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "bootstrap-icons@1.11.3",
+      "destination": "wwwroot/lib/bootstrap-icons/dist",
+      "files": ["font/bootstrap-icons.css", "font/bootstrap-icons.min.css"]
+    },
+    {
+      "library": "axios@1.2.2",
+      "destination": "wwwroot/lib/axios/dist",
+      "files": ["axios.min.js", "axios.min.js.map"]
+    },
+    {
+      "provider": "unpkg",
+      "library": "pace-js@1.2.4",
+      "destination": "wwwroot/lib/pace",
+      "files": ["pace.min.js", "themes/blue/pace-theme-minimal.css"]
+    },
+    {
+      "provider": "unpkg",
+      "library": "toastr@2.1.4",
+      "destination": "wwwroot/lib/toastr",
+      "files": ["build/toastr.min.js", "build/toastr.min.css"]
+    }
+  ]
+}

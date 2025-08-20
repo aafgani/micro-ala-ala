@@ -1,0 +1,76 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <a href="/" class="brand-link text-center">
+        <span class="brand-text font-weight-light">My Admin App</span>
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+                <li class="nav-item @(currentController == "Dashboard" && currentAction == "Index" ? "menu-open" : "")">
+                    <a href="@Url.Action("Index", "Dashboard")"
+                        class="nav-link @(currentController == "Dashboard" ? "active" : "")">
+                        <i class=" nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            Dashboard
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="@Url.Action("Finance", "Dashboard")"
+                                class="nav-link  @(currentController == "Dashboard" && currentAction == "Finance" ? "active" : "")">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Finance</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Todo", "Dashboard")"
+                                class="nav-link  @(currentController == "Dashboard" && currentAction == "Todo" ? "active" : "")">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Todo List</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("DashboardV2", "Home")"
+                        class="nav-link @(currentController == "Home" && currentAction == "DashboardV2" ? "active" : "")">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Simple Link
+                            <span class="right badge badge-danger">New</span>
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "Todo")"
+                        class="nav-link @(currentController == "Todo" && currentAction == "Index" ? "active" : "")">
+                        <i class="nav-icon fa-solid fa-list-check"></i>
+                        <p>
+                            Todo List
+                            <span class="right badge" title="Feature in progress"> 🚧</span>
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "Finance")"
+                        class="nav-link @(currentController == "Finance" && currentAction == "Index" ? "active" : "")">
+                        <i class="nav-icon fa-solid fa-dollar-sign"></i>
+                        <p>
+                            Finance
+                            <span class="right badge" title="Feature in progress"> 🚧</span>
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</aside>

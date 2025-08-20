@@ -5,7 +5,7 @@
     <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$(MSBuildThisFileDirectory)</RepositoryRoot>
 
     <!-- Control target execution based on project name -->
-    <RunVersionTargets Condition="'$(MSBuildProjectName)' == 'App.Api.Todo' Or '$(MSBuildProjectName)' == 'App.Web.Client'">true</RunVersionTargets>
+    <RunVersionTargets Condition="'$(MSBuildProjectName)' == 'App.Api.Todo' Or '$(MSBuildProjectName)' == 'App.Web.UI'">true</RunVersionTargets>
   </PropertyGroup>
 
   <Target Name="EnsureVersionFileExists" BeforeTargets="ReadVersionFromFile" Condition="'$(RunVersionTargets)' == 'true'">
