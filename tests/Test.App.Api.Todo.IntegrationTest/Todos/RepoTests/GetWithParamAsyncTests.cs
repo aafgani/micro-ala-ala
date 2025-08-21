@@ -42,7 +42,7 @@ public class GetWithParamAsyncTests : BaseIntegrationTest, IAsyncLifetime
         };
         TodoContext.MyTodo.AddRange(todoList);
         TodoContext.SaveChanges();
-        var queryParam = new TodoListQueryParam { Title = title, UserId = userId, Page = 1, PageSize = 10 };
+        var queryParam = new TodoListQueryParam { Title = title, CreatedBy = userId, Page = 1, PageSize = 10 };
 
         // Act
         var (result, totalItem, totalPage) = await TodoRepository.GetWithParamAsync(queryParam);
@@ -71,7 +71,7 @@ public class GetWithParamAsyncTests : BaseIntegrationTest, IAsyncLifetime
         };
         TodoContext.MyTodo.AddRange(todoList);
         TodoContext.SaveChanges();
-        var queryParam = new TodoListQueryParam { Title = title, UserId = userId, Page = 1, PageSize = 10, SortBy = "title", SortDirection = "asc" };
+        var queryParam = new TodoListQueryParam { Title = title, CreatedBy = userId, Page = 1, PageSize = 10, SortBy = "title", SortDirection = "asc" };
 
         // Act
         var (result, totalItem, totalPage) = await TodoRepository.GetWithParamAsync(queryParam);

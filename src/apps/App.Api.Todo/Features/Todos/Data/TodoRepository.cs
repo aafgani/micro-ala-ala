@@ -61,9 +61,9 @@ public class TodoRepository : Repository<MyTodo>, ITodoRepository
             query = query.Where(c => c.Title == param.Title);
         }
 
-        if (!string.IsNullOrEmpty(param.UserId))
+        if (!string.IsNullOrEmpty(param.CreatedBy))
         {
-            query = query.Where(c => c.CreatedBy == param.UserId);
+            query = query.Where(c => c.CreatedBy == param.CreatedBy);
         }
 
         if (!string.IsNullOrEmpty(param.SortBy))
@@ -73,13 +73,13 @@ public class TodoRepository : Repository<MyTodo>, ITodoRepository
                 "desc" => param.SortBy.ToLower() switch
                 {
                     "title" => query.OrderByDescending(c => c.Title),
-                    "userid" => query.OrderByDescending(c => c.AssignTo),
+                    "createdAt" => query.OrderByDescending(c => c.CreatedAt),
                     _ => query.OrderByDescending(c => c.Title)
                 },
                 "asc" => param.SortBy.ToLower() switch
                 {
                     "title" => query.OrderBy(c => c.Title),
-                    "userid" => query.OrderBy(c => c.AssignTo),
+                    "createdAt" => query.OrderBy(c => c.CreatedAt),
                     _ => query.OrderBy(c => c.Title)
                 }
             };

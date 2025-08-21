@@ -9,9 +9,7 @@
         public DateTime? DueDate { get; set; }
         public string UserId { get; set; }
         public bool IsCompleted { get; set; }
-        public DateTime? DueDate { get; set; }
         public DateTime CreatedAt { get; set; }
-        public string CreatedBy { get; set; }
 
     }
 }

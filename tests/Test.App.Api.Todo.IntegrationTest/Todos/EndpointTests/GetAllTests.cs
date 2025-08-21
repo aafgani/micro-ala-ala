@@ -24,7 +24,7 @@ public class GetAllTests : BaseIntegrationTest
         {
             Page = 1,
             PageSize = 10,
-            UserId = "1"
+            CreatedBy = "1"
         };
         var todoList = new List<MyTodo>
         {
@@ -39,7 +39,7 @@ public class GetAllTests : BaseIntegrationTest
         AuthenticateAsUser("1");
 
         // Act
-        var response = await Client.GetAsync($"/todos?userId={param.UserId}&page={param.Page}&pageSize={param.PageSize}");
+        var response = await Client.GetAsync($"/todos?userId={param.CreatedBy}&page={param.Page}&pageSize={param.PageSize}");
 
         // Assert.
         if (!response.IsSuccessStatusCode)
@@ -62,12 +62,12 @@ public class GetAllTests : BaseIntegrationTest
         {
             Page = 1,
             PageSize = 10,
-            UserId = userId
+            CreatedBy = userId
         };
         AuthenticateAsUser("1");
 
         // Act
-        var response = await Client.GetAsync($"/todos?userId={param.UserId}&page={param.Page}&pageSize={param.PageSize}");
+        var response = await Client.GetAsync($"/todos?userId={param.CreatedBy}&page={param.Page}&pageSize={param.PageSize}");
 
         // Assert.
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -83,12 +83,12 @@ public class GetAllTests : BaseIntegrationTest
         {
             Page = 1,
             PageSize = 10,
-            UserId = userId
+            CreatedBy = userId
         };
         AuthenticateAsUser("1");
 
         // Act
-        var response = await Client.GetAsync($"/todos?userId={param.UserId}&page={param.Page}&pageSize={param.PageSize}");
+        var response = await Client.GetAsync($"/todos?userId={param.CreatedBy}&page={param.Page}&pageSize={param.PageSize}");
 
         // Assert.
         response.EnsureSuccessStatusCode();

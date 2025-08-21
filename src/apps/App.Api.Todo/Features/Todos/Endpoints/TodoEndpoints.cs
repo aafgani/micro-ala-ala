@@ -1,3 +1,4 @@
+using App.Api.Todo.Extensions;
 using App.Api.Todo.Features.Todos.Services;
 using App.Api.Todo.Models;
 using App.Common.Domain.Dtos.ApiResponse;
@@ -15,8 +16,10 @@ public static class TodoEndpoints
                       .WithTags(EndpointGroupNames.TodosTagName)
                       .RequireAuthorization();
 
-        group.MapGet("/", async (ITodoService todoService, [AsParameters] TodoListQueryParam param) =>
+        group.MapGet("/", async (ITodoService todoService, [AsParameters] TodoListQueryParam param, HttpContext httpContext) =>
             {
+                var userId = httpContext.User?.GetEmail();
+                param.CreatedBy = userId;
                 var result = await todoService.GetAllAsync(param);
                 return (EndpointResult<PagedResult<TodolistDto>, ApiError>)result;
             });
