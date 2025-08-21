@@ -1,0 +1,26 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build 
+WORKDIR /src
+
+# Install libman CLI (global tool)
+RUN dotnet tool install -g Microsoft.Web.LibraryManager.Cli
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+# Copy the rest of the source code
+COPY [".version" , ".version"]
+COPY ["Directory.Build.props" , "Directory.Build.props"]
+COPY ["./src/apps/App.Web.UI/" , "apps/App.Web.UI/"]
+COPY ["./src/shared/App.Common.Abstractions/" , "shared/App.Common.Abstractions/"]
+COPY ["./src/shared/App.Common.Infrastructure/" , "shared/App.Common.Infrastructure/"]
+COPY ["./src/shared/App.Common.Model/" , "shared/App.Common.Model/"]
+
+# Run libman restore
+WORKDIR /src/apps/App.Web.UI
+RUN libman restore
+
+# Publish the application
+RUN dotnet publish "App.Web.UI.csproj" -c Release -o /app/published /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine  
+WORKDIR /app
+COPY --from=build ./app/published .
+ENTRYPOINT [ "dotnet", "App.Web.UI.dll" ]
