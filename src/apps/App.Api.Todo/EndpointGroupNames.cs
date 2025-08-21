@@ -10,5 +10,8 @@
 
         public const string TagsGroupName = "/tags";
         public const string TagsTagName = "Tags";
+
+        public const string TodosGroupName = "/todos";
+        public const string TodosTagName = "Todos";
     }
 }

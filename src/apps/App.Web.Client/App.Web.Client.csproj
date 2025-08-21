@@ -42,4 +42,10 @@
     <ProjectReference Include="..\..\shared\App.Common.Model\App.Common.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Utilities\Enums\" />
+    <Folder Include="Views\Shared\Components\Todos\Components\" />
+    <Folder Include="Views\Shared\Components\Todos\Components\TodoList\" />
+  </ItemGroup>
+
 </Project>

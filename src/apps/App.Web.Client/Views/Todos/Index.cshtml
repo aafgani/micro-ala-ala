@@ -1,0 +1,26 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col-lg-4" id="todolist-section">
+                @await Component.InvokeAsync("Todolist")
+            </section>
+            <section class="col-lg-4">
+                @await Component.InvokeAsync("TodolistStats")
+            </section>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+}

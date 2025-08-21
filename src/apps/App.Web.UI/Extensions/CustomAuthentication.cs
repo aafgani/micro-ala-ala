@@ -1,7 +1,7 @@
 using System.Net;
 using System.Security.Claims;
 using App.Common.Domain.Auth;
-using App.Web.UI.Utilities.Http;
+using App.Web.UI.Utilities.Http.Token;
 using App.Web.UI.Utilities.Session;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

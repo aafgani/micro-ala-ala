@@ -26,10 +26,10 @@ services:
       - EnableAuthentication=${Todo_Api_Enable_Authentication}
     depends_on:
       - todo-db
-  app-web-client:
+  app-web-ui:
     build:
       context: .
-      dockerfile: src/apps/App.Web.Client/dockerfile
+      dockerfile: src/apps/App.Web.UI/dockerfile
     ports:
       - "8080:8080" # Map port 8080 in the container to port 8080 on the host
     environment:

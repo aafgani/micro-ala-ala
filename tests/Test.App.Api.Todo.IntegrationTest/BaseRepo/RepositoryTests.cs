@@ -71,10 +71,8 @@ public class RepoTests : BaseIntegrationTest
         await _repository.DeleteAsync(entity);
 
         // Assert
-        await Should.ThrowAsync<Exception>(async () =>
-        {
-            await _repository.GetByIdAsync(createdEntity.Id);
-        });
+        var deletedEntity = await _repository.GetByIdAsync(createdEntity.Id);
+        deletedEntity.ShouldBeNull();
     }
 
     [Fact]

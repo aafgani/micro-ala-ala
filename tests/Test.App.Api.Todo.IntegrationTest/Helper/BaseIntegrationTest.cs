@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using App.Api.Todo.Features.Tags.Data;
-using App.Api.Todo.Features.Todolist.Data;
+using App.Api.Todo.Features.Todos.Data;
 using App.Api.Todo.Features.Todotask.Data;
 using App.Api.Todo.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -41,11 +41,11 @@ namespace Test.App.Todo.Integration.Helper
             }
         }
 
-        protected ITodolistRepository TodoListRepository
+        protected ITodoRepository TodoRepository
         {
             get
             {
-                return _scope.ServiceProvider.GetRequiredService<ITodolistRepository>();
+                return _scope.ServiceProvider.GetRequiredService<ITodoRepository>();
             }
         }
 

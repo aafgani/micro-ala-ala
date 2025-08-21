@@ -274,7 +274,7 @@
                 // Save button handler
                 $('#saveTodoBtn').on('click', function () {
                     var title = $('#todoTitle').val().trim();
-                    var dueDate = $('#todoDueDate').val();
+                    var dueDate = new Date($('#todoDueDate').val()).toISOString();
 
                     if (!title) {
                         alert('Please enter a title');
