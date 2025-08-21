@@ -6,12 +6,10 @@ namespace App.Api.Todo.Models;
 public sealed class ErrorResult<TError> : IResult
 {
     private readonly TError _error;
-    private readonly int _statusCode;
 
-    public ErrorResult(TError error, int statusCode = StatusCodes.Status400BadRequest)
+    public ErrorResult(TError error)
     {
         _error = error;
-        _statusCode = statusCode;
     }
 
     public Task ExecuteAsync(HttpContext httpContext)
