@@ -11,7 +11,7 @@ namespace App.Common.Infrastructure.Cache
         public async Task<T?> FetchFromCacheOrDataSourceAsync<T>(string cacheKey, Func<CancellationToken, Task<T?>> fallback, TimeSpan cacheTime, CancellationToken cancellationToken, Func<T, TimeSpan>? getCustomExpiration = null)
         {
             if (!_cache.TryGetValue(cacheKey, out T? resultValue) ||
-                resultValue == null)
+                EqualityComparer<T>.Default.Equals(resultValue, default))
             {
                 resultValue = await fallback(cancellationToken);
 
