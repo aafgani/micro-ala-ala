@@ -4,7 +4,7 @@ using App.Common.Infrastructure.Cache;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
 
-namespace App.Web.UI.Utilities.Http;
+namespace App.Web.UI.Utilities.Http.Token;
 
 public class TokenService : ITokenService
 {

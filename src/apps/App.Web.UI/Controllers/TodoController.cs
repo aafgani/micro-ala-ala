@@ -2,7 +2,7 @@ using App.Common.Domain.Auth;
 using App.Common.Domain.Dtos.Todo;
 using App.Web.UI.Extensions;
 using App.Web.UI.Models.Dto;
-using App.Web.UI.Utilities.Http;
+using App.Web.UI.Utilities.Http.Todo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +27,7 @@ public class TodoController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult AddTodo([FromBody] AddTodo model)
+    public async Task<IActionResult> AddTodoAsync([FromBody] AddTodo model)
     {
         _logger.LogInformation("Adding Todo with Title: {Title} and DueDate: {DueDate}", model.Title, model.DueDate);
 
@@ -56,7 +56,7 @@ public class TodoController : Controller
             UserId = User.GetEmail()
         };
 
-        var result = _todoApiClient.CreateTodoAsync(todolistDto);
+        var result = await _todoApiClient.CreateTodoAsync(todolistDto);
         return Json(result);
     }
 }

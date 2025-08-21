@@ -1,4 +1,4 @@
-namespace App.Web.UI.Utilities.Http;
+namespace App.Web.UI.Utilities.Http.Token;
 
 public interface ITokenService
 {
