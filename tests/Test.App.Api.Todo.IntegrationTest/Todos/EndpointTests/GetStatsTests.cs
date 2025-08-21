@@ -16,30 +16,42 @@ public class GetStatsTests : BaseIntegrationTest
     [Fact]
     public async Task GivenValidRequest_GetTodoStats_ShouldReturnOkAsync()
     {
-        // Arrange
-        var userId = "1"; //
-        var todos = new List<MyTodo>
+        // Start transaction
+        await using var transaction = await TodoContext.Database.BeginTransactionAsync();
+
+        try
         {
-            new MyTodo { Title = "Todo 1", IsCompleted = true, CreatedBy = userId, CreatedAt = DateTime.UtcNow.AddDays(-1) }, // Yesterday
-            new MyTodo { Title = "Todo 2", IsCompleted = false, CreatedBy = userId, CreatedAt = DateTime.UtcNow }, // Today
-            new MyTodo { Title = "Todo 3", IsCompleted = true, CreatedBy = "2", CreatedAt = DateTime.UtcNow } // Today
-        };
-        TodoContext.MyTodo.AddRange(todos);
-        TodoContext.SaveChanges();
-        AuthenticateAsUser(userId);
+            // Arrange
+            var userId = "1";
+            var todos = new List<MyTodo>
+            {
+                new MyTodo { Title = "Todo 1", IsCompleted = true, CreatedBy = userId, CreatedAt = DateTime.UtcNow.AddDays(-1) },
+                new MyTodo { Title = "Todo 2", IsCompleted = false, CreatedBy = userId, CreatedAt = DateTime.UtcNow },
+                new MyTodo { Title = "Todo 3", IsCompleted = true, CreatedBy = "2", CreatedAt = DateTime.UtcNow }
+            };
 
-        // Act
-        var response = await Client.GetAsync("/todos/stats");
+            TodoContext.MyTodo.AddRange(todos);
+            await TodoContext.SaveChangesAsync();
+            AuthenticateAsUser(userId);
 
-        // Assert
-        response.EnsureSuccessStatusCode();
-        var stats = await response.Content.ReadFromJsonAsync<TodoStatsDto>();
-        stats.ShouldNotBeNull();
-        stats.TotalTodos.ShouldBe(3);
-        stats.CompletedTodos.ShouldBe(2);
-        stats.PendingTodos.ShouldBe(1);
-        stats.TodaysCreated.ShouldBe(2); // Todo 2 and Todo 3 are both created today
-        stats.TodaysCompleted.ShouldBe(1); // Only Todo 3 is completed today
+            // Act
+            var response = await Client.GetAsync("/todos/stats");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var stats = await response.Content.ReadFromJsonAsync<TodoStatsDto>();
+            stats.ShouldNotBeNull();
+            stats.TotalTodos.ShouldBe(3);
+            stats.CompletedTodos.ShouldBe(2);
+            stats.PendingTodos.ShouldBe(1);
+            stats.TodaysCreated.ShouldBe(2);
+            stats.TodaysCompleted.ShouldBe(1);
+        }
+        finally
+        {
+            // Rollback transaction to clean up
+            await transaction.RollbackAsync();
+        }
     }
 
     [Fact]

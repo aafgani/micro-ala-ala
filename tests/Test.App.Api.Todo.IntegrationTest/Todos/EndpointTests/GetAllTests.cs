@@ -18,13 +18,12 @@ public class GetAllTests : BaseIntegrationTest
     public async Task GivenValidRequest_GetAllTodos_ShouldReturnOkAsync()
     {
         // Arrange
-        var userId = "1"; // Assuming a user with ID 1 exists
+        var userId = "test1@example.com"; // Assuming a user with ID 1 exists
         var title = "Test List 1";
         var param = new TodoListQueryParam
         {
             Page = 1,
-            PageSize = 10,
-            CreatedBy = "1"
+            PageSize = 10
         };
         var todoList = new List<MyTodo>
         {
@@ -39,7 +38,7 @@ public class GetAllTests : BaseIntegrationTest
         AuthenticateAsUser("1");
 
         // Act
-        var response = await Client.GetAsync($"/todos?userId={param.CreatedBy}&page={param.Page}&pageSize={param.PageSize}");
+        var response = await Client.GetAsync($"/todos?page={param.Page}&pageSize={param.PageSize}");
 
         // Assert.
         if (!response.IsSuccessStatusCode)
