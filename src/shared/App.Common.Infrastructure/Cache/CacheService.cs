@@ -31,7 +31,7 @@ namespace App.Common.Infrastructure.Cache
 
         public Task<bool> IsExists<T>(string cacheKey)
         {
-            bool exists = _cache.TryGetValue(cacheKey, out T? resultValue) && resultValue != null;
+            bool exists = _cache.TryGetValue(cacheKey, out T? resultValue) && !EqualityComparer<T>.Default.Equals(resultValue, default);
             return Task.FromResult(exists);
         }
 
