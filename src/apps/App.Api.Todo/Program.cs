@@ -96,8 +96,12 @@ if (app.Environment.IsDevelopment())
         c.DocumentTitle = $"Todo API Documentation - Version {version}";
     });
 }
+else
+{
+    // Enforce HTTPS only in staging/production
+    app.UseHttpsRedirection();
+}
 
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
