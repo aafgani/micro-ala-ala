@@ -41,6 +41,7 @@ app.UseRouting();
 
 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
 
+app.UseForwardedHeaders();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<SessionValidationMiddleware>();
