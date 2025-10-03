@@ -9,7 +9,7 @@ ENV PATH="$PATH:/root/.dotnet/tools"
 COPY [".version" , ".version"]
 COPY ["Directory.Build.props" , "Directory.Build.props"]
 COPY ["./src/apps/App.Web.UI/" , "apps/App.Web.UI/"]
-COPY ["./src/shared/App.Common.Abstractions/" , "shared/App.Common.Abstractions/"]
+# COPY ["./src/shared/App.Common.Abstractions/" , "shared/App.Common.Abstractions/"]
 COPY ["./src/shared/App.Common.Infrastructure/" , "shared/App.Common.Infrastructure/"]
 COPY ["./src/shared/App.Common.Model/" , "shared/App.Common.Model/"]
 

@@ -5,7 +5,7 @@ WORKDIR /src
 COPY [".version" , ".version"]
 COPY ["Directory.Build.props" , "Directory.Build.props"]
 COPY ["./src/apps/App.Api.Todo/" , "apps/App.Api.Todo/"]
-COPY ["./src/shared/App.Common.Abstractions/" , "shared/App.Common.Abstractions/"]
+# COPY ["./src/shared/App.Common.Abstractions/" , "shared/App.Common.Abstractions/"]
 COPY ["./src/shared/App.Common.Infrastructure/" , "shared/App.Common.Infrastructure/"]
 COPY ["./src/shared/App.Common.Model/" , "shared/App.Common.Model/"]
 
