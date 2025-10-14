@@ -34,12 +34,17 @@ services:
       - "8080:8080" # Map port 8080 in the container to port 8080 on the host
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - AzureEntra:ClientSecret=${Web_Client_AZURE_ENTRA_CLIENT_SECRET}
+      - AzureEntra__ClientSecret=${Web_Client_AZURE_ENTRA_CLIENT_SECRET}
       - TodoApiBaseUrl=http://todo-api:8080 # Use service name for internal communication
-      - AzureEntra:RedirectUri=${Web_client_Azure_Entra_Redirect_Uri}
-      - TodoApi:BaseUrl=${Web_Client_Todo_Api_Base_Url}
+      - AzureEntra__RedirectUri=${Web_client_Azure_Entra_Redirect_Uri}
+      - TodoApi__BaseUrl=${Web_Client_Todo_Api_Base_Url}
     depends_on:
       - todo-api
 
 volumes:
   pg-data:
+
+networks:
+  default:
+    external:
+      name: shared-net
