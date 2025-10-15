@@ -2,6 +2,7 @@
 using App.Api.Todo.Models;
 using App.Common.Domain.Dtos.ApiResponse;
 using App.Common.Domain.Dtos.Todo;
+using Microsoft.AspNetCore.Mvc;
 
 namespace App.Api.Todo.Features.Tags.Endpoints
 {
@@ -14,8 +15,10 @@ namespace App.Api.Todo.Features.Tags.Endpoints
                 .WithTags(EndpointGroupNames.TagsTagName)
                 .RequireAuthorization();
 
-            group.MapGet("/", async (ITagService tagService) =>
+            group.MapGet("/", async (ITagService tagService, [FromServices] ILoggerFactory loggerFactory) =>
             {
+                var logger = loggerFactory.CreateLogger("TagEndpoints");
+                logger.LogInformation("Fetching all tags");
                 var result = await tagService.GetAllAsync();
                 return (EndpointResult<IEnumerable<TagDto>, ApiError>)result;
             })

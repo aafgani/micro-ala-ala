@@ -1,12 +1,14 @@
 using System.Reflection;
 using App.Api.Todo.Extensions;
 using App.Common.Domain.Dtos;
+using App.Common.Infrastructure.Observability;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureObservability("Todo API");
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
