@@ -1,9 +1,11 @@
+using App.Common.Infrastructure.Observability;
 using App.Web.UI.Extensions;
 using App.Web.UI.Utilities.Session;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Identity.Web.UI;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureObservability("Web UI");
 var config = builder.Configuration
     .AddEnvironmentVariables()
     .Build();

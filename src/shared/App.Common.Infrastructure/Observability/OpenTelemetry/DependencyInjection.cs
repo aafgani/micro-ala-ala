@@ -39,7 +39,7 @@ internal static class DependencyInjection
             });
         });
 
-        // builder.Services.AddOpenTelemetry()
+        builder.Services.AddOpenTelemetry()
         //      .WithTracing(tracing =>
         //      {
         //          tracing
@@ -56,24 +56,24 @@ internal static class DependencyInjection
         //                  options.Protocol = OtlpExportProtocol.HttpProtobuf;
         //              });
         //      })
-        //      .WithMetrics(metrics =>
-        //      {
-        //          metrics
-        //              .SetResourceBuilder(resourceBuilder)
-        //              .AddAspNetCoreInstrumentation()
-        //              .AddHttpClientInstrumentation()
-        //              .AddRuntimeInstrumentation()
-        //              .AddProcessInstrumentation()
-        //              .AddMeter("Microsoft.AspNetCore.Hosting")
-        //              .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
-        //              .AddMeter("System.Net.Http")
-        //              .AddMeter("System.Net.NameResolution")
-        //              .AddOtlpExporter(options =>
-        //              {
-        //                  options.Endpoint = new Uri("http://172.19.14.206:4318/v1/metrics");
-        //                  options.Protocol = OtlpExportProtocol.HttpProtobuf;
-        //              });
-        //      });
+             .WithMetrics(metrics =>
+             {
+                 metrics
+                     .SetResourceBuilder(resourceBuilder)
+                     .AddAspNetCoreInstrumentation() // requests/sec, duration, error rates, etc.
+                     .AddHttpClientInstrumentation() // outgoing HTTP call metrics.
+                     .AddRuntimeInstrumentation() // GC, heap size, thread count, etc.
+                     .AddProcessInstrumentation() // CPU, memory, I/O from process-level
+                     .AddMeter("Microsoft.AspNetCore.Hosting")
+                     .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
+                     .AddMeter("System.Net.Http")
+                     .AddMeter("System.Net.NameResolution")
+                     .AddOtlpExporter(options =>
+                     {
+                         options.Endpoint = new Uri(otelEndpoint + "/v1/metrics");
+                         options.Protocol = OtlpExportProtocol.HttpProtobuf;
+                     });
+             });
 
         return builder;
     }
