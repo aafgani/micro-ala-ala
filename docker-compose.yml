@@ -43,8 +43,7 @@ services:
 
 volumes:
   pg-data:
-
-networks:
-  default:
-    external:
-      name: shared-net
+# networks:
+#   default:
+#     external:
+#       name: shared-net
