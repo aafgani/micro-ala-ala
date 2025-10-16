@@ -9,11 +9,13 @@ namespace App.Api.Todo.Features.Tags.Services
     {
         private readonly ITagRepository _tagRepository;
         private readonly ITagMapper _tagMapper;
+        private readonly ILogger<TagService> _logger;
 
-        public TagService(ITagRepository tagRepository, ITagMapper tagMapper)
+        public TagService(ITagRepository tagRepository, ITagMapper tagMapper, ILogger<TagService> logger)
         {
             _tagRepository = tagRepository;
             _tagMapper = tagMapper;
+            _logger = logger;
         }
 
         public async Task<Result<TagDto, ApiError>> CreateAsync(TagDto dto)
@@ -34,6 +36,7 @@ namespace App.Api.Todo.Features.Tags.Services
 
         public async Task<Result<IEnumerable<TagDto>, ApiError>> GetAllAsync()
         {
+            _logger.LogInformation("Retrieving all tags from the repository.");
             var tags = await _tagRepository.GetAllAsync();
             return tags.Select(_tagMapper.ToDto).ToList();
         }
