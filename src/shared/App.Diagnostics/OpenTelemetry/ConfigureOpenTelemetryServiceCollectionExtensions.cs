@@ -1,3 +1,4 @@
+using Npgsql;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -24,6 +25,13 @@ internal static class ConfigureOpenTelemetryServiceCollectionExtensions
                 new KeyValuePair<string, object>("host.name", Environment.MachineName)
             });
 
+        Action<OtlpExporterOptions> otlpExporter = exporterOptions =>
+            {
+                exporterOptions.Endpoint = new Uri(otelEndpoint);
+                exporterOptions.Protocol = OtlpExportProtocol.Grpc;
+            };
+
+
         // add the OpenTelemetry services
         var otelBuilder = services.AddOpenTelemetry();
 
@@ -34,12 +42,7 @@ internal static class ConfigureOpenTelemetryServiceCollectionExtensions
                 options.SetResourceBuilder(resource);
                 // options.IncludeFormattedMessage = true;
                 // options.ParseStateValues = true;
-                // options.AddConsoleExporter();
-                options.AddOtlpExporter(otlpOptions =>
-                {
-                    otlpOptions.Endpoint = new Uri(otelEndpoint + "/v1/logs");
-                    otlpOptions.Protocol = OtlpExportProtocol.HttpProtobuf;
-                });
+                options.AddOtlpExporter(otlpExporter);
             })
         // add the metrics providers
         .WithMetrics(metrics =>
@@ -64,21 +67,21 @@ internal static class ConfigureOpenTelemetryServiceCollectionExtensions
                 "System.Net.Http",
                 "System.Net.NameResolution"
                 )
-              .AddOtlpExporter(otlpOptions =>
-                {
-                    otlpOptions.Endpoint = new Uri(otelEndpoint + "/v1/metrics");
-                    otlpOptions.Protocol = OtlpExportProtocol.HttpProtobuf;
-                });
+              .AddOtlpExporter(otlpExporter);
         })
         // add the tracing providers
-        // .WithTracing(tracing =>
-        // {
-        //     tracing.SetResourceBuilder(resource)
-        //                 .AddAspNetCoreInstrumentation()
-        //                 .AddHttpClientInstrumentation()
-        //                 .AddSqlClientInstrumentation();
-        // })
-        ;
+        .WithTracing(tracing =>
+                {
+                    tracing
+                        .SetResourceBuilder(resource)
+                        .AddSource(serviceName)
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .AddNpgsql()
+                        .AddSqlClientInstrumentation()
+                        // .AddRedisInstrumentation(opt => opt.SetVerboseDatabaseStatements = true)
+                        .AddOtlpExporter(otlpExporter);
+                });
 
         return services;
     }
