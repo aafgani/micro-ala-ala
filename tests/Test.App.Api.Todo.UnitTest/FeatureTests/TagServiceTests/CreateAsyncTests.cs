@@ -14,12 +14,12 @@ namespace Test.App.Api.Todo.UnitTest.FeatureTests.TagServiceTests
             // Arrange.
             var createDto = new TagDto { Name = "TestTag" };
             var newTag = new Tag { Id = 1, Name = "TestTag" };
-            var (mockTagRepository, mockMapper) = GetDependencies();
+            var (mockTagRepository, mockMapper, mockTagLogger) = GetDependencies();
             mockTagRepository.Setup(repo => repo.CreateAsync(It.IsAny<Tag>()))
                 .ReturnsAsync(newTag);
             mockMapper.Setup(mapper => mapper.ToEntity(It.IsAny<TagDto>())).Returns(newTag);
             mockMapper.Setup(mapper => mapper.ToDto(It.IsAny<Tag>())).Returns(createDto);
-            var tagService = new TagService(mockTagRepository.Object, mockMapper.Object);
+            var tagService = new TagService(mockTagRepository.Object, mockMapper.Object, mockTagLogger.Object);
 
             // Act.
             var result = await tagService.CreateAsync(createDto);
