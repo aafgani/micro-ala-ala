@@ -22,7 +22,8 @@ internal static class ConfigureOpenTelemetryServiceCollectionExtensions
              .AddAttributes(new[]
             {
                 new KeyValuePair<string, object>("deployment.environment", environment),
-                new KeyValuePair<string, object>("host.name", Environment.MachineName)
+                new KeyValuePair<string, object>("host.name", System.Net.Dns.GetHostName()),
+                new KeyValuePair<string, object>("machine.name", Environment.MachineName)
             });
 
         Action<OtlpExporterOptions> otlpExporter = exporterOptions =>
