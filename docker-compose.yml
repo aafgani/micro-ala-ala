@@ -24,7 +24,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__TodoDb=${Todo_Api_ConnectionStrings__TodoDb}
       - EnableAuthentication=${Todo_Api_Enable_Authentication}
-      - Diagnostics__Endpoint = http://otel-collector:4317
+      - Diagnostics__Endpoint=http://otel-collector:4317
     depends_on:
       - todo-db
   app-web-ui:
@@ -39,7 +39,7 @@ services:
       - TodoApiBaseUrl=http://todo-api:8080 # Use service name for internal communication
       - AzureEntra__RedirectUri=${Web_client_Azure_Entra_Redirect_Uri}
       - TodoApi__BaseUrl=${Web_Client_Todo_Api_Base_Url}
-      - Diagnostics__Endpoint = http://otel-collector:4317
+      - Diagnostics__Endpoint=http://otel-collector:4317
     depends_on:
       - todo-api
 
