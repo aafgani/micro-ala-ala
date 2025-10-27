@@ -12,6 +12,7 @@ COPY ["./src/apps/App.Web.UI/" , "apps/App.Web.UI/"]
 # COPY ["./src/shared/App.Common.Abstractions/" , "shared/App.Common.Abstractions/"]
 COPY ["./src/shared/App.Common.Infrastructure/" , "shared/App.Common.Infrastructure/"]
 COPY ["./src/shared/App.Common.Model/" , "shared/App.Common.Model/"]
+COPY ["./src/shared/App.Diagnostics/" , "shared/App.Diagnostics/"]
 
 # Run libman restore
 WORKDIR /src/apps/App.Web.UI
