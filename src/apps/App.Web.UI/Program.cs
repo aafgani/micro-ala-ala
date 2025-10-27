@@ -2,6 +2,7 @@ using App.Web.UI.Extensions;
 using App.Web.UI.Utilities.Session;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Identity.Web.UI;
+using App.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration
@@ -16,7 +17,8 @@ builder.Services
 builder.Services
 .AddCustomAuthentication(config)
 .AddCustomAuthorization(config)
-.AddInternalServices(config);
+.AddInternalServices(config)
+.AddObservability("App.Web.UI", builder.Configuration);
 
 // Handle reverse proxy headers
 builder.Services.Configure<ForwardedHeadersOptions>(options =>

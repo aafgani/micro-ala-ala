@@ -5,6 +5,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
+using App.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,7 +70,8 @@ builder.Services
     .AddConfigurationOptions(builder.Configuration)
     .AddBusinesServices(builder.Configuration)
     .AddInfrastructureServices(builder.Configuration)
-    .ConfigureHealthChecks(builder.Configuration);
+    .ConfigureHealthChecks(builder.Configuration)
+    .AddObservability("App.Api.Todo", builder.Configuration);
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {

@@ -14,8 +14,10 @@ namespace App.Api.Todo.Features.Tags.Endpoints
                 .WithTags(EndpointGroupNames.TagsTagName)
                 .RequireAuthorization();
 
-            group.MapGet("/", async (ITagService tagService) =>
+            group.MapGet("/", async (ITagService tagService, ILoggerFactory loggerFactory) =>
             {
+                var logger = loggerFactory.CreateLogger(nameof(TagEndpoints));
+                logger.LogInformation("Fetching all tags");
                 var result = await tagService.GetAllAsync();
                 return (EndpointResult<IEnumerable<TagDto>, ApiError>)result;
             })

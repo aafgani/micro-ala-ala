@@ -14,10 +14,10 @@ namespace Test.App.Api.Todo.UnitTest.FeatureTests.TagServiceTests
             // Arrange.
             var tagId = 1;
             var tag = new Tag { Id = tagId, Name = "TestTag" };
-            var (mockTagRepository, mockMapper) = GetDependencies();
+            var (mockTagRepository, mockMapper, mockTagLogger) = GetDependencies();
             mockTagRepository.Setup(repo => repo.GetByIdAsync(tagId)).ReturnsAsync(tag);
             mockMapper.Setup(mapper => mapper.ToDto(tag)).Returns(new TagDto { Name = tag.Name });
-            var tagService = new TagService(mockTagRepository.Object, mockMapper.Object);
+            var tagService = new TagService(mockTagRepository.Object, mockMapper.Object, mockTagLogger.Object);
 
             // Act.
             var result = tagService.GetByIdAsync(tagId).Result;
