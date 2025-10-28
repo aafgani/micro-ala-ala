@@ -2,7 +2,7 @@ using System.Net.Http.Headers;
 using App.Web.UI.Utilities.Http.Token;
 using static App.Web.UI.Utilities.Enums.Constant;
 
-namespace App.Web.UI.Utilities.Http;
+namespace App.Web.UI.Utilities.Http.Todo;
 
 public class TodoApiAuthHandler : DelegatingHandler
 {

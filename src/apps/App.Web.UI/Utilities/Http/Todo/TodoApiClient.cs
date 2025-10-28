@@ -16,8 +16,20 @@ public class TodoApiClient : BaseApiClient, ITodoApiClient
 
     public async Task<PagedResult<TodolistDto>> GetTodosAsync(int pageNumber = 1, int pageSize = 10, string orderBy = "createdAt", CancellationToken cancellationToken = default)
     {
-        var query = $"page={pageNumber}&pageSize={pageSize}&orderBy={orderBy}";
+        var result = new PagedResult<TodolistDto>();
 
-        return await GetAsync<TodolistDto>("/todos", query, cancellationToken);
+        try
+        {
+            var query = $"page={pageNumber}&pageSize={pageSize}&orderBy={orderBy}";
+
+            result = await GetAsync<TodolistDto>("/todos", query, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while fetching todos");
+        }
+
+        return result;
+
     }
 }
