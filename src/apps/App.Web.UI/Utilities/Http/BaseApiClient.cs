@@ -126,29 +126,21 @@ public class BaseApiClient
 
     protected async Task<PagedResult<T>> GetAsync<T>(string endpoint, string query, CancellationToken cancellationToken = default)
     {
-        try
+        var url = $"{endpoint}?{query}";
+        _logger.LogInformation("Getting paged data from {Url}", url);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+        LogResponse(endpoint, response);
+
+        response.EnsureSuccessStatusCode();
+
+        var result = await response.Content.ReadFromJsonAsync<PagedResult<T>>(cancellationToken: cancellationToken);
+
+        if (result == null)
         {
-            var url = $"{endpoint}?{query}";
-            _logger.LogInformation("Getting paged data from {Url}", url);
-
-            var response = await _httpClient.GetAsync(url, cancellationToken);
-            LogResponse(endpoint, response);
-
-            response.EnsureSuccessStatusCode();
-
-            var result = await response.Content.ReadFromJsonAsync<PagedResult<T>>(cancellationToken: cancellationToken);
-
-            if (result == null)
-            {
-                throw new InvalidOperationException($"Failed to deserialize the response from {endpoint} to PagedResult<{typeof(T).Name}>.");
-            }
-
-            return result;
+            throw new InvalidOperationException($"Failed to deserialize the response from {endpoint} to PagedResult<{typeof(T).Name}>.");
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error getting paged data from {Endpoint}", endpoint);
-            throw;
-        }
+
+        return result;
     }
 }

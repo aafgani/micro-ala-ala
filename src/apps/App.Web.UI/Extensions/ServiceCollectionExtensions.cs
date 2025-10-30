@@ -1,6 +1,6 @@
 using System.Net.Http.Headers;
 using App.Common.Infrastructure.Cache;
-using App.Web.UI.Utilities.Http;
+using App.Web.UI.Utilities.Http.Resiliency;
 using App.Web.UI.Utilities.Http.Todo;
 using App.Web.UI.Utilities.Session;
 
@@ -13,19 +13,31 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ICacheService, CacheService>();
         services.AddScoped<IUserSessionService, UserSessionService>();
         services.AddHttpContextAccessor();
-
-        #region Http Clients
-        services.AddHttpClient();
-        services.AddTransient<TodoApiAuthHandler>();
-        services.AddHttpClient<ITodoApiClient, TodoApiClient>(client =>
-        {
-            client.BaseAddress = new Uri(config["TodoApi:BaseUrl"] ?? throw new ArgumentNullException(nameof(config)));
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        })
-        .AddHttpMessageHandler<TodoApiAuthHandler>();
-        #endregion
-
+        services.AddHttpClients(config);
         return services;
     }
 
+    public static IServiceCollection AddHttpClients(this IServiceCollection services, IConfiguration config)
+    {
+        services.AddTransient<TodoApiAuthHandler>();
+        services.AddHttpClient<ITodoApiClient, TodoApiClient>((serviceProvider, client) =>
+        {
+            var logger = serviceProvider.GetRequiredService<ILogger<TodoApiClient>>();
+            logger.LogInformation("Configuring TodoApiClient with base URL: {BaseUrl}", config["TodoApi:BaseUrl"]);
+            client.BaseAddress = new Uri(config["TodoApi:BaseUrl"] ?? throw new ArgumentNullException(nameof(config)));
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        })
+        .AddHttpMessageHandler<TodoApiAuthHandler>()
+        .AddPolicyHandler((serviceProvider, _) =>
+        {
+            var logger = serviceProvider.GetRequiredService<ILogger<TodoApiClient>>();
+            logger.LogInformation("Creating resilience policies for TodoApiClient");
+            return ResiliencePolicyFactory.CreatePolicy(
+                new HttpClientResilienceOptions(),
+                logger);
+        })
+        ;
+
+        return services;
+    }
 }
