@@ -28,10 +28,16 @@ metadata:
   name: app-web-ui
   namespace: todo-project
 spec:
-  type: NodePort
+  # type: NodePort
+  # selector:
+  #   app: app-web-ui
+  # ports:
+  #   - port: 8080
+  #     targetPort: 8080
+  #     nodePort: 30080 # Kubernetes exposes your app directly on every node at http://<node-ip>:30080, bypassing ingress entirely.
+  type: ClusterIP
   selector:
     app: app-web-ui
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 30080
