@@ -4,13 +4,13 @@ metadata:
   name: todo-ingress
   namespace: todo-project
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
     - http:
         paths:
-          - path: /ui(/|$)(.*)
+          - path: /ui
             pathType: Prefix
             backend:
               service:
