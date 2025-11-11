@@ -39,6 +39,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+var pathBase = config.GetValue<string>("PathBase");
+if (!string.IsNullOrEmpty(pathBase))
+{
+    app.UsePathBase(pathBase);
+}
 app.UseRouting();
 
 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
