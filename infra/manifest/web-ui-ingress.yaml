@@ -3,17 +3,12 @@ kind: Ingress
 metadata:
   name: todo-ingress
   namespace: todo-project
-  # annotations:
-  #   nginx.ingress.kubernetes.io/rewrite-target: / #tells the NGINX Ingress Controller to rewrite the request path before it forwards the request to your backend service.
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
-  tls:
-    - hosts:
-        - 172.19.14.206
-      secretName: mkcert-tls
   rules:
-    - host: 172.19.14.206
-      http:
+    - http:
         paths:
           - path: /ui
             pathType: Prefix
