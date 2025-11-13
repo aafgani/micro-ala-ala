@@ -3,17 +3,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "web-app",
-      "type": "coreclr",
-      "request": "launch",
-      "preLaunchTask": "build-web-client",
-      "program": "${workspaceFolder}/src/apps/App.Web.Client/bin/Debug/net8.0/App.Web.Client.dll", // the entry point for the debugger
-      "args": [],
-      "cwd": "${workspaceFolder}/src/apps/App.Web.Client",
-      "stopAtEntry": false,
-      "console": "internalConsole"
-    },
-    {
       "name": "web-ui",
       "type": "coreclr",
       "request": "launch",
@@ -23,6 +12,24 @@
       "cwd": "${workspaceFolder}/src/apps/App.Web.UI",
       "stopAtEntry": false,
       "console": "internalConsole"
+    },
+    {
+      "name": "web-ui (Hot Reload)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "watch-web-ui",
+      "program": "${workspaceFolder}/src/apps/App.Web.UI/bin/Debug/net8.0/App.Web.UI.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/apps/App.Web.UI",
+      "stopAtEntry": false,
+      "console": "internalConsole",
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     },
     {
       "name": "todo-api",

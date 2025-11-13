@@ -42,6 +42,28 @@
       }
     },
     {
+      "label": "watch-web-ui",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/src/apps/App.Web.UI/App.Web.UI.csproj"
+      ],
+      "problemMatcher": "$msCompile",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "background": {
+        "activeOnStart": true,
+        "beginsPattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "endsPattern": "\\bApplication started\\. Press Ctrl\\+C to shut down\\b"
+      }
+    },
+    {
       "label": "build sln",
       "type": "process",
       "command": "dotnet",
