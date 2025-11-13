@@ -1,4 +1,7 @@
-using App.Web.UI.Utilities.Http;
+using App.Common.Domain.Dtos.ApiResponse;
+using App.Common.Domain.Dtos.Todo;
+using App.Common.Domain.Pagination;
+using App.Web.UI.Models.Response;
 using App.Web.UI.Utilities.Http.Todo;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +18,7 @@ public class TodolistViewComponent : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var pagedResult = await _todoApiClient.GetTodosAsync(1, 20);
-        return View(pagedResult);
+        var result = await _todoApiClient.GetTodosAsync(1, 20);
+        return (ViewComponentResultWrapper<PagedResult<TodolistDto>, ApiError>)result;
     }
 }

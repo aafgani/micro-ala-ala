@@ -3,12 +3,27 @@
 <section class="content">
     <div class="container-fluid">
         <div class="row">
-            <section class="col-lg-3">
-                @await Component.InvokeAsync("TodoGroup")
-            </section>
-            <section class="col-lg-9">
-                @await Component.InvokeAsync("Todolist")
+            <section id="TodoPartialView" class="col-lg-6">
+                @* @await Component.InvokeAsync("TodoGroup") *@
+                @await Component.InvokeAsync("LoadingCard")
             </section>
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("GetTodoPartialView", "Todo")',
+                type: 'GET',
+                success: function (data) {
+                    $('#TodoPartialView').html(data);
+                },
+                error: function () {
+                    alert('Error loading partial view.');
+                }
+            });
+        });
+    </script>
+}

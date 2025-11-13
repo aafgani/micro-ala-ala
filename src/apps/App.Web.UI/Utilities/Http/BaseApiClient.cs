@@ -50,77 +50,38 @@ public class BaseApiClient
         );
     }
 
-    protected async Task<T> PostAsync<T>(string endpoint, T payload, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            await LogRequestAsync(endpoint, payload);
-
-            var response = await _httpClient.PostAsJsonAsync(endpoint, payload, cancellationToken);
-            LogResponse(endpoint, response);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = await response.Content.ReadAsStringAsync(cancellationToken);
-                _logger.LogError("Failed request to {Endpoint}. Status: {StatusCode}, Error: {Error}",
-                    endpoint, response.StatusCode, error);
-
-                throw new HttpRequestException(
-                    $"Failed request to {endpoint}. Status: {response.StatusCode}, Error: {error}");
-            }
-
-            var result = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
-
-            if (result == null)
-            {
-                throw new InvalidOperationException($"Response from {endpoint} was null");
-            }
-
-            return result;
-        }
-        catch (Exception ex)
-        {
-            await LogErrorAsync(ex, endpoint, payload);
-            throw;
-        }
-    }
-
-    protected async Task<TResponse> PostAsync<TRequest, TResponse>(
+    protected async Task<TResponse> SendAsync<TRequest, TResponse>(
+    HttpMethod httpMethod,
     string endpoint,
     TRequest payload,
     CancellationToken cancellationToken = default)
     {
-        try
+        await LogRequestAsync(endpoint, payload);
+
+        var response = await _httpClient.SendAsync(new HttpRequestMessage(httpMethod, endpoint)
         {
-            await LogRequestAsync(endpoint, payload);
+            Content = JsonContent.Create(payload)
+        });
+        LogResponse(endpoint, response);
 
-            var response = await _httpClient.PostAsJsonAsync(endpoint, payload, cancellationToken);
-            LogResponse(endpoint, response);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = await response.Content.ReadAsStringAsync(cancellationToken);
-                _logger.LogError("Failed request to {Endpoint}. Status: {StatusCode}, Error: {Error}",
-                    endpoint, response.StatusCode, error);
-
-                throw new HttpRequestException(
-                    $"Failed request to {endpoint}. Status: {response.StatusCode}, Error: {error}");
-            }
-
-            var result = await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken: cancellationToken);
-
-            if (result == null)
-            {
-                throw new InvalidOperationException($"Response from {endpoint} was null");
-            }
-
-            return result;
-        }
-        catch (Exception ex)
+        if (!response.IsSuccessStatusCode)
         {
-            await LogErrorAsync(ex, endpoint, payload);
-            throw;
+            var error = await response.Content.ReadAsStringAsync(cancellationToken);
+            _logger.LogError("Failed request to {Endpoint}. Status: {StatusCode}, Error: {Error}",
+                endpoint, response.StatusCode, error);
+
+            throw new HttpRequestException(
+                $"Failed request to {endpoint}. Status: {response.StatusCode}, Error: {error}");
         }
+
+        var result = await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken: cancellationToken);
+
+        if (result == null)
+        {
+            throw new InvalidOperationException($"Response from {endpoint} was null");
+        }
+
+        return result;
     }
 
 

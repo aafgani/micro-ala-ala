@@ -110,7 +110,7 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-        <div class="mailbox-controls">
+        <div class="mailbox-con trols">
             <!-- Check all button -->
             <button type="button" class="btn btn-default btn-sm checkbox-toggle" id="addTodo">
                 <i class="fas fa-plus"></i>
@@ -144,45 +144,16 @@
             </div>
             <!-- /.float-right -->
         </div>
-
+        <div class="row">
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-danger">Action</button>
+                </div>
+                <!-- /btn-group -->
+                <input type="text" class="form-control">
+            </div>
+        </div>
         <ul class="todo-list ui-sortable" data-widget="todo-list">
-            @* <li>
-                <!-- drag handle -->
-                <span class="handle ui-sortable-handle">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <i class="fas fa-ellipsis-v"></i>
-                </span>
-                <!-- checkbox -->
-                <div class="icheck-primary d-inline ml-2">
-                    <input type="checkbox" value="" name="todo1" id="todoCheck1">
-                    <label for="todoCheck1"></label>
-                </div>
-                <!-- todo text -->
-                <span class="text">Design a nice theme</span>
-                <!-- Emphasis label -->
-                <small class="badge badge-danger"><i class="far fa-clock"></i> 2 mins</small>
-                <!-- General tools such as edit or delete-->
-                <div class="tools">
-                    <i class="fas fa-edit"></i>
-                    <i class="fas fa-trash-o"></i>
-                </div>
-            </li>
-            <li class="done">
-                <span class="handle ui-sortable-handle">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <i class="fas fa-ellipsis-v"></i>
-                </span>
-                <div class="icheck-primary d-inline ml-2">
-                    <input type="checkbox" value="" name="todo2" id="todoCheck2" checked="">
-                    <label for="todoCheck2"></label>
-                </div>
-                <span class="text">Make the theme responsive</span>
-                <small class="badge badge-info"><i class="far fa-clock"></i> 4 hours</small>
-                <div class="tools">
-                    <i class="fas fa-edit"></i>
-                    <i class="fas fa-trash-o"></i>
-                </div>
-            </li> *@
             @foreach (var item in Model.Data)
             {
                 <li>
@@ -237,79 +208,85 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    (function checkJquery() {
-        if (window.jQuery) {
-            $(document).ready(function () {
-                console.log('Document ready - Todo component initialized');
+@section Scripts {
+    @* <script type="text/javascript">
+        $(document).ready(function () {
+            console.log('Document ready - Todo component initialized');
 
-                // Add click handler for Add Todo button
-                $('#addTodo').on('click', function (e) {
-                    e.preventDefault();
-                    console.log('Add todo button clicked');
-                    $('#addTodoModal').modal('show');
-                });
-
-                // Modal event handlers
-                $('#addTodoModal')
-                    .on('show.bs.modal', function () {
-                        console.log('Modal is showing');
-                    })
-                    .on('shown.bs.modal', function () {
-                        console.log('Modal is visible');
-                        $('#todoTitle').focus(); // Auto-focus the title field
-                    })
-                    .on('hide.bs.modal', function () {
-                        console.log('Modal is hiding');
-                    })
-                    .on('hidden.bs.modal', function () {
-                        console.log('Modal is hidden');
-                        // Clear form
-                        $('#addTodoForm').trigger('reset');
-                    });
-
-                // Save button handler
-                $('#saveTodoBtn').on('click', function () {
-                    var title = $('#todoTitle').val().trim();
-                    var dueDate = new Date($('#todoDueDate').val()).toISOString();
-
-                    if (!title) {
-                        alert('Please enter a title');
-                        $('#todoTitle').focus();
-                        return;
-                    }
-
-                    // TODO: Add API call here
-                    const todo = { Title: title, DueDate: dueDate };
-
-                    $.ajax({
-                        type: "POST",
-                        url: "@Url.Action("AddTodo", "Todo")",
-                        headers: { "RequestVerificationToken": "@GetAntiXsrfRequestToken()" },
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify(todo),
-                        success: function (data) {
-                            toastr.success('Data saved successfully! ID: ' + data.id, 'Success');
-                        },
-                        error: function (req, status, error) {
-                            toastr.error('Failed to save data : ' + error, 'Error');
-                        }
-                    });
-
-                    // Hide modal after successful save
-                    $('#addTodoModal').modal('hide');
-                });
-
-                // Form submission handler (for Enter key)
-                $('#addTodoForm').on('submit', function (e) {
-                    e.preventDefault();
-                    $('#saveTodoBtn').click();
-                });
+            // Add click handler for Add Todo button
+            $('#addTodo').on('click', function (e) {
+                e.preventDefault();
+                console.log('Add todo button clicked');
+                $('#addTodoModal').modal('show');
             });
-        } else {
-            console.log('Waiting for jQuery...');
-            setTimeout(checkJquery, 100);
-        }
-    })();
+
+            // Modal event handlers
+            $('#addTodoModal')
+                .on('show.bs.modal', function () {
+                    console.log('Modal is showing');
+                })
+                .on('shown.bs.modal', function () {
+                    console.log('Modal is visible');
+                    $('#todoTitle').focus(); // Auto-focus the title field
+                })
+                .on('hide.bs.modal', function () {
+                    console.log('Modal is hiding');
+                })
+                .on('hidden.bs.modal', function () {
+                    console.log('Modal is hidden');
+                    // Clear form
+                    $('#addTodoForm').trigger('reset');
+                });
+
+            // Save button handler
+            $('#saveTodoBtn').on('click', function () {
+                var title = $('#todoTitle').val().trim();
+                var dueDate = new Date($('#todoDueDate').val()).toISOString();
+
+                if (!title) {
+                    alert('Please enter a title');
+                    $('#todoTitle').focus();
+                    return;
+                }
+
+                // TODO: Add API call here
+                const todo = { Title: title, DueDate: dueDate };
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("AddTodo", "Todo")",
+                    headers: { "RequestVerificationToken": "@GetAntiXsrfRequestToken()" },
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(todo),
+                    success: function (data) {
+                        toastr.success('Data saved successfully! ID: ' + data.id, 'Success');
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Failed to save data : ' + error, 'Error');
+                    }
+                });
+
+                // Hide modal after successful save
+                $('#addTodoModal').modal('hide');
+            });
+
+            // Form submission handler (for Enter key)
+            $('#addTodoForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#saveTodoBtn').click();
+            });
+        });
+    </script> *@
+
+}
+<script>
+    window.todoConfig = {
+        addUrl: '@Url.Action("AddTodo", "Todo")',
+        getUrl: '@Url.Action("GetTodos", "Todo")',
+        updateUrl: '@Url.Action("UpdateTodo", "Todo")',
+        deleteUrl: '@Url.Action("DeleteTodo", "Todo")',
+        xsrfToken: '@GetAntiXsrfRequestToken()'
+    };
 </script>
+<script src="~/js/todo.js" asp-append-version="true"></script>

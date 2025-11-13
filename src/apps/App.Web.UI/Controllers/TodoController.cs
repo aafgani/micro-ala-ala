@@ -1,7 +1,10 @@
 using App.Common.Domain.Auth;
+using App.Common.Domain.Dtos.ApiResponse;
 using App.Common.Domain.Dtos.Todo;
+using App.Common.Domain.Pagination;
 using App.Web.UI.Extensions;
 using App.Web.UI.Models.Dto;
+using App.Web.UI.Models.Response;
 using App.Web.UI.Utilities.Http.Todo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +28,7 @@ public class TodoController : Controller
         return View();
     }
 
+    #region ActionResult
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddTodoAsync([FromBody] AddTodo model)
@@ -57,6 +61,43 @@ public class TodoController : Controller
         };
 
         var result = await _todoApiClient.CreateTodoAsync(todolistDto);
-        return Json(result);
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return Ok(result);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetTodosAsync([FromBody] AddTodo model)
+    {
+        var pagedResult = await _todoApiClient.GetTodosAsync(1, 20);
+        return (MvcEndpointResult<PagedResult<TodolistDto>, ApiError>)pagedResult;
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateTodo(int id, [FromBody] TodoDto dto)
+    {
+        var result = await _todoApiClient.UpdateTodoAsync(id, dto);
+        return (MvcEndpointResult<bool, ApiError>)result;
+    }
+
+    [HttpDelete]
+    public IActionResult DeleteTodo(int id)
+    {
+        // _todoApiClient.Delete(id);
+        // return Ok(new { success = true });
+        return Ok(new { success = true });
+    }
+    #endregion
+
+    #region PartialView
+    public async Task<IActionResult> GetTodoPartialViewAsync()
+    {
+        var result = await _todoApiClient.GetTodosAsync(1, 20);
+        return PartialView("Partial/_TodoPartialView", result.Value);
+    }
+    #endregion
+
 }

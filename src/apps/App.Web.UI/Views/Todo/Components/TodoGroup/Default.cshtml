@@ -1,28 +1,280 @@
-﻿<div class="card card-row">
+﻿@model TodolistDto
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+@{
+    // Local function to generate human-readable time remaining descriptions
+    string GetTimeRemaining(DateTime dueDate)
+    {
+        var timeSpan = dueDate - DateTime.Now;
+
+        // If the date is in the past (overdue)
+        if (timeSpan.TotalMinutes < 0)
+        {
+            var overdue = DateTime.Now - dueDate;
+
+            if (overdue.TotalMinutes < 1)
+                return "just overdue";
+
+            if (overdue.TotalMinutes < 60)
+                return $"{(int)overdue.TotalMinutes} minute{((int)overdue.TotalMinutes != 1 ? "s" : "")} overdue";
+
+            if (overdue.TotalHours < 24)
+                return $"{(int)overdue.TotalHours} hour{((int)overdue.TotalHours != 1 ? "s" : "")} overdue";
+
+            if (overdue.TotalDays < 7)
+                return $"{(int)overdue.TotalDays} day{((int)overdue.TotalDays != 1 ? "s" : "")} overdue";
+
+            if (overdue.TotalDays < 30)
+            {
+                var weeks = (int)(overdue.TotalDays / 7);
+                return $"{weeks} week{(weeks != 1 ? "s" : "")} overdue";
+            }
+
+            if (overdue.TotalDays < 365)
+            {
+                var months = (int)(overdue.TotalDays / 30);
+                return $"{months} month{(months != 1 ? "s" : "")} overdue";
+            }
+
+            var yearPast = (int)(overdue.TotalDays / 365);
+            return $"{yearPast} year{(yearPast != 1 ? "s" : "")} overdue";
+        }
+
+        // If the date is in the future (time remaining)
+        if (timeSpan.TotalMinutes < 1)
+            return "due now";
+
+        if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} minute{((int)timeSpan.TotalMinutes != 1 ? "s" : "")} left";
+
+        if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} hour{((int)timeSpan.TotalHours != 1 ? "s" : "")} left";
+
+        if (timeSpan.TotalDays < 7)
+            return $"{(int)timeSpan.TotalDays} day{((int)timeSpan.TotalDays != 1 ? "s" : "")} left";
+
+        if (timeSpan.TotalDays < 30)
+        {
+            var weeks = (int)(timeSpan.TotalDays / 7);
+            return $"{weeks} week{(weeks != 1 ? "s" : "")} left";
+        }
+
+        if (timeSpan.TotalDays < 365)
+        {
+            var months = (int)(timeSpan.TotalDays / 30);
+            return $"{months} month{(months != 1 ? "s" : "")} left";
+        }
+
+        var years = (int)(timeSpan.TotalDays / 365);
+        return $"{years} year{(years != 1 ? "s" : "")} left";
+    }
+
+    // Helper function to get appropriate badge class based on time remaining
+    string GetBadgeClass(DateTime dueDate)
+    {
+        var timeSpan = dueDate - DateTime.Now;
+
+        if (timeSpan.TotalMinutes < 0)
+            return "badge-danger"; // Overdue
+
+        if (timeSpan.TotalHours < 24)
+            return "badge-warning"; // Due soon
+
+        if (timeSpan.TotalDays < 7)
+            return "badge-info"; // Due this week
+
+        return "badge-success"; // Plenty of time
+    }
+}
+
+@functions
+{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="card card-row">
     <div class="card-header">
         <h3 class="card-title">Todo List</h3>
     </div>
     <div class="card-body">
         <div class="card card-primary card-outline">
             <div class="card-header">
-                <h5 class="card-title">Create Issue template</h5>
-                <div class="card-tools">
-                    <a href="#" class="btn btn-tool btn-link">#4</a>
-                    <a href="#" class="btn btn-tool">
-                        <i class="fas fa-pen"></i>
-                    </a>
-                </div>
+                <form id="form-action" class="form-horizontal" role="form">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <div class="row justify-content-center">
+                        <div class="col-lg-12">
+                            <input asp-for="Title" id="todoTitle" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                    </div>
+                    @* <div class="row justify-content-center mt-3">
+                        <div class="col-lg-12">
+                            <label for="todoDueDate">Due Date</label>
+                            <div class="input-group mb-3">
+                                <input type="text" id="todoDueDate" class="form-control"
+                                    placeholder="Select due date" />
+                                <span class="input-group-text">
+                                    <i class="far fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div> *@
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-8 col-md-8 col-sm-10 mt-3 mb-5">
+                            <input type="submit" id="form-button" class="btn btn-success" value="Add Todo" />
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="card-body">
-                <div class="custom-control custom-checkbox">
-                    <input class="custom-control-input" type="checkbox" id="customCheckbox1_1" disabled="">
-                    <label for="customCheckbox1_1" class="custom-control-label">Bug Report</label>
-                </div>
-                <div class="custom-control custom-checkbox">
-                    <input class="custom-control-input" type="checkbox" id="customCheckbox1_2" disabled="">
-                    <label for="customCheckbox1_2" class="custom-control-label">Feature Request</label>
-                </div>
+                <ul class="todo-list ui-sortable" data-widget="todo-list">
+                </ul>
             </div>
         </div>
     </div>
+    <div class="overlay">
+        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+    </div>
 </div>
+
+<script type="text/javascript">
+    (function checkJquery() {
+        if (window.jQuery) {
+
+            //PopulateItem();
+
+            $('#form-button').on('click', function (e) {
+                e.preventDefault();
+                const title = $('#todoTitle').val().trim();
+                const dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+                if (!title) {
+                    toastr.error('Please enter a title ', 'Error');
+                    $('#todoTitle').focus();
+                    return;
+                }
+
+                // TODO: Add API call here
+                const todo = { Title: title, DueDate: dueDate };
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("AddTodo", "Todo")",
+                    headers: { "RequestVerificationToken": "@GetAntiXsrfRequestToken()" },
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(todo),
+                    success: function (data) {
+                        toastr.success('Data saved successfully! ID: ' + data.id, 'Success');
+                        window.location.reload();
+                    },
+                    error: function (req, status, error) {
+                        const message = req.responseJSON?.message || error || "Unknown error";
+                        toastr.error('Failed to save data: ' + message, 'Error');
+                    }
+                });
+            });
+
+            function PopulateItem() {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetTodos", "Todo")",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        //toastr.success('Data saved successfully! ID: ' + data.id, 'Success');
+                        const data = result.data;
+                        const $list = $('.todo-list');
+                        $list.empty(); // Clear old items
+
+                        if (!data || data.length === 0) {
+                            $list.append('<li><em>No todos found</em></li>');
+                            return;
+                        }
+
+                        data.forEach((todo, i) => {
+                            const isDone = todo.isCompleted ? 'checked' : '';
+                            const badgeColor = todo.isCompleted ? 'badge-success' : 'badge-warning';
+                            const dueText = new Date(todo.dueDate).toLocaleString();
+
+                            const item = `
+                            <li class="${todo.isCompleted ? 'done' : ''}">
+                                <div class="icheck-primary d-inline ml-2">
+                                    <input type="checkbox" value="${todo.id}" name="todo${i}" id="todoCheck${i}" ${isDone}>
+                                    <label for="todoCheck${i}"></label>
+                                </div>
+                                <span class="text">${todo.title}</span>
+                                <small class="badge ${badgeColor}">
+                                    <i class="far fa-clock"></i> ${dueText}
+                                </small>
+                                <div class="tools">
+                                    <i class="fas fa-edit"></i>
+                                    <i class="fas fa-trash"></i>
+                                </div>
+                            </li>`;
+                            $list.append(item);
+                        });
+                    },
+                    error: function (req, status, error) {
+                        toastr.error('Failed to populate data : ' + error, 'Error');
+                    }
+                });
+            }
+
+            // Event delegation for Edit 
+            $('.todo-list').on('click', '.fa-edit', function () {
+                const $li = $(this).closest('li');
+                const todoId = $li.find('input[type="checkbox"]').val();
+                const todoTitle = $li.find('.text').text();
+
+                // Example: open simple prompt for editing title
+                const newTitle = prompt('Edit todo title:', todoTitle);
+                if (newTitle && newTitle.trim() !== '' && newTitle !== todoTitle) {
+                    $.ajax({
+                        type: 'PUT',
+                        url: `@Url.Action("UpdateTodo", "Todo")/${todoId}`,
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify({ Id: todoId, Title: newTitle }),
+                        success: function () {
+                            toastr.success('Todo updated successfully!');
+                            PopulateItem();
+                        },
+                        error: function (req, status, error) {
+                            toastr.error('Failed to update: ' + error);
+                        }
+                    });
+                }
+            });
+
+            // Event delegation for  Delete
+            $('.todo-list').on('click', '.fa-trash', function () {
+                const $li = $(this).closest('li');
+                const todoId = $li.find('input[type="checkbox"]').val();
+
+                if (confirm('Are you sure you want to delete this todo?')) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: `@Url.Action("DeleteTodo", "Todo")/${todoId}`,
+                        success: function () {
+                            toastr.success('Todo deleted successfully!');
+                            PopulateItem();
+                        },
+                        error: function (req, status, error) {
+                            toastr.error('Failed to delete: ' + error);
+                        }
+                    });
+                }
+            });
+        } else {
+            console.log('Waiting for jQuery...');
+            setTimeout(checkJquery, 100);
+        }
+
+
+    })();
+</script>

@@ -1,4 +1,5 @@
-﻿using App.Api.Todo.Configuration;
+﻿using System.Diagnostics.CodeAnalysis;
+using App.Api.Todo.Configuration;
 using App.Api.Todo.Features.Tags.Data;
 using App.Api.Todo.Features.Tags.Mapper;
 using App.Api.Todo.Features.Tags.Services;
@@ -19,6 +20,7 @@ using Microsoft.Extensions.Options;
 
 namespace App.Api.Todo.Extensions
 {
+    [ExcludeFromCodeCoverage]
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddApplicationInformation(this IServiceCollection services)
