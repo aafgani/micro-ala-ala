@@ -35,9 +35,19 @@ public static class ServiceCollectionExtensions
             return ResiliencePolicyFactory.CreatePolicy(
                 new HttpClientResilienceOptions(),
                 logger);
-        })
-        ;
+        });
 
         return services;
+    }
+
+    public static WebApplication ConfigureRouting(this WebApplication app, IConfiguration config)
+    {
+        var pathBase = config.GetValue<string>("PathBase");
+        if (!string.IsNullOrEmpty(pathBase))
+            app.UsePathBase(pathBase);
+
+        app.UseRouting();
+
+        return app;
     }
 }

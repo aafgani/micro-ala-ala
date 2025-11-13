@@ -15,5 +15,16 @@ namespace App.Api.Todo.Extensions
             app.MapTodo();
             return app;
         }
+
+        public static WebApplication ConfigureRouting(this WebApplication app, IConfiguration config)
+        {
+            var pathBase = config.GetValue<string>("PathBase");
+            if (!string.IsNullOrEmpty(pathBase))
+                app.UsePathBase(pathBase);
+
+            app.UseRouting();
+
+            return app;
+        }
     }
 }
