@@ -17,7 +17,7 @@ spec:
         - name: todo-api
           image: yayakguns/todo-api:latest
           ports:
-            - containerPort: 8081
+            - containerPort: 8080
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Development"
@@ -32,4 +32,4 @@ spec:
     app: todo-api
   ports:
     - port: 8081
-      targetPort: 8081
+      targetPort: 8080
