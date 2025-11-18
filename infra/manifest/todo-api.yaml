@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: todo-api
-          image: yayakguns/todo-api:dev
+          image: yayakguns/todo-api:latest
           ports:
             - containerPort: 8081
           env:
