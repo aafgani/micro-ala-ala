@@ -103,7 +103,7 @@ else
     // Enforce HTTPS only in staging/production
     app.UseHttpsRedirection();
 }
-
+app.ConfigureRouting(builder.Configuration);
 app.UseAuthentication();
 app.UseAuthorization();
 
