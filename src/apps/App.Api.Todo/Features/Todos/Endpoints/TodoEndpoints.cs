@@ -11,8 +11,11 @@ public static class TodoEndpoints
 {
     public static RouteGroupBuilder MapTodo(this IEndpointRouteBuilder routes)
     {
+        var config = routes.ServiceProvider.GetRequiredService<IConfiguration>();
+        string pathBase = config["PathBase"] ?? string.Empty;
+
         var group = routes
-                      .MapGroup(EndpointGroupNames.TodosGroupName)
+                      .MapGroup(pathBase + EndpointGroupNames.TodosGroupName)
                       .WithTags(EndpointGroupNames.TodosTagName)
                       .RequireAuthorization();
 

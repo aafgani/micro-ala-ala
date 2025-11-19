@@ -9,8 +9,11 @@ namespace App.Api.Todo.Features.Tags.Endpoints
     {
         public static RouteGroupBuilder MapTags(this IEndpointRouteBuilder routes)
         {
+            var config = routes.ServiceProvider.GetRequiredService<IConfiguration>();
+            string pathBase = config["PathBase"] ?? string.Empty;
+
             var group = routes
-                .MapGroup(EndpointGroupNames.TagsGroupName)
+                .MapGroup(pathBase + EndpointGroupNames.TagsGroupName)
                 .WithTags(EndpointGroupNames.TagsTagName)
                 .RequireAuthorization();
 
