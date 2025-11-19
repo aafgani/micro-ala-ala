@@ -11,11 +11,8 @@ namespace App.Api.Todo.Features.Todotask.Endpoints
     {
         public static RouteGroupBuilder MapTodoTasks(this IEndpointRouteBuilder routes)
         {
-            var config = routes.ServiceProvider.GetRequiredService<IConfiguration>();
-            string pathBase = config["PathBase"] ?? string.Empty;
-
             var group = routes
-              .MapGroup(pathBase + EndpointGroupNames.TodotasksGroupName)
+              .MapGroup(EndpointGroupNames.TodotasksGroupName)
               .WithTags(EndpointGroupNames.TodotasksTagName)
               .RequireAuthorization();
 
